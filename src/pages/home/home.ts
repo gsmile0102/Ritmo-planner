@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { NavController, AlertController } from 'ionic-angular';
 import { DatabaseProvider } from '../../providers/database/database';
 import * as moment from 'moment';
+import { AddEventPage } from '../add-event/add-event';
 
 @Component({
   selector: 'page-home',
@@ -46,7 +47,7 @@ export class HomePage {
   }
 
   addEvent() {
-    this.navCtrl.push();
+    this.navCtrl.push(AddEventPage);
   }
 
   changeMode(mode) {
