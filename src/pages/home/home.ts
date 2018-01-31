@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { NavController, AlertController } from 'ionic-angular';
+import { DatabaseProvider } from '../../providers/database/database';
 import * as moment from 'moment';
 
 @Component({
@@ -17,8 +18,35 @@ export class HomePage {
       currentDate: new Date()
   };
 
-  constructor(private navCtrl: NavController, private alertCtrl: AlertController) {
+  constructor(private navCtrl: NavController, private alertCtrl: AlertController, private dbase: DatabaseProvider) {
 
+  }
+
+  ionViewDidLoad() {
+    this.loadEventsData();
+  }
+
+  ionViewWillEnter() {
+    this.loadEventsData();
+  }
+
+  loadEventsData() {
+    this.dbase.getEventsData().then(res => {
+      if(res) {
+        for(var i = 0; i < res.length; i++) {
+          let eventData = res[i];
+
+          eventData.startTime = new Date(res[i].startTime);
+          eventData.endTime = new Date(res[i].endTime);
+
+          this.eventSource.push(eventData);
+        }
+      }
+    });
+  }
+
+  addEvent() {
+    this.navCtrl.push();
   }
 
   changeMode(mode) {

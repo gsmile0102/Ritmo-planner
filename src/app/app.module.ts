@@ -10,6 +10,8 @@ import { HomePage } from '../pages/home/home';
 import { NgCalendarModule } from 'ionic2-calendar';
 import { DatabaseProvider } from '../providers/database/database';
 
+import { SQLite } from '@ionic-native/sqlite';
+
 @NgModule({
   declarations: [
     MyApp,
@@ -29,7 +31,8 @@ import { DatabaseProvider } from '../providers/database/database';
     StatusBar,
     SplashScreen,
     {provide: ErrorHandler, useClass: IonicErrorHandler},
-    DatabaseProvider
+    DatabaseProvider,
+    SQLite
   ]
 })
 export class AppModule {}
