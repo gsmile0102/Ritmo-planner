@@ -33,16 +33,19 @@ export class HomePage {
 
   loadEventsData() {
     this.dbase.getEventsData().then(res => {
-      if(res) {
-        for(var i = 0; i < res.length; i++) {
-          let eventData = res[i];
+      let events = this.eventSource;
+        for(var ev in res) {
+          let eventData = ev;
 
-          eventData.startTime = new Date(res[i].startTime);
-          eventData.endTime = new Date(res[i].endTime);
+          eventData.startTime = new Date(ev.startTime);
+          eventData.endTime = new Date(ev.endTime);
 
-          this.eventSource.push(eventData);
+          events.push(eventData);
         }
-      }
+        this.eventSource = [];
+        setTimeout(() => {
+          this.eventSource = events;
+        })
     });
   }
 
