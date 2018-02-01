@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { SQLite, SQLiteObject } from '@ionic-native/sqlite';
 import { Platform } from 'ionic-angular';
+import { BehaviorSubject } from 'rxjs/Rx';
+import { Toast } from '@ionic-native/toast';
 
 /*
   Generated class for the DatabaseProvider provider.
@@ -11,17 +13,20 @@ import { Platform } from 'ionic-angular';
 @Injectable()
 export class DatabaseProvider {
   private database: SQLiteObject;
-  private dbReady: boolean;
+  // private databaseReady: BehaviorSubject<boolean>;
 
-  constructor(private sqlite: SQLite, private platform: Platform) {
-    this.platform.ready().then(() => {
-      this.sqlite.create({
-        name: 'eventsdb.db',
-        location: 'default'
-      }).then((db: SQLiteObject) => {
-        this.database = db;
-      });
-    });
+  constructor(private sqlite: SQLite, private platform: Platform, private toast: Toast) {
+    // this.databaseReady = new BehaviorSubject(false);
+    // this.platform.ready().then(() => {
+    //   this.sqlite.create({
+    //     name: 'eventsdb.db',
+    //     location: 'default'
+    //   }).then((db: SQLiteObject) => {
+    //     this.database = db;
+    //     db.executeSql('CREATE TABLE IF NOT EXISTS event(rowid INTEGER PRIMARY KEY, title TEXT, startTime TEXT, endTime TEXT, allDay INTEGER, description TEXT)', {});
+    //     this.databaseReady.next(true);
+    //   });
+    // });
   }
 
   getEventsData() {
@@ -74,6 +79,10 @@ export class DatabaseProvider {
 
   deleteEvent() {
 
+  }
+
+  getDatabaseState() {
+    return this.databaseReady.asObservable();
   }
 
 }

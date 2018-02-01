@@ -13,6 +13,7 @@ export class HomePage {
   viewTitle: string;
   isToday: boolean;
   selectedDay = new Date();
+  // dbReady: boolean;
 
   calendar = {
       mode: 'month',
@@ -20,21 +21,24 @@ export class HomePage {
   };
 
   constructor(private navCtrl: NavController, private alertCtrl: AlertController, private dbase: DatabaseProvider) {
-
+    // this.dbase.getDatabaseState().subscribe(rdy => {
+    //   this.dbReady = rdy;
+    // });
   }
 
   ionViewDidLoad() {
-    this.loadEventsData();
+      this.loadEventsData();
+
   }
 
   ionViewWillEnter() {
-    this.loadEventsData();
+      this.loadEventsData();
   }
 
   loadEventsData() {
     this.dbase.getEventsData().then(res => {
       let events = this.eventSource;
-        for(var ev in res) {
+        for(let ev of res) {
           let eventData = ev;
 
           eventData.startTime = new Date(ev.startTime);

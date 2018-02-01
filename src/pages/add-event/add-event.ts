@@ -2,6 +2,8 @@ import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
 import { DatabaseProvider } from '../../providers/database/database';
 import * as moment from 'moment';
+import { Toast } from '@ionic-native/toast';
+
 
 /**
  * Generated class for the AddEventPage page.
@@ -25,7 +27,7 @@ export class AddEventPage {
     description: ""
   };
 
-  constructor(private navCtrl: NavController, private navParams: NavParams, private dbase: DatabaseProvider) {
+  constructor(private navCtrl: NavController, private navParams: NavParams, private dbase: DatabaseProvider, private toast: Toast) {
     let preselectedDate = moment(this.navParams.get('selectedDay')).format();
     this.event.startTime = preselectedDate;
     this.event.endTime = preselectedDate;
