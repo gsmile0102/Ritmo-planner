@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { NavController, AlertController } from 'ionic-angular';
+import { NavController, AlertController, ModalController } from 'ionic-angular';
 import { DatabaseProvider } from '../../providers/database/database';
 import * as moment from 'moment';
 import { AddEventPage } from '../add-event/add-event';
@@ -20,7 +20,7 @@ export class HomePage {
       currentDate: new Date()
   };
 
-  constructor(private navCtrl: NavController, private alertCtrl: AlertController, private dbase: DatabaseProvider) {
+  constructor(private navCtrl: NavController, private alertCtrl: AlertController, private modalCtrl: ModalController, private dbase: DatabaseProvider) {
     // this.dbase.getDatabaseState().subscribe(rdy => {
     //   this.dbReady = rdy;
     // });
@@ -28,7 +28,6 @@ export class HomePage {
 
   ionViewDidLoad() {
       this.loadEventsData();
-
   }
 
   ionViewWillEnter() {
@@ -37,7 +36,7 @@ export class HomePage {
 
   loadEventsData() {
     this.dbase.getEventsData().then(res => {
-      let events = this.eventSource;
+      let events = [];
         for(let ev of res) {
           let eventData = ev;
 
@@ -76,7 +75,22 @@ export class HomePage {
     let alert = this.alertCtrl.create({
       title: '' + event.title,
       subTitle: 'From: ' + start + '<br>To: ' + end,
-      buttons: ['OK']
+      buttons: [
+        {
+          text: 'Cancel',
+          role: 'cancel'
+        }
+        {
+          text: 'Edit',
+          handler: () => {
+            let modal = this.modalCtrl.create('EditEventModalPage', {event: event});
+            modal.present();
+            modal.onDidDismiss(data => {
+              
+            });
+          }
+        }
+      ]
     })
     alert.present();
   }

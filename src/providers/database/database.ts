@@ -1,9 +1,5 @@
 import { Injectable } from '@angular/core';
 import { SQLite, SQLiteObject } from '@ionic-native/sqlite';
-import { Platform } from 'ionic-angular';
-import { BehaviorSubject } from 'rxjs/Rx';
-import { Toast } from '@ionic-native/toast';
-
 /*
   Generated class for the DatabaseProvider provider.
 
@@ -12,10 +8,10 @@ import { Toast } from '@ionic-native/toast';
 */
 @Injectable()
 export class DatabaseProvider {
-  private database: SQLiteObject;
+  // private database: SQLiteObject;
   // private databaseReady: BehaviorSubject<boolean>;
 
-  constructor(private sqlite: SQLite, private platform: Platform, private toast: Toast) {
+  constructor(private sqlite: SQLite) {
     // this.databaseReady = new BehaviorSubject(false);
     // this.platform.ready().then(() => {
     //   this.sqlite.create({
@@ -73,8 +69,19 @@ export class DatabaseProvider {
     });
   }
 
-  editEvent() {
-
+  editEvent(event) {
+    return new Promise((resolve, reject) => {
+      this.sqlite.create({
+        name: 'eventsdb.db',
+        location: 'default'
+      }).then((db: SQLiteObject) => {
+        db.executeSql('UPDATE event SET title=?, startTime=?, endTime=?, allDay=?, description=? WHERE rowid=?', [event.title, event.startTime, event.endTime, event.allDay, event.description]).then((res) => {
+          resolve(res);
+        }, (err) => {
+          reject(err);
+        });
+      });
+    });
   }
 
   deleteEvent() {
