@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { NavController, AlertController, ModalController } from 'ionic-angular';
+import { Toast } from '@ionic-native/toast';
 import { DatabaseProvider } from '../../providers/database/database';
 import * as moment from 'moment';
 import { AddEventPage } from '../add-event/add-event';
@@ -20,7 +21,7 @@ export class HomePage {
       currentDate: new Date()
   };
 
-  constructor(private navCtrl: NavController, private alertCtrl: AlertController, private modalCtrl: ModalController, private dbase: DatabaseProvider) {
+  constructor(private navCtrl: NavController, private alertCtrl: AlertController, private modalCtrl: ModalController, private toast: Toast, private dbase: DatabaseProvider) {
     // this.dbase.getDatabaseState().subscribe(rdy => {
     //   this.dbReady = rdy;
     // });
@@ -35,13 +36,14 @@ export class HomePage {
   }
 
   loadEventsData() {
-    this.dbase.getEventsData().then(res => {
+    this.dbase.getEventsData().then((res) => {
       let events = [];
         for(let ev of res) {
           let eventData = ev;
 
           eventData.startTime = new Date(ev.startTime);
           eventData.endTime = new Date(ev.endTime);
+          eventData.allDay
 
           events.push(eventData);
         }
@@ -54,6 +56,21 @@ export class HomePage {
 
   addEvent() {
     this.navCtrl.push(AddEventPage);
+  }
+
+  editEvent(event) {
+    let modal = this.modalCtrl.create('EditEventModalPage', {event: event});
+    modal.present();
+    modal.onDidDismiss(data => {
+      this.loadEventsData();
+    });
+  }
+
+  deleteEvent(event) {
+    this.dbase.deleteEvent(event).then((res) => {
+      this.loadEventsData();
+      this.toast.show('Event deleted', '5000', 'center');
+    });
   }
 
   changeMode(mode) {
@@ -74,7 +91,7 @@ export class HomePage {
 
     let alert = this.alertCtrl.create({
       title: '' + event.title,
-      subTitle: 'From: ' + start + '<br>To: ' + end,
+      subTitle: event.allDay == 'true' ? 'All Day' : 'From: ' + start + '<br>To: ' + end,
       buttons: [
         {
           text: 'Cancel',

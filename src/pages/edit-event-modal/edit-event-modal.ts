@@ -17,6 +17,7 @@ import * as moment from 'moment';
 export class EditEventModalPage {
 
   event = {
+    id: 0,
     title: "",
     startTime: new Date().toISOString(),
     endTime: new Date().toISOString(),

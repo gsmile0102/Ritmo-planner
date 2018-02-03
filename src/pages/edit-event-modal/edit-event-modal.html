@@ -23,11 +23,11 @@
     </ion-item>
     <ion-item>
       <ion-label>Start</ion-label>
-      <ion-datetime displayFormat="MM/DD/YYYY HH:mm" pickerFormat="YYYY:MMM D:HH:mm" [(ngModel)]="event.startTime" [min]="minDate"></ion-datetime>
+      <ion-datetime displayFormat="MM/DD/YYYY HH:mm" pickerFormat="YYYY:MMM D:HH:mm" [(ngModel)]="event.startTime" [min]="minDate" [disabled]="event.allDay"></ion-datetime>
     </ion-item>
     <ion-item>
       <ion-label>End</ion-label>
-      <ion-datetime displayFormat="MM/DD/YYYY HH:mm" pickerFormat="YYYY:MMM D:HH:mm" [(ngModel)]="event.endTime" [min]="minDate"></ion-datetime>
+      <ion-datetime displayFormat="MM/DD/YYYY HH:mm" pickerFormat="YYYY:MMM D:HH:mm" [(ngModel)]="event.endTime" [min]="minDate" [disabled]="event.allDay"></ion-datetime>
     </ion-item>
     <ion-item>
       <ion-label>All Day?</ion-label>
