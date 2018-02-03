@@ -19,6 +19,34 @@
 </ion-header>
 
 <ion-content>
-  <calendar [eventSource]="eventSource" [calendarMode]="calendar.mode" [currentDate]="calendar.currentDate" (onCurrentDateChanged)="onCurrentDateChanged($event)" (onEventSelected)="onEventSelected($event)" (onTitleChanged)="onViewTitleChanged($event)" (onTimeSelected)="onTimeSelected($event)" step="30">
+  <calendar [eventSource]="eventSource" [calendarMode]="calendar.mode" [currentDate]="calendar.currentDate" [monthviewEventDetailTemplate]="template"  (onCurrentDateChanged)="onCurrentDateChanged($event)" (onEventSelected)="onEventSelected($event)" (onTitleChanged)="onViewTitleChanged($event)" (onTimeSelected)="onTimeSelected($event)" step="30">
   </calendar>
 </ion-content>
+
+<ng-template #template let-showEventDetail="showEventDetail" let-selectedDate="selectedDate" let-noEventsLabel="noEventsLabel">
+  <ion-list class="event-detail-container" has-bouncing="false" *ngIf="showEventDetail" overflow-scroll="false">
+    <ion-item-sliding *ngFor="let event of selectedDate?.events" (click)="onEventSelected(event)">
+      <ion-item nopadding>
+        <span *ngIf="!event.allDay" class="monthview-eventdetail-timecolumn">
+          <p>
+            <span>{{event.startTime|date: 'fullDate'}}</span><br>
+            {{event.startTime|date: 'HH:mm'}} - {{event.endTime|date: 'HH:mm'}}
+          </p>
+        </span>
+        <span *ngIf="event.allDay" class="monthview-eventdetail-timecolumn">All day</span>
+        <span class="event-detail" item-end> <h2> | {{event.title}}</h2></span>
+      </ion-item>
+      <ion-item-options side="right">
+        <button ion-button color="primary" (click)="editData()">
+          <ion-icon name="paper"></ion-icon>
+        </button>
+        <button ion-button color="danger" (click)="deleteData()">
+          <ion-icon name="trash"></ion-icon>
+        </button>
+      </ion-item-options>
+    </ion-item-sliding>
+    <ion-item *ngIf="selectedDate?.events.length==0">
+      <div class="no-events-label">{{noEventsLabel}}</div>
+    </ion-item>
+  </ion-list>
+</ng-template>

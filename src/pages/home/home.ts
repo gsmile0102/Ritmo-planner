@@ -79,14 +79,14 @@ export class HomePage {
         {
           text: 'Cancel',
           role: 'cancel'
-        }
+        },
         {
           text: 'Edit',
           handler: () => {
             let modal = this.modalCtrl.create('EditEventModalPage', {event: event});
             modal.present();
             modal.onDidDismiss(data => {
-              
+              this.loadEventsData();
             });
           }
         }

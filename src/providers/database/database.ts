@@ -75,7 +75,7 @@ export class DatabaseProvider {
         name: 'eventsdb.db',
         location: 'default'
       }).then((db: SQLiteObject) => {
-        db.executeSql('UPDATE event SET title=?, startTime=?, endTime=?, allDay=?, description=? WHERE rowid=?', [event.title, event.startTime, event.endTime, event.allDay, event.description]).then((res) => {
+        db.executeSql('UPDATE event SET title=?, startTime=?, endTime=?, allDay=?, description=? WHERE rowid=?', [event.title, event.startTime, event.endTime, event.allDay, event.description, event.id]).then((res) => {
           resolve(res);
         }, (err) => {
           reject(err);
@@ -84,12 +84,23 @@ export class DatabaseProvider {
     });
   }
 
-  deleteEvent() {
-
+  deleteEvent(event) {
+    return new Promise((resolve, reject) => {
+      this.sqlite.create({
+        name: 'eventsdb.db',
+        location: 'default'
+      }).then((db: SQLiteObject) => {
+        db.executeSql('DELETE FROM event WHERE rowid=?', [event.id]).then((res) => {
+          resolve(res);
+        }, (err) => {
+          reject(err);
+        })
+      });
+    })
   }
 
-  getDatabaseState() {
-    return this.databaseReady.asObservable();
-  }
+  // getDatabaseState() {
+  //   return this.databaseReady.asObservable();
+  // }
 
 }

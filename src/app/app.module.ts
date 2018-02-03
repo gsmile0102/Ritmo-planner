@@ -8,7 +8,6 @@ import { Toast } from '@ionic-native/toast';
 import { MyApp } from './app.component';
 import { HomePage } from '../pages/home/home';
 import { AddEventPage } from '../pages/add-event/add-event';
-import { EditEventModalPage } from '../pages/edit-event-modal/edit-event-modal';
 
 import { NgCalendarModule } from 'ionic2-calendar';
 import { DatabaseProvider } from '../providers/database/database';
@@ -19,8 +18,7 @@ import { SQLite } from '@ionic-native/sqlite';
   declarations: [
     MyApp,
     HomePage,
-    AddEventPage,
-    EditEventModalPage
+    AddEventPage
   ],
   imports: [
     BrowserModule,
@@ -31,8 +29,7 @@ import { SQLite } from '@ionic-native/sqlite';
   entryComponents: [
     MyApp,
     HomePage,
-    AddEventPage,
-    EditEventModalPage
+    AddEventPage
   ],
   providers: [
     StatusBar,
