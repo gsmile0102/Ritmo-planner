@@ -39,13 +39,33 @@ export class HomePage {
     this.dbase.getEventsData().then((res) => {
       let events = [];
         for(let ev of res) {
-          let eventData = ev;
-
-          eventData.startTime = new Date(ev.startTime);
-          eventData.endTime = new Date(ev.endTime);
-          eventData.allDay
-
-          events.push(eventData);
+          if(ev.allDay == 'true') {
+            events.push({
+              id: ev.id,
+              title: ev.title,
+              startTime: new Date(ev.startTime),
+              endTime: new Date(ev.endTime),
+              allDay: true,
+              description: ev.description
+            });
+          }
+          else {
+            events.push({
+              id: ev.id,
+              title: ev.title,
+              startTime: new Date(ev.startTime),
+              endTime: new Date(ev.endTime),
+              allDay: false,
+              description: ev.description
+            });
+          }
+          //
+          // let eventData = ev;
+          //
+          // eventData.startTime = new Date(ev.startTime);
+          // eventData.endTime = new Date(ev.endTime);
+          //
+          // events.push(eventData);
         }
         this.eventSource = [];
         setTimeout(() => {
@@ -55,7 +75,7 @@ export class HomePage {
   }
 
   addEvent() {
-    this.navCtrl.push(AddEventPage);
+    this.navCtrl.push(AddEventPage, {selectedDay: this.selectedDay});
   }
 
   editEvent(event) {
@@ -68,8 +88,8 @@ export class HomePage {
 
   deleteEvent(event) {
     this.dbase.deleteEvent(event).then((res) => {
-      this.loadEventsData();
       this.toast.show('Event deleted', '5000', 'center');
+      this.loadEventsData();
     });
   }
 
@@ -123,4 +143,9 @@ export class HomePage {
     this.isToday = today.getTime() === event.getTime();
   }
 
+  markDisabled = (date:Date) => {
+    var current = new Date();
+    current.setHours(0, 0, 0);
+    return date < current;
+  };
 }

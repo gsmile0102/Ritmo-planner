@@ -27,13 +27,13 @@
   <ion-list class="event-detail-container" has-bouncing="false" *ngIf="showEventDetail" overflow-scroll="false">
     <ion-item-sliding *ngFor="let event of selectedDate?.events" >
       <ion-item (click)="onEventSelected(event)" nopadding>
-        <span *ngIf="event.allDay == 'false'" class="monthview-eventdetail-timecolumn">
+        <span *ngIf="!event.allDay" class="monthview-eventdetail-timecolumn">
           <p>
             <span>{{event.startTime|date: 'fullDate'}}</span><br>
             {{event.startTime|date: 'HH:mm'}} - {{event.endTime|date: 'HH:mm'}}
           </p>
         </span>
-        <span *ngIf="event.allDay == 'true'" class="monthview-eventdetail-timecolumn">All day </span>
+        <span *ngIf="event.allDay" class="monthview-eventdetail-timecolumn">All day </span>
         <span class="event-detail" item-end> <h2> {{event.title}}</h2></span>
       </ion-item>
       <ion-item-options side="right">
