@@ -34,7 +34,9 @@
           </p>
         </span>
         <span *ngIf="event.allDay" class="monthview-eventdetail-timecolumn">All day </span>
-        <span class="event-detail" item-end> <h2> {{event.title}}</h2></span>
+        <span class="event-detail" item-end>
+          <h2> {{event.title}}</h2>
+        </span>
       </ion-item>
       <ion-item-options side="right">
         <button ion-button color="primary" (click)="editEvent(event)">

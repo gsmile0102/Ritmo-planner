@@ -28,10 +28,12 @@ export class AddEventPage {
     description: ""
   };
 
-  startTime = new Date();
-  endTime = new Date();
-
-  notifications: any[] = [];
+  notif = {
+    id: 0,
+    title: '',
+    at: new Date()
+  };
+  notifications: notif[] = [];
 
   constructor(private navCtrl: NavController, private navParams: NavParams, private modalCtrl: ModalController, private dbase: DatabaseProvider, private toast: Toast, private localNotifications: LocalNotifications) {
     let preselectedDate = moment(this.navParams.get('selectedDay')).format();
@@ -43,9 +45,10 @@ export class AddEventPage {
   }
 
   addReminder() {
-    let modal = this.modalCtrl.create('ReminderModalPage', {event: event});
+    let modal = this.modalCtrl.create('ReminderModalPage', {event: this.event});
     modal.present();
-    modal.onDidDismiss((ntf) => {
+    modal.onDidDismiss(ntf => {
+      this.notif = ntf;
       this.notifications.push(ntf);
     });
   }
@@ -55,23 +58,23 @@ export class AddEventPage {
   }
 
   save() {
-    this.startTime = new Date(this.event.startTime);
-    this.endTime = new Date(this.event.endTime);
+    let startTime = new Date(this.event.startTime);
+    let endTime = new Date(this.event.endTime);
     if(this.event.allDay) {
-      let daysDiff = this.startTime.getUTCDate() === this.endTime.getUTCDate() ? 1 : this.endTime.getUTCDate() - this.startTime.getUTCDate();
-      let newStartTime = new Date(Date.UTC(this.startTime.getUTCFullYear(), this.startTime.getUTCMonth(), this.startTime.getUTCDate()));
-      let newEndTime = new Date(Date.UTC(this.endTime.getUTCFullYear(), this.endTime.getUTCMonth(), this.endTime.getUTCDate() + daysDiff));
+      let daysDiff = startTime.getDate() === endTime.getDate() ? 1 : endTime.getDate() - startTime.getDate();
+      let newStartTime = new Date(startTime.getFullYear(), startTime.getMonth(), startTime.getDate(), 8, 0);
+      let newEndTime = new Date(endTime.getFullYear(), endTime.getMonth(), startTime.getDate() + daysDiff, 8, 0);
+
       this.event.startTime = moment(newStartTime).format();
       this.event.endTime = moment(newEndTime).format();
     }
     else {
-      this.event.startTime = moment(this.startTime).format();
-      this.event.endTime = moment(this.endTime).format();
+      this.event.startTime = moment(startTime).format();
+      this.event.endTime = moment(endTime).format();
     }
 
-
-    // this.localNotifications.schedule(this.notifications);
-    // this.notifications = [];
+    this.localNotifications.schedule(this.notifications);
+    this.notifications = [];
     this.dbase.addEvent(this.event).then(res => {
       this.navCtrl.popToRoot();
     });

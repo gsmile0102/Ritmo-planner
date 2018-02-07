@@ -46,6 +46,7 @@ export class HomePage {
               startTime: new Date(ev.startTime),
               endTime: new Date(ev.endTime),
               allDay: true,
+              reminder: ev.reminder,
               description: ev.description
             });
           }
@@ -56,6 +57,7 @@ export class HomePage {
               startTime: new Date(ev.startTime),
               endTime: new Date(ev.endTime),
               allDay: false,
+              reminder: ev.reminder,
               description: ev.description
             });
           }

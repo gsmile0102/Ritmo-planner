@@ -31,7 +31,7 @@ export class DatabaseProvider {
           name: 'eventsdb.db',
           location: 'default'
         }).then((db: SQLiteObject) => {
-          db.executeSql('CREATE TABLE IF NOT EXISTS event(rowid INTEGER PRIMARY KEY, title TEXT, startTime TEXT, endTime TEXT, allDay INTEGER, description TEXT)', {});
+          db.executeSql('CREATE TABLE IF NOT EXISTS event(rowid INTEGER PRIMARY KEY, title TEXT, startTime TEXT, endTime TEXT, allDay INTEGER, reminder TEXT, description TEXT)', {});
           db.executeSql('SELECT * FROM event ORDER BY rowid', {}).then(res => {
             let events = [];
             if(res.rows.length > 0) {
@@ -42,6 +42,7 @@ export class DatabaseProvider {
                   startTime: res.rows.item(i).startTime,
                   endTime: res.rows.item(i).endTime,
                   allDay: res.rows.item(i).allDay,
+                  reminder: res.rows.item(i).reminder,
                   description: res.rows.item(i).description
                 });
               }
@@ -60,7 +61,7 @@ export class DatabaseProvider {
         name: 'eventsdb.db',
         location: 'default'
       }).then((db: SQLiteObject) => {
-        db.executeSql('INSERT INTO event VALUES(NULL,?,?,?,?,?)', [event.title, event.startTime, event.endTime, event.allDay, event.description]).then((res) => {
+        db.executeSql('INSERT INTO event VALUES(NULL,?,?,?,?,?,?)', [event.title, event.startTime, event.endTime, event.allDay, event.reminder,  event.description]).then((res) => {
           resolve(res);
         }, (err) => {
           reject(err);
@@ -75,7 +76,7 @@ export class DatabaseProvider {
         name: 'eventsdb.db',
         location: 'default'
       }).then((db: SQLiteObject) => {
-        db.executeSql('UPDATE event SET title=?, startTime=?, endTime=?, allDay=?, description=? WHERE rowid=?', [event.title, event.startTime, event.endTime, event.allDay, event.description, event.id]).then((res) => {
+        db.executeSql('UPDATE event SET title=?, startTime=?, endTime=?, allDay=?, description=? WHERE rowid=?', [event.title, event.startTime, event.endTime, event.allDay, event.reminder, event.description, event.id]).then((res) => {
           resolve(res);
         }, (err) => {
           reject(err);

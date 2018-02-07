@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams, ViewController } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, ViewController, AlertController } from 'ionic-angular';
 import * as moment from 'moment';
 /**
  * Generated class for the ReminderModalPage page.
@@ -17,12 +17,10 @@ export class ReminderModalPage {
 
   presetTimes: any[];
   isCustomise: boolean;
-  notificationTime: any;
   event: any;
+  currentDate = new Date();
 
-  notification: any;
-
-  constructor(public navCtrl: NavController, public navParams: NavParams, public viewCtrl: ViewController) {
+  constructor(public navCtrl: NavController, public navParams: NavParams, public viewCtrl: ViewController, public alertCtrl: AlertController) {
     this.event = this.navParams.get('event');
     this.isCustomise = false;
     this.presetTimes = [
@@ -39,6 +37,7 @@ export class ReminderModalPage {
   }
 
   addNotification() {
+    let notificationTime = new Date();
     for(let time of this.presetTimes) {
       if(time.checked) {
         // if(time.code == 0) {
@@ -59,14 +58,27 @@ export class ReminderModalPage {
         //   title: this.event.title,
         //   at: this.notificationTime
         // };
-        this.notification = {
-          id: this.event.id,
-          title: this.event.title,
-          at: new Date(new Date().getTime() + 5000)
-        };
+        if(time.code == 0) {
+          this.viewCtrl.dismiss();
+        }
+        else {
+          let daysDiff = new Date(this.event.startTime).getDate() - this.currentDate.getDate();
+          notificationTime.setHours(new Date(this.event.startTime).getHours() - time.hrs);
+          notificationTime.setMinutes(new Date(this.event.startTime).getMinutes() - time.min);
+          notificationTime.setSeconds(0);
+        }
       }
     }
-    this.viewCtrl.dismiss(this.notification);
+    let notification = {
+      id: this.event.id,
+      title: this.event.title,
+      at: notificationTime
+    }
+    this.viewCtrl.dismiss(notification);
+  }
+
+  customise() {
+
   }
 
   cancel() {

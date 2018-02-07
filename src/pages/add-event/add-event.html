@@ -24,14 +24,14 @@
 
     <ion-item>
       <ion-label>Start</ion-label>
-      <ion-datetime *ngIf="!event.allDay" displayFormat="MM/DD/YYYY HH:mm" pickerFormat="MMM D:HH:mm" [(ngModel)]="event.startTime" [min]="minDate"></ion-datetime>
-      <ion-datetime *ngIf="event.allDay" displayFormat="MM/DD/YYYY" pickerFormat="MMM D" [(ngModel)]="event.startTime" [min]="minDate"></ion-datetime>
+      <ion-datetime *ngIf="!event.allDay" displayFormat="MM/DD/YYYY HH:mm" pickerFormat="MMM D:HH:mm" [(ngModel)]="event.startTime"></ion-datetime>
+      <ion-datetime *ngIf="event.allDay" displayFormat="MM/DD/YYYY" pickerFormat="MMM D" [(ngModel)]="event.startTime"></ion-datetime>
     </ion-item>
 
     <ion-item>
       <ion-label>End</ion-label>
-      <ion-datetime *ngIf="!event.allDay" displayFormat="MM/DD/YYYY HH:mm" pickerFormat="MMM D:HH:mm" [(ngModel)]="event.endTime" [min]="minDate"></ion-datetime>
-      <ion-datetime *ngIf="event.allDay" displayFormat="MM/DD/YYYY" pickerFormat="MMM D" [(ngModel)]="event.endTime" [min]="minDate"></ion-datetime>
+      <ion-datetime *ngIf="!event.allDay" displayFormat="MM/DD/YYYY HH:mm" pickerFormat="MMM D:HH:mm" [(ngModel)]="event.endTime" [min]="event.startTime"></ion-datetime>
+      <ion-datetime *ngIf="event.allDay" displayFormat="MM/DD/YYYY" pickerFormat="MMM D" [(ngModel)]="event.endTime" [min]="event.startTime"></ion-datetime>
     </ion-item>
 
     <ion-item>
@@ -39,10 +39,17 @@
       <ion-checkbox [(ngModel)]="event.allDay"></ion-checkbox>
     </ion-item>
 
-    <ion-item>
+    <!-- <ion-item>
+      <ion-label item-start>Reminder</ion-label>
+      <h2 *ngFor="let ntf of notifications" item-content>{{ntf.title}}</h2>
+      <button ion-button clear item-end (click)="addReminder()">Add</button>
+    </ion-item> -->
+
+    <ion-item-group padding>
       <ion-label>Reminder</ion-label>
-      <button ion-button item-end (click)="addReminder()">Add</button>
-    </ion-item>
+      <ion-item>asd</ion-item>
+      <button ion-button clear item-end (click)="addReminder()">Add</button>
+    </ion-item-group>
 
     <ion-item>
       <ion-label>Description</ion-label>
