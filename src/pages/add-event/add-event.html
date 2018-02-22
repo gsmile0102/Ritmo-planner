@@ -47,7 +47,10 @@
 
     <ion-item-group padding>
       <ion-label>Reminder</ion-label>
-      <ion-item>asd</ion-item>
+      <ion-item *ngFor="let ntfc of notifications">
+        <ion-label>{{ntfc.text}}</ion-label>
+        <button ion-button item-end clear (click)="removeReminder(ntfc.text)"><ion-icon name="close"></ion-icon></button>
+      </ion-item>
       <button ion-button clear item-end (click)="addReminder()">Add</button>
     </ion-item-group>
 

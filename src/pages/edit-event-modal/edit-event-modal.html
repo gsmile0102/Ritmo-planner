@@ -35,6 +35,14 @@
       <ion-label>All Day?</ion-label>
       <ion-checkbox [(ngModel)]="event.allDay"></ion-checkbox>
     </ion-item>
+    <ion-item-group padding>
+      <ion-label>Reminder</ion-label>
+      <ion-item *ngFor="let ntfc of notifications">
+        <ion-label>{{ntfc.text}}</ion-label>
+        <button ion-button item-end clear (click)="removeReminder(ntfc.text)"><ion-icon name="close"></ion-icon></button>
+      </ion-item>
+      <button ion-button clear item-end (click)="addReminder()">Add</button>
+    </ion-item-group>
     <ion-item>
       <ion-label>Description</ion-label>
       <ion-input type="text" placeholder="Description" [(ngModel)]="event.description"></ion-input>

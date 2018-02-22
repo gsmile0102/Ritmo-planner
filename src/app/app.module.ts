@@ -8,18 +8,19 @@ import { LocalNotifications } from '@ionic-native/local-notifications';
 
 import { MyApp } from './app.component';
 import { HomePage } from '../pages/home/home';
-import { AddEventPage } from '../pages/add-event/add-event';
+// import { AddEventPage } from '../pages/add-event/add-event';
 
 import { NgCalendarModule } from 'ionic2-calendar';
 import { DatabaseProvider } from '../providers/database/database';
 
 import { SQLite } from '@ionic-native/sqlite';
+import { NotificationProvider } from '../providers/notification/notification';
 
 @NgModule({
   declarations: [
     MyApp,
-    HomePage,
-    AddEventPage
+    HomePage
+    // AddEventPage
   ],
   imports: [
     BrowserModule,
@@ -29,8 +30,8 @@ import { SQLite } from '@ionic-native/sqlite';
   bootstrap: [IonicApp],
   entryComponents: [
     MyApp,
-    HomePage,
-    AddEventPage
+    HomePage
+    // AddEventPage
   ],
   providers: [
     StatusBar,
@@ -39,7 +40,8 @@ import { SQLite } from '@ionic-native/sqlite';
     DatabaseProvider,
     SQLite,
     Toast,
-    LocalNotifications
+    LocalNotifications,
+    NotificationProvider
   ]
 })
 export class AppModule {}

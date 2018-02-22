@@ -3,7 +3,8 @@ import { NavController, AlertController, ModalController } from 'ionic-angular';
 import { Toast } from '@ionic-native/toast';
 import { DatabaseProvider } from '../../providers/database/database';
 import * as moment from 'moment';
-import { AddEventPage } from '../add-event/add-event';
+// import { AddEventPage } from '../add-event/add-event';
+import { LocalNotifications } from '@ionic-native/local-notifications';
 
 @Component({
   selector: 'page-home',
@@ -21,7 +22,7 @@ export class HomePage {
       currentDate: new Date()
   };
 
-  constructor(private navCtrl: NavController, private alertCtrl: AlertController, private modalCtrl: ModalController, private toast: Toast, private dbase: DatabaseProvider) {
+  constructor(private navCtrl: NavController, private alertCtrl: AlertController, private modalCtrl: ModalController, private localNotifications: LocalNotifications, private toast: Toast, private dbase: DatabaseProvider) {
     // this.dbase.getDatabaseState().subscribe(rdy => {
     //   this.dbReady = rdy;
     // });
@@ -72,21 +73,31 @@ export class HomePage {
         this.eventSource = [];
         setTimeout(() => {
           this.eventSource = events;
-        })
-    });
+        });
+    }, (err) => {});
   }
 
   addEvent() {
-    this.navCtrl.push(AddEventPage, {selectedDay: this.selectedDay});
-  }
-
-  editEvent(event) {
-    let modal = this.modalCtrl.create('EditEventModalPage', {event: event});
+    // this.navCtrl.push(AddEventPage, {selectedDay: this.selectedDay});
+    // let modal = this.modalCtrl.create('EditEventModalPage', {selectedDay: this.selectedDay});
+    // modal.present();
+    // modal.onDidDismiss(data => {
+    //   this.loadEventsData();
+    // });
+    let modal = this.modalCtrl.create('AddEventPage', {selectedDay: this.selectedDay});
     modal.present();
     modal.onDidDismiss(data => {
       this.loadEventsData();
     });
   }
+  //
+  // editEvent(event) {
+  //   let modal = this.modalCtrl.create('EditEventModalPage', {event: event});
+  //   modal.present();
+  //   modal.onDidDismiss(data => {
+  //     this.loadEventsData();
+  //   });
+  // }
 
   deleteEvent(event) {
     this.dbase.deleteEvent(event).then((res) => {
@@ -113,7 +124,7 @@ export class HomePage {
 
     let alert = this.alertCtrl.create({
       title: '' + event.title,
-      subTitle: event.allDay == 'true' ? 'All Day' : 'From: ' + start + '<br>To: ' + end,
+      subTitle: event.allDay == 'true' ? 'All Day' : 'From: ' + start + '<br>To: ' + end + '<br>' + event.reminder,
       buttons: [
         {
           text: 'Cancel',
@@ -122,7 +133,9 @@ export class HomePage {
         {
           text: 'Edit',
           handler: () => {
-            let modal = this.modalCtrl.create('EditEventModalPage', {event: event});
+            let modal = this.modalCtrl.create('EditEventModalPage', {
+              event: event
+            });
             modal.present();
             modal.onDidDismiss(data => {
               this.loadEventsData();

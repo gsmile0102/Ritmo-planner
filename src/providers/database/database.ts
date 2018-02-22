@@ -25,13 +25,20 @@ export class DatabaseProvider {
     // });
   }
 
-  getEventsData() {
+  deleteDb() {
+    this.sqlite.deleteDatabase({
+      name: 'eventsdb.db',
+      location: 'default'
+    });
+  }
+
+  getEventsData(): Promise<any[]> {
     return new Promise((resolve, reject) => {
         this.sqlite.create({
           name: 'eventsdb.db',
           location: 'default'
         }).then((db: SQLiteObject) => {
-          db.executeSql('CREATE TABLE IF NOT EXISTS event(rowid INTEGER PRIMARY KEY, title TEXT, startTime TEXT, endTime TEXT, allDay INTEGER, reminder TEXT, description TEXT)', {});
+          db.executeSql('CREATE TABLE IF NOT EXISTS event(rowid INTEGER PRIMARY KEY, title TEXT, startTime TEXT, endTime TEXT, allDay INTEGER, reminder INTEGER, description TEXT)', {});
           db.executeSql('SELECT * FROM event ORDER BY rowid', {}).then(res => {
             let events = [];
             if(res.rows.length > 0) {
@@ -55,13 +62,37 @@ export class DatabaseProvider {
     });
   }
 
+  // getSingleEvent(event) {
+  //   return new Promise((resolve, reject) => {
+  //     this.sqlite.create({
+  //       name: 'eventsdb.db',
+  //       location: 'default'
+  //     }).then((db: SQLiteObject) => {
+  //       db.executeSql('SELECT * FROM event WHERE rowid=?', [event.id]).then(res => {
+  //         let retEvent = {
+  //           id: res.rows.item(0).rowid,
+  //           title: res.rows.item(0).title,
+  //           startTime: res.rows.item(0).startTime,
+  //           endTime: res.rows.item(0).endTime,
+  //           allDay: res.rows.item(0).allDay,
+  //           reminder: res.rows.item(0).reminder,
+  //           description: res.rows.item(0).description
+  //         };
+  //       });
+  //     });
+  //     resolve(retEvent);
+  //   }, (err) => {
+  //     reject(err);
+  //   });
+  // }
+
   addEvent(event) {
     return new Promise((resolve, reject) => {
       this.sqlite.create({
         name: 'eventsdb.db',
         location: 'default'
       }).then((db: SQLiteObject) => {
-        db.executeSql('INSERT INTO event VALUES(NULL,?,?,?,?,?,?)', [event.title, event.startTime, event.endTime, event.allDay, event.reminder,  event.description]).then((res) => {
+        db.executeSql('INSERT INTO event VALUES(NULL,?,?,?,?,?,?)', [event.title, event.startTime, event.endTime, event.allDay, event.reminder, event.description]).then((res) => {
           resolve(res);
         }, (err) => {
           reject(err);
@@ -70,13 +101,13 @@ export class DatabaseProvider {
     });
   }
 
-  editEvent(event) {
+  updateEvent(event) {
     return new Promise((resolve, reject) => {
       this.sqlite.create({
         name: 'eventsdb.db',
         location: 'default'
       }).then((db: SQLiteObject) => {
-        db.executeSql('UPDATE event SET title=?, startTime=?, endTime=?, allDay=?, description=? WHERE rowid=?', [event.title, event.startTime, event.endTime, event.allDay, event.reminder, event.description, event.id]).then((res) => {
+        db.executeSql('UPDATE event SET title=?, startTime=?, endTime=?, allDay=?, reminder=?, description=? WHERE rowid=?', [event.title, event.startTime, event.endTime, event.allDay, event.reminder, event.description, event.id]).then((res) => {
           resolve(res);
         }, (err) => {
           reject(err);

@@ -38,6 +38,7 @@ export class ReminderModalPage {
 
   addNotification() {
     let notificationTime = new Date();
+    let notText: string;
     for(let time of this.presetTimes) {
       if(time.checked) {
         // if(time.code == 0) {
@@ -67,11 +68,11 @@ export class ReminderModalPage {
           notificationTime.setMinutes(new Date(this.event.startTime).getMinutes() - time.min);
           notificationTime.setSeconds(0);
         }
+        notText = time.title;
       }
     }
     let notification = {
-      id: this.event.id,
-      title: this.event.title,
+      text: notText,
       at: notificationTime
     }
     this.viewCtrl.dismiss(notification);

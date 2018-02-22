@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams, ModalController } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, ViewController, ModalController } from 'ionic-angular';
 import { DatabaseProvider } from '../../providers/database/database';
+import { NotificationProvider } from '../../providers/notification/notification';
 import * as moment from 'moment';
-import { Toast } from '@ionic-native/toast';
 import { LocalNotifications } from '@ionic-native/local-notifications';
 
 /**
@@ -24,21 +24,17 @@ export class AddEventPage {
     startTime: new Date().toISOString(),
     endTime: new Date().toISOString(),
     allDay: false,
-    reminder: "",
+    reminder: 0,
     description: ""
   };
 
-  notif = {
-    id: 0,
-    title: '',
-    at: new Date()
-  };
-  notifications: notif[] = [];
+  notifications = [];
 
-  constructor(private navCtrl: NavController, private navParams: NavParams, private modalCtrl: ModalController, private dbase: DatabaseProvider, private toast: Toast, private localNotifications: LocalNotifications) {
+  constructor(private navCtrl: NavController, private navParams: NavParams, private viewCtrl: ViewController, private modalCtrl: ModalController, private dbase: DatabaseProvider, private ntfProvider: NotificationProvider) {
     let preselectedDate = moment(this.navParams.get('selectedDay')).format();
     this.event.startTime = preselectedDate;
     this.event.endTime = preselectedDate;
+    this.event.reminder = new Date().getTime();
   }
 
   ionViewDidLoad() {
@@ -48,13 +44,28 @@ export class AddEventPage {
     let modal = this.modalCtrl.create('ReminderModalPage', {event: this.event});
     modal.present();
     modal.onDidDismiss(ntf => {
-      this.notif = ntf;
-      this.notifications.push(ntf);
+      let notfObj = {
+        id: Math.floor(Math.random()*20)+1,
+        title: this.event.title,
+        text: ntf.text,
+        at: ntf.at,
+        data: { reminder: this.event.reminder }
+      };
+      this.notifications.push(notfObj);
     });
   }
 
+  removeReminder(ntftext) {
+    for(var i = 0; i < this.notifications.length;  i++) {
+      if(this.notifications[i].text == ntftext) {
+        this.notifications.splice(i, 1);
+      }
+    }
+  }
+
   cancel() {
-    this.navCtrl.popToRoot();
+    // this.navCtrl.popToRoot();
+    this.viewCtrl.dismiss();
   }
 
   save() {
@@ -72,16 +83,13 @@ export class AddEventPage {
       this.event.startTime = moment(startTime).format();
       this.event.endTime = moment(endTime).format();
     }
-
-    this.localNotifications.schedule(this.notifications);
-    this.notifications = [];
     this.dbase.addEvent(this.event).then(res => {
-      this.navCtrl.popToRoot();
-    });
-  }
-
-  scheduleNotification() {
-
+      this.ntfProvider.scheduleReminder(this.notifications).then((res) => {
+        this.notifications = [];
+      });
+      // this.navCtrl.popToRoot();
+      this.viewCtrl.dismiss();
+    }, err => { });
   }
 
 }
