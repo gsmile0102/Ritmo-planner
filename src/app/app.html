@@ -1,1 +1,19 @@
-<ion-nav [root]="rootPage"></ion-nav>
+<ion-menu [content]="mycontent">
+  <ion-content>
+    <div class="menuProfileSec">
+      <button ion-button (click)="login()">
+        LOGIN
+      </button>
+    </div>
+    <ion-list class="menuList">
+      <ion-item>
+        first
+      </ion-item>
+      <ion-item>
+        second
+      </ion-item>
+    </ion-list>
+  </ion-content>
+</ion-menu>
+
+<ion-nav #mycontent [root]="rootPage"></ion-nav>
