@@ -43,7 +43,7 @@ export class LoginModalPage {
       }, (err) => {
         this.loading.dismiss().then(() => {
           let alert = this.alertCtrl.create({
-            message: err.message, 
+            message: err.message,
             button: [
               {
                 text: "OK",

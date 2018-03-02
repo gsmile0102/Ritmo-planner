@@ -2,8 +2,11 @@ import { Component, ViewChild } from '@angular/core';
 import { Platform, NavController } from 'ionic-angular';
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
+
 import { HomePage } from '../pages/home/home';
 import { UserAuthPage } from '../pages/user-auth/user-auth';
+import { AuthProvider } from '../providers/auth/auth';
+
 import * as firebase from 'firebase';
 
 @Component({
@@ -13,7 +16,7 @@ export class MyApp {
   @ViewChild('mycontent') nav: NavController
   rootPage:any;
 
-  constructor(platform: Platform, statusBar: StatusBar, splashScreen: SplashScreen) {
+  constructor(platform: Platform, statusBar: StatusBar, splashScreen: SplashScreen, public authProvider: AuthProvider) {
     firebase.initializeApp({
       apiKey: "AIzaSyDLmhXONfVqA9WpIQUtViFVIBy4xlBM3y4",
       authDomain: "ritmo-planner.firebaseapp.com",
@@ -43,6 +46,14 @@ export class MyApp {
   login() {
     this.nav.push(UserAuthPage);
     // this.authProvider.loginWithGoogle();
+  }
+
+  logout() {
+    this.authProvider.logoutUser().then(() => {
+      this.nav.setRoot('UserAuthPage');
+    }).catch((err) => {
+      alert(err.message);
+    });
   }
 
   // logout() {
