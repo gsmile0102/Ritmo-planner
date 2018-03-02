@@ -10,6 +10,7 @@ import { AngularFireModule } from 'angularfire2';
 
 import { MyApp } from './app.component';
 import { HomePage } from '../pages/home/home';
+import { TabsPage } from '../pages/tabs/tabs';
 
 import { NgCalendarModule } from 'ionic2-calendar';
 import { DatabaseProvider } from '../providers/database/database';
@@ -30,6 +31,7 @@ export const firebaseConfig = {
 @NgModule({
   declarations: [
     MyApp,
+    TabsPage,
     HomePage
   ],
   imports: [
@@ -41,6 +43,7 @@ export const firebaseConfig = {
   bootstrap: [IonicApp],
   entryComponents: [
     MyApp,
+    TabsPage,
     HomePage
     // AddEventPage
   ],
