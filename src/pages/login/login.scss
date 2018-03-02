@@ -1,0 +1,22 @@
+page-login {
+  .div-signin {
+    text-align: center;
+    .signup {
+      width: 90%;
+      height: 50px;
+      // background-color: color($colors, themeColor1, base);
+      background: linear-gradient(to left, color($colors, themeColor2, base) 0%, color($colors, themeColor1, base) 100%);
+      border-radius: 5px;
+    }
+    .signin {
+      width: 90%;
+      height: 50px;
+      border-color: color($colors, themeColor1, base);
+      color: color($colors, themeColor1, base);
+      border-radius: 5px;
+    }
+    .login-havAccLabel {
+      margin-top: 50px;
+    }
+  }
+}

@@ -91,13 +91,13 @@ export class HomePage {
     });
   }
   //
-  // editEvent(event) {
-  //   let modal = this.modalCtrl.create('EditEventModalPage', {event: event});
-  //   modal.present();
-  //   modal.onDidDismiss(data => {
-  //     this.loadEventsData();
-  //   });
-  // }
+  editEvent(event) {
+    let modal = this.modalCtrl.create('EditEventModalPage', {event: event});
+    modal.present();
+    modal.onDidDismiss(data => {
+      this.loadEventsData();
+    });
+  }
 
   deleteEvent(event) {
     this.dbase.deleteEvent(event).then((res) => {

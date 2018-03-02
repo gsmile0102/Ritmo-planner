@@ -38,7 +38,14 @@ $colors: (
   secondary:  #32db64,
   danger:     #f53d3d,
   light:      #f4f4f4,
-  dark:       #222
+  dark:       #222,
+  googleplus: #d34836,
+  themeColor1: #00cca3,
+  themeColor2: #9999ff,
+  calm: (
+    base: #f4f4f4,
+    contrast: #00cca3
+  )
 );
 
 
@@ -48,11 +55,11 @@ $colors: (
 
 
 
-
 // App Material Design Variables
 // --------------------------------------------------
 // Material Design only Sass variables can go here
 
+// $toolbar-md-title-text-color: red;
 
 
 

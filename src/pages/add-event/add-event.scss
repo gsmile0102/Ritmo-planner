@@ -1,3 +1,23 @@
 page-add-event {
-
+  .dateBreak {
+    text-align: center;
+    margin: 0px;
+  }
+  .dateIcon {
+    color: #7aa7d1;
+  }
+  .item {
+    max-height: 4.5em; /* <- this can be whatever you need */
+  }
+  .noteIcon {
+    color: #7aa7d1;
+  }
+  .input {
+    padding: 2px;
+    font-size: 1.2em;
+  }
+    .addButton {
+      height: 50px;
+      background: color($colors, themeColor1, base);
+    }
 }

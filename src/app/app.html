@@ -1,16 +1,18 @@
 <ion-menu [content]="mycontent">
   <ion-content>
     <div class="menuProfileSec">
-      <button ion-button (click)="login()">
-        LOGIN
-      </button>
+      <!-- <section *ngIf="afAuth.authState | async; let user; else showLogin">
+        <h2>{{user.displayName}}!</h2>
+        <button ion-button (click)="logout()">Logout</button>
+      </section> -->
+        <button ion-button menuClose (click)="login()">
+          LOGIN
+        </button>
     </div>
     <ion-list class="menuList">
       <ion-item>
-        first
       </ion-item>
       <ion-item>
-        second
       </ion-item>
     </ion-list>
   </ion-content>

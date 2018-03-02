@@ -10,7 +10,6 @@ import { AngularFireModule } from 'angularfire2';
 
 import { MyApp } from './app.component';
 import { HomePage } from '../pages/home/home';
-// import { AddEventPage } from '../pages/add-event/add-event';
 
 import { NgCalendarModule } from 'ionic2-calendar';
 import { DatabaseProvider } from '../providers/database/database';
@@ -32,7 +31,6 @@ export const firebaseConfig = {
   declarations: [
     MyApp,
     HomePage
-    // AddEventPage
   ],
   imports: [
     BrowserModule,
