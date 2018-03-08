@@ -16,6 +16,7 @@ import * as firebase from 'firebase';
 export class MyApp {
   @ViewChild('mycontent') nav: NavController
   rootPage:any;
+  user: any = null;
 
   constructor(platform: Platform, statusBar: StatusBar, splashScreen: SplashScreen, public authProvider: AuthProvider) {
     firebase.initializeApp({
@@ -27,6 +28,7 @@ export class MyApp {
       messagingSenderId: "686969780704"
     });
     const unsubscribe = firebase.auth().onAuthStateChanged((user) => {
+      this.user = user;
       if(!user) {
         this.rootPage = 'UserAuthPage';
         unsubscribe();
@@ -55,6 +57,10 @@ export class MyApp {
     }).catch((err) => {
       alert(err.message);
     });
+  }
+
+  goToHome() {
+    this.rootPage = HomePage;
   }
 
   // logout() {

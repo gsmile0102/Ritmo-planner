@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { HomePage } from '../home/home';
-
+import { PersonalEventListPage } from '../personal-event-list/personal-event-list';
 
 /**
  * Generated class for the TabsPage page.
@@ -16,8 +16,8 @@ import { HomePage } from '../home/home';
 })
 export class TabsPage {
 
-  tab1Root = HomePage;
-  tab2Root = '';
+  tab1Root = PersonalEventListPage;
+  tab2Root = HomePage;
   tab3Root = '';
 
   constructor() {

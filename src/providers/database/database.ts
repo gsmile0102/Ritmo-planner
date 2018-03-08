@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
 import { SQLite, SQLiteObject } from '@ionic-native/sqlite';
+import * as moment from 'moment';
+
 /*
   Generated class for the DatabaseProvider provider.
 
@@ -62,37 +64,35 @@ export class DatabaseProvider {
     });
   }
 
-  // getSingleEvent(event) {
-  //   return new Promise((resolve, reject) => {
-  //     this.sqlite.create({
-  //       name: 'eventsdb.db',
-  //       location: 'default'
-  //     }).then((db: SQLiteObject) => {
-  //       db.executeSql('SELECT * FROM event WHERE rowid=?', [event.id]).then(res => {
-  //         let retEvent = {
-  //           id: res.rows.item(0).rowid,
-  //           title: res.rows.item(0).title,
-  //           startTime: res.rows.item(0).startTime,
-  //           endTime: res.rows.item(0).endTime,
-  //           allDay: res.rows.item(0).allDay,
-  //           reminder: res.rows.item(0).reminder,
-  //           description: res.rows.item(0).description
-  //         };
-  //       });
-  //     });
-  //     resolve(retEvent);
-  //   }, (err) => {
-  //     reject(err);
-  //   });
-  // }
-
-  addEvent(event) {
+  getEventDetail(eventId: string): Promise<any> {
     return new Promise((resolve, reject) => {
       this.sqlite.create({
         name: 'eventsdb.db',
         location: 'default'
       }).then((db: SQLiteObject) => {
-        db.executeSql('INSERT INTO event VALUES(NULL,?,?,?,?,?,?)', [event.title, event.startTime, event.endTime, event.allDay, event.reminder, event.description]).then((res) => {
+        db.executeSql('SELECT * FROM event WHERE rowid=?', [eventId]).then(res => {
+          var retEvent = {
+            id: res.rows.item(0).rowid,
+            title: res.rows.item(0).title,
+            startTime: res.rows.item(0).startTime,
+            endTime: res.rows.item(0).endTime,
+            allDay: res.rows.item(0).allDay,
+            reminder: res.rows.item(0).reminder,
+            description: res.rows.item(0).description
+          };
+          resolve(retEvent);
+        }, (err) => { reject(err); });
+      });
+    });
+  }
+
+  addEvent(event): Promise<any> {
+    return new Promise((resolve, reject) => {
+      this.sqlite.create({
+        name: 'eventsdb.db',
+        location: 'default'
+      }).then((db: SQLiteObject) => {
+        db.executeSql('INSERT INTO event VALUES(?,?,?,?,?,?,?)', [event.id, event.title, event.startTime, event.endTime, event.allDay, event.reminder, event.description]).then((res) => {
           resolve(res);
         }, (err) => {
           reject(err);
@@ -101,22 +101,25 @@ export class DatabaseProvider {
     });
   }
 
-  updateEvent(event) {
+  updateEvent(oldEventId, event): Promise<any> {
     return new Promise((resolve, reject) => {
       this.sqlite.create({
         name: 'eventsdb.db',
         location: 'default'
       }).then((db: SQLiteObject) => {
-        db.executeSql('UPDATE event SET title=?, startTime=?, endTime=?, allDay=?, reminder=?, description=? WHERE rowid=?', [event.title, event.startTime, event.endTime, event.allDay, event.reminder, event.description, event.id]).then((res) => {
-          resolve(res);
-        }, (err) => {
-          reject(err);
+        // db.executeSql('UPDATE event SET title=?, startTime=?, endTime=?, allDay=?, reminder=?, description=? WHERE rowid=?', [event.title, event.startTime, event.endTime, event.allDay, event.reminder, event.description, event.id]).then((res) => {
+        db.executeSql('DELETE FROM event WHERE rowid=?', [oldEventId]).then((res) => {
+          db.executeSql('INSERT INTO event VALUES(?,?,?,?,?,?,?)', [event.id, event.title, event.startTime, event.endTime, event.allDay, event.reminder, event.description]).then((res) => {
+            resolve(res);
+          }, (err) => {
+            reject(err);
+          });
         });
       });
     });
   }
 
-  deleteEvent(event) {
+  deleteEvent(event): Promise<any> {
     return new Promise((resolve, reject) => {
       this.sqlite.create({
         name: 'eventsdb.db',

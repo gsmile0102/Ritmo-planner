@@ -1,3 +1,77 @@
 page-home {
+  ion-header {
+    .toolbar-background {
+      // background: linear-gradient(to top right, #00ffcc 0%, #cc99ff 100%);
+      background: #9999ff;
+      color: white;
+    }
+    .toolbar-title {
+      color: white;
+    }
+    .bar-button {
+      color: white;
+    }
+  }
+
+  .monthview-datetable {
+    border: 2px white solid !important;
+  }
+
+  .monthview-selected {
+    border-radius: 20px !important;
+    background-color: #00ffcc !important;
+    color: white !important;
+    font-size: 25px;
+  }
+
+  td.monthview-current {
+    color: #9999ff !important;
+    font-weight: bold;
+    font-size: 20px;
+  }
+
+  td.monthview-current.monthview-selected {
+    border-radius: 20px !important;
+    background-color: #9999ff !important;
+    color: white !important;
+    font-size: 25px;
+  }
+
+  .calendar-day {
+    background-color: red !important;
+  }
+
+  td.monthview-primary-with-event.monthview-selected {
+    border-radius: 20px !important;
+    background-color: #9999ff !important;
+    color: white !important;
+    font-size: 25px;
+  }
+
+  td.monthview-primary-with-event {
+    border-radius: 30px !important;
+    background-color: #9999ff !important;
+    color: white !important;
+    font-style: bold;
+  }
+
+  th {
+    border: 1.5px !important;
+    padding: 10px !important;
+    border-radius: 10px !important;
+    background-color: transparent !important;
+  }
+
+  td {
+    border: 1px white !important;
+    padding: 12px !important;
+    // border-radius: 80px !important;
+    background-color: white !important;
+  }
+
+  .calendar-month-title {
+    font-weight: bold;
+    font-style: black;
+  }
 
 }

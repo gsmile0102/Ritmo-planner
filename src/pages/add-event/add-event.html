@@ -11,18 +11,17 @@
         <ion-icon name="close"></ion-icon>
       </button>
     </ion-buttons>
-    <ion-title class="header-title">Event Details</ion-title>
+    <ion-title class="header-title">Add Event</ion-title>
   </ion-navbar>
 </ion-header>
 
 
 <ion-content padding>
-      <ion-item>
+      <!-- <ion-item>
         <ion-label stacked>Event name</ion-label>
         <ion-input class="input" type="text" placeholder="What's your event's name?" [(ngModel)]="event.title"></ion-input>
       </ion-item>
       <ion-item>
-        <!-- <ion-icon class="dateIcon" ios="md-calendar" md="md-calendar" item-start></ion-icon> -->
         <ion-label>All Day?</ion-label>
         <ion-checkbox item-end [(ngModel)]="event.allDay"></ion-checkbox><br>
       </ion-item>
@@ -37,12 +36,6 @@
         <ion-datetime item-end *ngIf="event.allDay" displayFormat="MM/DD/YYYY" pickerFormat="MMM D" [(ngModel)]="event.endTime" [min]="event.startTime"></ion-datetime>
       </ion-item>
 
-    <!-- <ion-item>
-      <ion-label item-start>Reminder</ion-label>
-      <h2 *ngFor="let ntf of notifications" item-content>{{ntf.title}}</h2>
-      <button ion-button clear item-end (click)="addReminder()">Add</button>
-    </ion-item> -->
-
     <ion-item-group padding>
       <ion-label stacked>Reminder</ion-label>
       <ion-item *ngFor="let ntfc of notifications">
@@ -54,7 +47,6 @@
 
     <ion-item>
       <ion-label stacked>Description</ion-label>
-      <!-- <ion-icon class="noteIcon" item-start ios="ios-paper" md="ios-paper"></ion-icon> -->
       <ion-input type="text" placeholder="Says somemore about your event..." [(ngModel)]="event.description"></ion-input>
     </ion-item>
 
@@ -62,7 +54,44 @@
       <button class="addButton" ion-footer ion-button strong full icon-left (click)="save()">
         <ion-icon name="checkmark"></ion-icon> Add Event
       </button>
-    </ion-footer>
+    </ion-footer> -->
+    <ion-item>
+      <ion-label stacked>Event name</ion-label>
+      <ion-input class="input" type="text" placeholder="What's your event's name?" [(ngModel)]="newEvent.title"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label>All Day?</ion-label>
+      <ion-checkbox item-end [(ngModel)]="newEvent.allDay"></ion-checkbox><br>
+    </ion-item>
+    <ion-item>
+      <ion-label>Start</ion-label>
+      <ion-datetime item-end *ngIf="!newEvent.allDay" displayFormat="MM/DD/YYYY HH:mm" pickerFormat="MMM D:HH:mm" [(ngModel)]="newEvent.startTime"></ion-datetime>
+      <ion-datetime item-end *ngIf="newEvent.allDay" displayFormat="MM/DD/YYYY" pickerFormat="MMM D" [(ngModel)]="newEvent.startTime"></ion-datetime>
+    </ion-item>
+    <ion-item>
+      <ion-label>End</ion-label>
+      <ion-datetime item-end *ngIf="!newEvent.allDay" displayFormat="MM/DD/YYYY HH:mm" pickerFormat="MMM D:HH:mm" [(ngModel)]="newEvent.endTime" [min]="newEvent.startTime"></ion-datetime>
+      <ion-datetime item-end *ngIf="newEvent.allDay" displayFormat="MM/DD/YYYY" pickerFormat="MMM D" [(ngModel)]="newEvent.endTime" [min]="newEvent.startTime"></ion-datetime>
+    </ion-item>
 
+  <ion-item-group padding>
+    <ion-label stacked>Reminder</ion-label>
+    <ion-item *ngFor="let ntfc of notifications">
+      <ion-label>{{ntfc.text}}</ion-label>
+      <button ion-button item-end clear><ion-icon name="close" (click)="removeReminder(ntfc.text)"></ion-icon></button>
+    </ion-item>
+    <button ion-button clear item-end (click)="addReminder()">Add</button>
+  </ion-item-group>
+
+  <ion-item>
+    <ion-label stacked>Description</ion-label>
+    <ion-input type="text" placeholder="Says somemore about your event..." [(ngModel)]="newEvent.description"></ion-input>
+  </ion-item>
+
+  <ion-footer>
+    <button class="addButton" ion-footer ion-button strong full icon-left (click)="saveEvent()">
+      <ion-icon name="checkmark"></ion-icon> Add Event
+    </button>
+  </ion-footer>
 
 </ion-content>

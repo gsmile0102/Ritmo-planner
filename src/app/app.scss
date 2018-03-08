@@ -17,12 +17,31 @@
 .menuProfileSec {
   text-align: center;
   button {
-    margin: 100px;
+    margin-top: 20px;
   }
+
+  .user-email {
+    margin-top: 50px;
+    color: grey;
+  }
+
+}
+
+.home-icon {
+  color: #9999ff;
+}
+
+.profile-icon {
+  color: #9999ff;
 }
 
 .menuList {
+  margin-top: 30px;
+  border-top: 0px;
+  border-left: 0px;
+  border-right: 0px;
+  border-bottom: 0px;
+
   ion-item {
-    background-color: red;
   }
 }

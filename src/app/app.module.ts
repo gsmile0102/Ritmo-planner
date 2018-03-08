@@ -5,12 +5,16 @@ import { SplashScreen } from '@ionic-native/splash-screen';
 import { StatusBar } from '@ionic-native/status-bar';
 import { Toast } from '@ionic-native/toast';
 import { LocalNotifications } from '@ionic-native/local-notifications';
+import { SuperTabsModule } from 'ionic2-super-tabs';
+import { Network } from '@ionic-native/network';
 
+import { AngularFireDatabase, AngularFireDatabaseModule } from 'angularfire2/database';
 import { AngularFireModule } from 'angularfire2';
 
 import { MyApp } from './app.component';
 import { HomePage } from '../pages/home/home';
 import { TabsPage } from '../pages/tabs/tabs';
+import { PersonalEventListPage } from '../pages/personal-event-list/personal-event-list';
 
 import { NgCalendarModule } from 'ionic2-calendar';
 import { DatabaseProvider } from '../providers/database/database';
@@ -18,6 +22,8 @@ import { DatabaseProvider } from '../providers/database/database';
 import { SQLite } from '@ionic-native/sqlite';
 import { NotificationProvider } from '../providers/notification/notification';
 import { AuthProvider } from '../providers/auth/auth';
+import { EventProvider } from '../providers/event/event';
+import { NetworkProvider } from '../providers/network/network';
 
 export const firebaseConfig = {
   apiKey: "AIzaSyAiyRfL_VnIiJHU-iNWMvhL9e8XKiOSizA",
@@ -32,22 +38,26 @@ export const firebaseConfig = {
   declarations: [
     MyApp,
     TabsPage,
-    HomePage
+    HomePage,
+    PersonalEventListPage
   ],
   imports: [
     BrowserModule,
     NgCalendarModule,
     IonicModule.forRoot(MyApp),
-    AngularFireModule.initializeApp(firebaseConfig)
+    AngularFireModule.initializeApp(firebaseConfig),
+    AngularFireDatabaseModule,
+    SuperTabsModule.forRoot()
   ],
   bootstrap: [IonicApp],
   entryComponents: [
     MyApp,
     TabsPage,
-    HomePage
-    // AddEventPage
+    HomePage,
+    PersonalEventListPage
   ],
   providers: [
+    AngularFireDatabase,
     StatusBar,
     SplashScreen,
     {provide: ErrorHandler, useClass: IonicErrorHandler},
@@ -56,7 +66,10 @@ export const firebaseConfig = {
     Toast,
     LocalNotifications,
     NotificationProvider,
-    AuthProvider
+    AuthProvider,
+    EventProvider,
+    Network,
+    NetworkProvider
   ]
 })
 export class AppModule {}

@@ -44,7 +44,7 @@ export class LoginModalPage {
         this.loading.dismiss().then(() => {
           let alert = this.alertCtrl.create({
             message: err.message,
-            button: [
+            buttons: [
               {
                 text: "OK",
                 role: 'cancel'
