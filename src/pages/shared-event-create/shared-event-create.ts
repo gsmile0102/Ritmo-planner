@@ -153,7 +153,7 @@ export class SharedEventCreatePage {
     }
   }
 
-  saveAsDraftEvent() {
+  takePicture() {
 
   }
 

@@ -65,6 +65,13 @@
     <button ion-button clear block (click)="addAttendeeFromContact()">Add from contact</button>
   </ion-item-group>
 
+  <ion-item-group padding>
+    <ion-label>Event Picture</ion-label>
+    <button ion-button (click)="takePicture()">
+      <ion-icon name="camera"></ion-icon>
+    </button>
+  </ion-item-group>
+
   <ion-footer>
     <button class="addButton" ion-footer ion-button strong full icon-left (click)="saveEvent()">
       <ion-icon name="checkmark"></ion-icon> Add Event
