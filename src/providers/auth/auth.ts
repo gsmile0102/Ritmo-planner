@@ -67,10 +67,11 @@ export class AuthProvider {
     return firebase.auth().signInWithEmailAndPassword(email, password);
   }
 
-  signupWithEmail(email: string, password: string) {
+  signupWithEmail(email: string, password: string, phone: string) {
     return firebase.auth().createUserWithEmailAndPassword(email, password).then((newUser) => {
       firebase.database().ref('/userProfile').child(newUser.uid).set({
-        email: email
+        email: email,
+        phone: phone
       });
     });
   }

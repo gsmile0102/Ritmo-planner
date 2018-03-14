@@ -5,8 +5,9 @@ import { SplashScreen } from '@ionic-native/splash-screen';
 import { StatusBar } from '@ionic-native/status-bar';
 import { Toast } from '@ionic-native/toast';
 import { LocalNotifications } from '@ionic-native/local-notifications';
-import { SuperTabsModule } from 'ionic2-super-tabs';
 import { Network } from '@ionic-native/network';
+import { Contacts } from '@ionic-native/contacts';
+import { TextMaskModule } from 'angular2-text-mask';
 
 import { AngularFireDatabase, AngularFireDatabaseModule } from 'angularfire2/database';
 import { AngularFireModule } from 'angularfire2';
@@ -15,7 +16,8 @@ import { MyApp } from './app.component';
 import { HomePage } from '../pages/home/home';
 import { TabsPage } from '../pages/tabs/tabs';
 import { PersonalEventListPage } from '../pages/personal-event-list/personal-event-list';
-
+import { SharedEventListPage } from '../pages/shared-event-list/shared-event-list';
+import { AddUserPhoneNumberPage } from '../pages/add-user-phone-number/add-user-phone-number';
 import { NgCalendarModule } from 'ionic2-calendar';
 import { DatabaseProvider } from '../providers/database/database';
 
@@ -39,7 +41,9 @@ export const firebaseConfig = {
     MyApp,
     TabsPage,
     HomePage,
-    PersonalEventListPage
+    PersonalEventListPage,
+    SharedEventListPage,
+    AddUserPhoneNumberPage
   ],
   imports: [
     BrowserModule,
@@ -47,14 +51,16 @@ export const firebaseConfig = {
     IonicModule.forRoot(MyApp),
     AngularFireModule.initializeApp(firebaseConfig),
     AngularFireDatabaseModule,
-    SuperTabsModule.forRoot()
+    TextMaskModule
   ],
   bootstrap: [IonicApp],
   entryComponents: [
     MyApp,
     TabsPage,
     HomePage,
-    PersonalEventListPage
+    PersonalEventListPage,
+    SharedEventListPage,
+    AddUserPhoneNumberPage
   ],
   providers: [
     AngularFireDatabase,
@@ -69,7 +75,8 @@ export const firebaseConfig = {
     AuthProvider,
     EventProvider,
     Network,
-    NetworkProvider
+    NetworkProvider,
+    Contacts
   ]
 })
 export class AppModule {}

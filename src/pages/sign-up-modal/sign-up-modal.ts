@@ -4,6 +4,7 @@ import { FormBuilder, Validators, FormGroup } from '@angular/forms';
 import { EmailValidators } from '../../validators/email';
 import { AuthProvider } from '../../providers/auth/auth';
 import { HomePage } from '../home/home';
+import { AddUserPhoneNumberPage } from '../add-user-phone-number/add-user-phone-number';
 /**
  * Generated class for the SignUpModalPage page.
  *
@@ -30,30 +31,35 @@ export class SignUpModalPage {
   ionViewDidLoad() {
   }
 
-  signupUser() {
+  save() {
     if(!this.signupForm.valid) {
       console.log(this.signupForm.value);
     } else {
-      this.authProvider.signupWithEmail(this.signupForm.value.email, this.signupForm.value.password).then(() => {
-        this.loading.dismiss().then(() => {
-          this.navCtrl.setRoot(HomePage);
-        });
-      }, (err) => {
-        this.loading.dismiss().then(()=> {
-          let alert = this.alertCtrl.create({
-            message: err.message,
-            buttons: [
-              {
-                text: 'Ok',
-                role: 'cancel'
-              }
-            ]
-          });
-          alert.present();
-        });
+      // this.authProvider.signupWithEmail(this.signupForm.value.email, this.signupForm.value.password).then(() => {
+      //   this.loading.dismiss().then(() => {
+      //     // this.navCtrl.setRoot(HomePage);
+      //     this.navCtrl.push('AddUserPhoneNumberPage');
+      //   });
+      // }, (err) => {
+      //   this.loading.dismiss().then(()=> {
+      //     let alert = this.alertCtrl.create({
+      //       message: err.message,
+      //       buttons: [
+      //         {
+      //           text: 'Ok',
+      //           role: 'cancel'
+      //         }
+      //       ]
+      //     });
+      //     alert.present();
+      //   });
+      // });
+      // this.loading = this.loadingCtrl.create();
+      // this.loading.present();
+      this.navCtrl.push(AddUserPhoneNumberPage, {
+        email: this.signupForm.value.email,
+        password: this.signupForm.value.password
       });
-      this.loading = this.loadingCtrl.create();
-      this.loading.present();
     }
   }
 

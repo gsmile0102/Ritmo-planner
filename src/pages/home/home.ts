@@ -78,7 +78,8 @@ export class HomePage {
               endTime: new Date(ev.endTime),
               allDay: true,
               reminder: ev.reminder,
-              description: ev.description
+              description: ev.description,
+              colour: ev.colour
             });
           }
           else {
@@ -89,7 +90,8 @@ export class HomePage {
               endTime: new Date(ev.endTime),
               allDay: false,
               reminder: ev.reminder,
-              description: ev.description
+              description: ev.description,
+              colour: ev.colour
             });
           }
         }
@@ -158,6 +160,18 @@ export class HomePage {
     });
   }
 
+  goToEventDetail(evtId: string): void {
+    this.navCtrl.push('PersonalEventDetailPage', { eventId: evtId });
+  }
+
+  goToCreatePersonalEvent(): void {
+    this.navCtrl.push('AddEventPage', { selectedDay: new Date() });
+  }
+
+  goToCreateSharedEvent(): void {
+    this.navCtrl.push('SharedEventCreatePage');
+  }
+
   changeMode(mode) {
     this.calendar.mode = mode;
   }
@@ -171,32 +185,33 @@ export class HomePage {
   }
 
   onEventSelected(event) {
-    let start = moment(event.startTime).format('LLLL');
-    let end = moment(event.endTime).format('LLLL');
-
-    let alert = this.alertCtrl.create({
-      title: '' + event.title,
-      subTitle: event.allDay == 'true' ? 'All Day' : 'From: ' + start + '<br>To: ' + end + '<br>' + event.reminder,
-      buttons: [
-        {
-          text: 'Cancel',
-          role: 'cancel'
-        },
-        {
-          text: 'Edit',
-          handler: () => {
-            let modal = this.modalCtrl.create('EditEventModalPage', {
-              event: event
-            });
-            modal.present();
-            modal.onDidDismiss(data => {
-              this.loadEventsData();
-            });
-          }
-        }
-      ]
-    })
-    alert.present();
+    // let start = moment(event.startTime).format('LLLL');
+    // let end = moment(event.endTime).format('LLLL');
+    //
+    // let alert = this.alertCtrl.create({
+    //   title: '' + event.title,
+    //   subTitle: event.allDay == 'true' ? 'All Day' : 'From: ' + start + '<br>To: ' + end + '<br>' + event.reminder + event.colour,
+    //   buttons: [
+    //     {
+    //       text: 'Cancel',
+    //       role: 'cancel'
+    //     },
+    //     {
+    //       text: 'Edit',
+    //       handler: () => {
+    //         let modal = this.modalCtrl.create('EditEventModalPage', {
+    //           event: event
+    //         });
+    //         modal.present();
+    //         modal.onDidDismiss(data => {
+    //           this.loadEventsData();
+    //         });
+    //       }
+    //     }
+    //   ]
+    // })
+    // alert.present();
+    this.goToEventDetail(event.id);
   }
 
   onTimeSelected(ev) {

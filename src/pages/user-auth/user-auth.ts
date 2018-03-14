@@ -19,8 +19,7 @@ export class UserAuthPage {
   }
 
   ionViewDidLoad() {
-    console.log('ionViewDidLoad UserAuthPage');
-  }
+  } 
 
   goToLogIn() {
     this.navCtrl.push('LoginModalPage');

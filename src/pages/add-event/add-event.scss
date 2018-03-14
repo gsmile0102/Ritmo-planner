@@ -16,8 +16,11 @@ page-add-event {
     padding: 2px;
     font-size: 1.2em;
   }
-    .addButton {
-      height: 50px;
-      background: color($colors, themeColor1, base);
-    }
+  .addButton {
+    height: 50px;
+    background: color($colors, themeColor1, base);
+  }
+  .event-color {
+    border: none;
+  }
 }

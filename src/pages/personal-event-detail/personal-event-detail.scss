@@ -1,3 +1,73 @@
 page-personal-event-detail {
+  ion-header {
+    .toolbar-background {
+      // background: linear-gradient(to top right, #00ffcc 0%, #cc99ff 100%);
+      background: #9999ff;
+      color: white;
+    }
+    .toolbar-title {
+      color: white;
+    }
+    .bar-button {
+      color: white;
+    }
+  }
 
+  .content {
+    // background-color: #ecf2f9;
+  }
+
+  .detail-btn-group {
+    text-align: center;
+  }
+
+  .edit-btn {
+    height: 50px;
+    border: solid 2px color($colors, themeColor1, base);
+    background-color: white;
+    color: color($colors, themeColor1, base);
+  }
+
+  .delete-btn {
+    height: 50px;
+  }
+
+  .arrow-icon {
+    // color: #cccccc;
+  }
+
+  .event-start-date {
+    font-size: 20px;
+    color: #cccccc;
+  }
+
+  .event-start-time {
+    font-size: 25px;
+    color: #cccccc;
+  }
+
+  .event-end-date {
+    font-size: 20px;
+    color: #cccccc;
+  }
+
+  .event-end-time {
+    font-size: 25px;
+    color: #cccccc;
+  }
+
+  .event-title {
+    font-size: 35px;
+    font-weight: bold;
+    color: #4d4d4d
+  }
+
+  .event-desc {
+    font-size: 15px;
+    color: #737373;
+  }
+
+  .event-all-day {
+    font-size: 20px;
+  }
 }

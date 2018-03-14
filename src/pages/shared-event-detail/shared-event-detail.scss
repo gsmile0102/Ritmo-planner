@@ -1,3 +1,98 @@
 page-shared-event-detail {
+  .div-startTime {
+    // background: linear-gradient(to right, #ff6600 0%, #cc3399 100%);
 
+    .left-date {
+      text-align: center;
+
+      .startTime-weekday {
+        color: #666666;
+        font-size: 1em;
+      }
+      .startTime-day {
+        color: #666666;
+        font-size: 1.5em;
+      }
+      .startTime-monthyear {
+        color: #666666;
+        font-size: 1em;
+      }
+    }
+
+    .right-time {
+      text-align: center;
+
+      .startTime-time {
+        color: #666666;
+        font-size: 1.5em;
+      }
+    }
+  }
+
+  .div-arrow-icon {
+    color: #cc3399;
+    font-size: 1.5em;
+  }
+
+  .div-title-icon {
+    text-align: center;
+    color: #b3b3b3;
+    font-size: 2em;
+  }
+
+  .div-date-icon {
+    color: #b3b3b3;
+  }
+
+  .div-endTime {
+    // background: linear-gradient(to right, #ff6600 0%, #cc3399 100%);
+
+    .left-date {
+      text-align: center;
+
+      .endTime-weekday {
+        color: #666666;
+        font-size: 1em;
+      }
+      .endTime-day {
+        color: #666666;
+        font-size: 1.5em;
+      }
+      .endTime-monthyear {
+        color: #666666;
+        font-size: 1em;
+      }
+    }
+
+    .right-time {
+      text-align: center;
+
+      .endTime-time {
+        color: #666666;
+        font-size: 1.5em;
+      }
+    }
+  }
+
+  .div-title {
+    .label-title {
+      font-size: 2.2em;
+      color: #ffffff;
+    }
+  }
+
+  .leave-btn {
+    height: 50px;
+
+  }
+
+  .edit-btn {
+    height: 50px;
+
+  }
+
+  .delete-btn {
+    height: 50px;
+    background: linear-gradient(to right, #ff6600 0%, #cc3399 100%);
+  }
 }

@@ -27,7 +27,8 @@ export class EditPersonalEventPage {
     endTime: new Date().toISOString(),
     allDay: false,
     reminder: "",
-    description: ""
+    description: "",
+    colour: ""
   };
 
   notifications = [];
@@ -46,6 +47,7 @@ export class EditPersonalEventPage {
     this.event.allDay = editEvent.allDay;
     this.event.reminder = editEvent.reminder;
     this.event.description = editEvent.description;
+    this.event.colour = editEvent.colour;
 
     this.isNewEvent = false;
     this.loadReminders();
@@ -91,6 +93,16 @@ export class EditPersonalEventPage {
     this.viewCtrl.dismiss(0);
   }
 
+  setColor() {
+    let modal = this.modalCtrl.create('EventColorPickerPage');
+    modal.present();
+    modal.onDidDismiss((colour) => {
+      if(colour !== '') {
+        this.event.colour = colour;
+      }
+    });
+  }
+
   processEventDateTime(): Promise<any> {
     return new Promise((resolve, reject) => {
       let startTime = new Date(this.event.startTime);
@@ -100,8 +112,8 @@ export class EditPersonalEventPage {
         let newStartTime = new Date(startTime.getFullYear(), startTime.getMonth(), startTime.getDate(), 8, 0);
         let newEndTime = new Date(endTime.getFullYear(), endTime.getMonth(), startTime.getDate() + daysDiff, 8, 0);
 
-        this.event.startTime = moment(event).format('');
-        this.event.endTime = moment(event).format('');
+        this.event.startTime = moment(newStartTime).format('');
+        this.event.endTime = moment(newEndTime).format('');
       }
       else {
         this.event.startTime = moment(startTime).format('');
@@ -127,7 +139,7 @@ export class EditPersonalEventPage {
 
   saveEvent(): void {
     this.processEventDateTime().then((res) => {
-      this.event.reminder = this.notifications;
+      // this.event.reminder = this.notifications;
       let oldEventId = this.event.id;
       this.event.id = (new Date()).getTime();
       this.dbase.updateEvent(oldEventId, this.event).then(res => {

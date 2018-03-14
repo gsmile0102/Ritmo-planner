@@ -1,3 +1,9 @@
 page-sign-up-modal {
-
+    .next-btn {
+      margin-top: 50px;
+      height: 50px;
+      border-color: color($colors, themeColor1, base);
+      color: color($colors, themeColor1, base);
+      border-radius: 5px;
+    }
 }

@@ -36,6 +36,22 @@
   </ion-grid>
   <calendar [eventSource]="eventSource" [calendarMode]="calendar.mode" [currentDate]="calendar.currentDate" [monthviewEventDetailTemplate]="template" (onEventSelected)="onEventSelected($event)"  (onCurrentDateChanged)="onCurrentDateChanged($event)"  (onTitleChanged)="onViewTitleChanged($event)" (onTimeSelected)="onTimeSelected($event)" step="30">
   </calendar>
+
+  <ion-fab bottom right >
+    <button ion-fab>
+      <ion-icon name="ios-create-outline"></ion-icon>
+    </button>
+    <ion-fab-list side="top">
+      <button ion-fab (click)="goToCreatePersonalEvent()">
+        <ion-icon name="md-list"></ion-icon>
+        <div class="label">Personal</div>
+      </button>
+      <button ion-fab (click)="goToCreateSharedEvent()">
+        <ion-icon name="contacts"></ion-icon>
+        <div class="label">Share</div>
+      </button>
+    </ion-fab-list>
+  </ion-fab>
 </ion-content>
 
 <!-- <ng-template #template let-showEventDetail="showEventDetail" let-selectedDate="selectedDate" let-noEventsLabel="noEventsLabel">
@@ -74,26 +90,17 @@
   </ion-list>
 </ng-template> -->
 <ng-template #template let-showEventDetail="showEventDetail" let-selectedDate="selectedDate" let-noEventsLabel="noEventsLabel">
-
-
   <ion-list class="event-detail-container" has-bouncing="false" *ngIf="showEventDetail" overflow-scroll="false">
-    <ion-card *ngFor="let event of selectedDate?.events" >
+    <ion-card *ngFor="let event of selectedDate?.events" [style.border-left]="'5px solid'" [style.border-color]="event.colour">
       <ion-item-sliding>
         <ion-item (click)="onEventSelected(event)" nopadding>
-            <ion-card-header>
-              <span class="event-detail">
-                <h2> {{event.title}}</h2>
-              </span>
-            </ion-card-header>
-            <ion-card-content>
-              <span *ngIf="!event.allDay" class="monthview-eventdetail-timecolumn">
-                <p>
-                  <span>{{event.startTime|date: 'fullDate'}}</span><br>
-                  {{event.startTime|date: 'HH:mm'}} - {{event.endTime|date: 'HH:mm'}}
-                </p>
-              </span>
-              <span *ngIf="event.allDay" class="monthview-eventdetail-timecolumn">All day </span>
-            </ion-card-content>
+            <span item-start class="event-title">{{event.title}}</span>
+            <span item-end *ngIf="!event.allDay" class="monthview-eventdetail-timecolumn">
+                <span class="event-time">{{event.startTime|date: 'HH:mm'}}</span> <br>
+                |<br>
+                <span class="event-time">{{event.endTime|date: 'HH:mm'}}</span> <br>
+            </span>
+            <span *ngIf="event.allDay" class="monthview-eventdetail-timecolumn">All day</span>
         </ion-item>
         <ion-item-options side="right">
           <button ion-button color="primary" (click)="editEvent(event)">

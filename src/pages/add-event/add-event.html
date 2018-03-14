@@ -60,6 +60,10 @@
       <ion-input class="input" type="text" placeholder="What's your event's name?" [(ngModel)]="newEvent.title"></ion-input>
     </ion-item>
     <ion-item>
+      <ion-label>Event Colour</ion-label>
+      <ion-icon item-end (click)="setColor()" ios="md-color-palette" md="md-color-palette" [style.color]="selectedColour"></ion-icon>
+    </ion-item>
+    <ion-item>
       <ion-label>All Day?</ion-label>
       <ion-checkbox item-end [(ngModel)]="newEvent.allDay"></ion-checkbox><br>
     </ion-item>

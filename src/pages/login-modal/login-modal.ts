@@ -5,6 +5,7 @@ import { FormBuilder, Validators, FormGroup } from '@angular/forms';
 import { AuthProvider } from '../../providers/auth/auth';
 import { EmailValidators } from '../../validators/email';
 import { HomePage } from '../home/home';
+import { TabsPage } from '../tabs/tabs';
 
 /**
  * Generated class for the LoginModalPage page.
@@ -38,7 +39,7 @@ export class LoginModalPage {
     } else {
       this.authProvider.loginInWithEmail(this.loginForm.value.email, this.loginForm.value.password).then((authData) => {
         this.loading.dismiss().then(() => {
-          this.navCtrl.setRoot(HomePage);
+          this.navCtrl.setRoot(TabsPage);
         });
       }, (err) => {
         this.loading.dismiss().then(() => {

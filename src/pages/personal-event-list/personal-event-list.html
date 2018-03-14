@@ -16,27 +16,39 @@
 </ion-header>
 
 
-<ion-content padding>
+<ion-content padding class="event-list-content">
   <!-- <ion-list>
     <ion-item *ngFor="let event of events | async" (click)="goToEventDetail(event.id)">
       <h2><strong>{{event?.title}}</strong></h2>
       <p>{{event?.startTime}} - {{event?.endTime}}</p>
     </ion-item>
   </ion-list> -->
-  <ion-card *ngFor="let event of events" (click)="goToEventDetail(event.id)">
-    <ion-card-header>{{event?.title}}</ion-card-header>
-    <ion-card-content>
-      <span *ngIf="!event.allDay">
-        <p>{{event?.startTime|date: 'medium'}}</p>
-        <p>{{event?.endTime|date: 'medium'}}</p>
-      </span>
-      <span *ngIf="event.allDay">
-        <p>All day event</p>
-        <p>{{event?.startTime|date: 'fullDate'}}</p>
-        <p>{{event?.endTime|date: 'fullDate'}}</p>
-      </span>
-    </ion-card-content>
-  </ion-card>
+  <ion-list>
+    <ion-card *ngFor="let event of events" [style.border-left]="'5px solid'" [style.border-color]="event.colour">
+      <ion-item-sliding>
+        <ion-item (click)="goToEventDetail(event.id)" >
+          <span item-start class="event-list-title">{{event?.title}}</span>
+          <span item-end *ngIf="!event.allDay">
+            <p>{{event?.startTime|date: 'fullDate'}} {{event?.startTime|date: 'shortTime'}}</p>
+            <p>{{event?.startTime|date: 'fullDate'}} {{event?.endTime|date: 'shortTime'}}</p>
+          </span>
+          <span item-end *ngIf="event.allDay">
+            <p>All day event</p>
+            <p>{{event?.startTime|date: 'fullDate'}}</p>
+            <p>{{event?.endTime|date: 'fullDate'}}</p>
+          </span>
+        </ion-item>
+        <ion-item-options side="right">
+          <button ion-button color="primary" (click)="editEvent(event)">
+            <ion-icon name="paper"></ion-icon>
+          </button>
+          <button ion-button color="danger" (click)="deleteEvent(event)">
+            <ion-icon name="trash"></ion-icon>
+          </button>
+        </ion-item-options>
+      </ion-item-sliding>
+    </ion-card>
+  </ion-list>
 
   <ion-fab bottom right >
     <button ion-fab>

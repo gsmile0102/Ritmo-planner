@@ -1,3 +1,16 @@
 page-shared-event-create {
-
+  .input {
+    padding: 2px;
+    font-size: 1.2em;
+  }
+  .item {
+    max-height: 4.5em; /* <- this can be whatever you need */
+  }
+  .addButton {
+    height: 50px;
+    background: color($colors, themeColor1, base);
+  }
+  .event-color {
+    border: none;
+  }
 }

@@ -4,15 +4,70 @@
   See http://ionicframework.com/docs/components/#navigation for more info on
   Ionic pages and navigation.
 -->
-<ion-header>
-
-  <ion-navbar>
-    <ion-title>SharedEventCreate</ion-title>
+<ion-header no-border>
+  <ion-navbar color="calm" transparent>
+    <ion-buttons start>
+      <button ion-button icon-only (click)="cancel()">
+        <ion-icon name="close"></ion-icon>
+      </button>
+    </ion-buttons>
+    <ion-title>New shared event</ion-title>
   </ion-navbar>
-
 </ion-header>
 
 
 <ion-content padding>
+  <ion-item>
+    <ion-label stacked>Event name</ion-label>
+    <ion-input class="input" type="text" placeholder="What's your event's name?" [(ngModel)]="sharedEvent.title"></ion-input>
+  </ion-item>
+  <ion-item>
+    <ion-label>Event Colour</ion-label>
+    <ion-icon item-end (click)="setColor()" ios="md-color-palette" md="md-color-palette" [style.color]="selectedColour"></ion-icon>
+  </ion-item>
+  <ion-item>
+    <ion-label>All Day?</ion-label>
+    <ion-checkbox item-end [(ngModel)]="sharedEvent.allDay"></ion-checkbox><br>
+  </ion-item>
+  <ion-item>
+    <ion-label>Start</ion-label>
+    <ion-datetime item-end *ngIf="!sharedEvent.allDay" displayFormat="MM/DD/YYYY HH:mm" pickerFormat="MMM D:HH:mm" [(ngModel)]="sharedEvent.startTime"></ion-datetime>
+    <ion-datetime item-end *ngIf="sharedEvent.allDay" displayFormat="MM/DD/YYYY" pickerFormat="MMM D" [(ngModel)]="sharedEvent.startTime"></ion-datetime>
+  </ion-item>
+  <ion-item>
+    <ion-label>End</ion-label>
+    <ion-datetime item-end *ngIf="!sharedEvent.allDay" displayFormat="MM/DD/YYYY HH:mm" pickerFormat="MMM D:HH:mm" [(ngModel)]="sharedEvent.endTime" [min]="sharedEvent.startTime"></ion-datetime>
+    <ion-datetime item-end *ngIf="sharedEvent.allDay" displayFormat="MM/DD/YYYY" pickerFormat="MMM D" [(ngModel)]="sharedEvent.endTime" [min]="sharedEvent.startTime"></ion-datetime>
+  </ion-item>
 
+  <ion-item-group padding>
+    <ion-label stacked>Reminder</ion-label>
+    <ion-item *ngFor="let ntfc of notifications">
+      <ion-label>{{ntfc.text}}</ion-label>
+      <button ion-button item-end clear><ion-icon name="close" (click)="removeReminder(ntfc.text)"></ion-icon></button>
+    </ion-item>
+    <button ion-button clear item-end (click)="addReminder()">Add</button>
+  </ion-item-group>
+
+  <ion-item>
+    <ion-label stacked>Description</ion-label>
+    <ion-input type="text" placeholder="Says somemore about your event..." [(ngModel)]="sharedEvent.description"></ion-input>
+  </ion-item>
+
+  <ion-item-group padding>
+    <ion-label stacked>Attendees</ion-label>
+    <ion-item *ngFor="let attendee of attendees">
+      <ion-label *ngIf="attendee.name == ''">{{attendee.email}}</ion-label>
+      <ion-label *ngIf="attendee.name != ''">{{attendee.name}}</ion-label>
+      <button ion-button item-end clear><ion-icon name="close" (click)="removeAttendee(attendee)"></ion-icon></button>
+    </ion-item>
+    <button ion-button clear block (click)="addAttendeeByEmail()">Add by email</button>
+    <button ion-button clear block (click)="addAttendeeFromContact()">Add from contact</button>
+  </ion-item-group>
+
+  <ion-footer>
+    <button class="addButton" ion-footer ion-button strong full icon-left (click)="saveEvent()">
+      <ion-icon name="checkmark"></ion-icon> Add Event
+    </button>
+  </ion-footer>
 </ion-content>

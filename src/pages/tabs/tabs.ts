@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { HomePage } from '../home/home';
 import { PersonalEventListPage } from '../personal-event-list/personal-event-list';
+import { SharedEventListPage } from '../shared-event-list/shared-event-list';
 
 /**
  * Generated class for the TabsPage page.
@@ -18,7 +19,7 @@ export class TabsPage {
 
   tab1Root = PersonalEventListPage;
   tab2Root = HomePage;
-  tab3Root = '';
+  tab3Root = SharedEventListPage;
 
   constructor() {
   }

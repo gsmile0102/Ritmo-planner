@@ -28,8 +28,11 @@ export class AddEventPage {
     endTime: "",
     allDay: false,
     reminder: "",
-    description: ""
+    description: "",
+    colour: ""
   };
+
+  selectedColour = '#9999ff';
 
   notifications = [];
 
@@ -39,6 +42,7 @@ export class AddEventPage {
     this.newEvent.startTime = moment(preselectedDate).format('');
     this.newEvent.endTime = moment(preselectedDate).format('');
     this.newEvent.reminder = 'ntf' + (new Date()).getTime();
+    this.newEvent.colour = this.selectedColour;
   }
 
   ionViewDidLoad() {
@@ -71,29 +75,16 @@ export class AddEventPage {
     this.viewCtrl.dismiss();
   }
 
-  // save() {
-  //   let startTime = new Date(this.event.startTime);
-  //   let endTime = new Date(this.event.endTime);
-  //   if(this.event.allDay) {
-  //     let daysDiff = startTime.getDate() === endTime.getDate() ? 1 : endTime.getDate() - startTime.getDate();
-  //     let newStartTime = new Date(startTime.getFullYear(), startTime.getMonth(), startTime.getDate(), 8, 0);
-  //     let newEndTime = new Date(endTime.getFullYear(), endTime.getMonth(), startTime.getDate() + daysDiff, 8, 0);
-  //
-  //     this.event.startTime = moment(newStartTime).format();
-  //     this.event.endTime = moment(newEndTime).format();
-  //   }
-  //   else {
-  //     this.event.startTime = moment(startTime).format();
-  //     this.event.endTime = moment(endTime).format();
-  //   }
-  //   this.dbase.addEvent(this.event).then(res => {
-  //     this.ntfProvider.scheduleReminder(this.notifications).then((res) => {
-  //       this.notifications = [];
-  //     });
-  //     // this.navCtrl.popToRoot();
-  //     this.viewCtrl.dismiss();
-  //   }, err => { });
-  // }
+  setColor() {
+    let modal = this.modalCtrl.create('EventColorPickerPage');
+    modal.present();
+    modal.onDidDismiss((colour) => {
+      if(colour !== '') {
+        this.selectedColour = colour;
+        this.newEvent.colour = colour;
+      }
+    });
+  }
 
   processEventDateTime(): Promise<any> {
     return new Promise((resolve, reject) => {

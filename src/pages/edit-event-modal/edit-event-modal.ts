@@ -125,13 +125,13 @@ export class EditEventModalPage {
     });
 
     // if(this.isNewEvent) {
-      this.dbase.updateEvent(this.event).then((res) => {
-        this.ntfProvider.scheduleReminder(this.notifications).then((res) => {
-          this.notifications = [];
-        });
-        // this.navCtrl.popToRoot();
-        this.viewCtrl.dismiss();
-      }, err => {});
+      // this.dbase.updateEvent(this.event).then((res) => {
+      //   this.ntfProvider.scheduleReminder(this.notifications).then((res) => {
+      //     this.notifications = [];
+      //   });
+      //   // this.navCtrl.popToRoot();
+      //   this.viewCtrl.dismiss();
+      // }, err => {});
     // }
     // else
     // {

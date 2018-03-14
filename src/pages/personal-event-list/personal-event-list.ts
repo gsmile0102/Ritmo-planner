@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams, ToastController } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, ToastController, ModalController } from 'ionic-angular';
 import { Toast } from '@ionic-native/toast';
 import { Network } from '@ionic-native/network';
 import * as firebase from 'firebase';
@@ -29,7 +29,7 @@ export class PersonalEventListPage {
   connected: Subscription;
   disconnected: Subscription;
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, public eventProvider: EventProvider, public db: AngularFireDatabase, private dbase: DatabaseProvider, private toast: ToastController, private network: Network) {
+  constructor(public navCtrl: NavController, public navParams: NavParams, public eventProvider: EventProvider, public db: AngularFireDatabase, private dbase: DatabaseProvider, private toast: ToastController, private network: Network, private modalCtrl: ModalController) {
     this.currentUser = this.eventProvider.getCurrentUser();
     // this.events = this.eventProvider.getPersonalEventList();
   }
@@ -105,7 +105,8 @@ export class PersonalEventListPage {
               endTime: new Date(ev.endTime),
               allDay: true,
               reminder: ev.reminder,
-              description: ev.description
+              description: ev.description,
+              colour: ev.colour
             });
           }
           else {
@@ -116,7 +117,8 @@ export class PersonalEventListPage {
               endTime: new Date(ev.endTime),
               allDay: false,
               reminder: ev.reminder,
-              description: ev.description
+              description: ev.description,
+              colour: ev.colour
             });
           }
         }
@@ -132,7 +134,28 @@ export class PersonalEventListPage {
   }
 
   goToCreateSharedEvent(): void {
+    this.navCtrl.push('SharedEventCreatePage');
+  }
 
+  editEvent(event) {
+    let modal = this.modalCtrl.create('EditPersonalEventPage', {event: event});
+    modal.present();
+    modal.onDidDismiss(data => {
+      if(data != 0) {
+        this.loadEventsData();
+      }
+    });
+  }
+
+  deleteEvent(event) {
+    this.dbase.deleteEvent(event).then((res) => {
+      this.toast.create({
+        message: 'Event has been deleted.',
+        duration: 2500,
+        position: 'top'
+      }).present();
+      this.loadEventsData();
+    });
   }
 
   generateArray(obj) {

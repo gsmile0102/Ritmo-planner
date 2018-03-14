@@ -40,7 +40,7 @@ export class DatabaseProvider {
           name: 'eventsdb.db',
           location: 'default'
         }).then((db: SQLiteObject) => {
-          db.executeSql('CREATE TABLE IF NOT EXISTS event(rowid INTEGER PRIMARY KEY, title TEXT, startTime TEXT, endTime TEXT, allDay INTEGER, reminder INTEGER, description TEXT)', {});
+          db.executeSql('CREATE TABLE IF NOT EXISTS event(rowid INTEGER PRIMARY KEY, title TEXT, startTime TEXT, endTime TEXT, allDay INTEGER, reminder INTEGER, description TEXT, colour TEXT)', {});
           db.executeSql('SELECT * FROM event ORDER BY rowid', {}).then(res => {
             let events = [];
             if(res.rows.length > 0) {
@@ -52,7 +52,8 @@ export class DatabaseProvider {
                   endTime: res.rows.item(i).endTime,
                   allDay: res.rows.item(i).allDay,
                   reminder: res.rows.item(i).reminder,
-                  description: res.rows.item(i).description
+                  description: res.rows.item(i).description,
+                  colour: res.rows.item(i).colour
                 });
               }
             }
@@ -64,7 +65,7 @@ export class DatabaseProvider {
     });
   }
 
-  getEventDetail(eventId: string): Promise<any> {
+  getEventDetail(eventId): Promise<any> {
     return new Promise((resolve, reject) => {
       this.sqlite.create({
         name: 'eventsdb.db',
@@ -78,7 +79,8 @@ export class DatabaseProvider {
             endTime: res.rows.item(0).endTime,
             allDay: res.rows.item(0).allDay,
             reminder: res.rows.item(0).reminder,
-            description: res.rows.item(0).description
+            description: res.rows.item(0).description,
+            colour: res.rows.item(0).colour
           };
           resolve(retEvent);
         }, (err) => { reject(err); });
@@ -92,7 +94,7 @@ export class DatabaseProvider {
         name: 'eventsdb.db',
         location: 'default'
       }).then((db: SQLiteObject) => {
-        db.executeSql('INSERT INTO event VALUES(?,?,?,?,?,?,?)', [event.id, event.title, event.startTime, event.endTime, event.allDay, event.reminder, event.description]).then((res) => {
+        db.executeSql('INSERT INTO event VALUES(?,?,?,?,?,?,?,?)', [event.id, event.title, event.startTime, event.endTime, event.allDay, event.reminder, event.description, event.colour]).then((res) => {
           resolve(res);
         }, (err) => {
           reject(err);
@@ -109,7 +111,7 @@ export class DatabaseProvider {
       }).then((db: SQLiteObject) => {
         // db.executeSql('UPDATE event SET title=?, startTime=?, endTime=?, allDay=?, reminder=?, description=? WHERE rowid=?', [event.title, event.startTime, event.endTime, event.allDay, event.reminder, event.description, event.id]).then((res) => {
         db.executeSql('DELETE FROM event WHERE rowid=?', [oldEventId]).then((res) => {
-          db.executeSql('INSERT INTO event VALUES(?,?,?,?,?,?,?)', [event.id, event.title, event.startTime, event.endTime, event.allDay, event.reminder, event.description]).then((res) => {
+          db.executeSql('INSERT INTO event VALUES(?,?,?,?,?,?,?,?)', [event.id, event.title, event.startTime, event.endTime, event.allDay, event.reminder, event.description, event.colour]).then((res) => {
             resolve(res);
           }, (err) => {
             reject(err);
@@ -134,8 +136,170 @@ export class DatabaseProvider {
     })
   }
 
-  // getDatabaseState() {
-  //   return this.databaseReady.asObservable();
+  // getSharedEventsData(): Promise<any[]> {
+  //   return new Promise((resolve, reject) => {
+  //       this.sqlite.create({
+  //         name: 'eventsdb.db',
+  //         location: 'default'
+  //       }).then((db: SQLiteObject) => {
+  //         db.executeSql('CREATE TABLE IF NOT EXISTS sharedEvent(rowid INTEGER PRIMARY KEY, owner TEXT, title TEXT, startTime TEXT, endTime TEXT, allDay INTEGER, reminder INTEGER, description TEXT, colour TEXT)', {});
+  //         db.executeSql('SELECT * FROM sharedEvent ORDER BY rowid', {}).then(res => {
+  //           let sharedEvents = [];
+  //           if(res.rows.length > 0) {
+  //             for(var i = 0; i < res.rows.length; i++) {
+  //               sharedEvents.push({
+  //                 id: res.rows.item(i).rowid,
+  //                 owner: res.rows.item(i).owner,
+  //                 title: res.rows.item(i).title,
+  //                 startTime: res.rows.item(i).startTime,
+  //                 endTime: res.rows.item(i).endTime,
+  //                 allDay: res.rows.item(i).allDay,
+  //                 reminder: res.rows.item(i).reminder,
+  //                 description: res.rows.item(i).description,
+  //                 colour: res.rows.item(i).colour
+  //                 // attendee: res.rows.item(i).attendee
+  //               });
+  //             }
+  //           }
+  //           resolve(sharedEvents);
+  //         }, (err) => {
+  //           reject(err);
+  //         });
+  //       });
+  //   });
+  // }
+  //
+  // getSharedEventDetail(eventId): Promise<any> {
+  //   return new Promise((resolve, reject) => {
+  //     this.sqlite.create({
+  //       name: 'eventsdb.db',
+  //       location: 'default'
+  //     }).then((db: SQLiteObject) => {
+  //       db.executeSql('SELECT * FROM sharedEvent WHERE rowid=?', [eventId]).then(res => {
+  //         var retEvent = {
+  //           id: res.rows.item(0).rowid,
+  //           title: res.rows.item(0).title,
+  //           startTime: res.rows.item(0).startTime,
+  //           endTime: res.rows.item(0).endTime,
+  //           allDay: res.rows.item(0).allDay,
+  //           reminder: res.rows.item(0).reminder,
+  //           description: res.rows.item(0).description,
+  //           colour: res.rows.item(0).colour
+  //           // attendee: res.rows.item(0).attendee
+  //         };
+  //         resolve(retEvent);
+  //       }, (err) => { reject(err); });
+  //     });
+  //   });
+  // }
+  //
+  // addSharedEvent(sharedEvent): Promise<any> {
+  //   return new Promise((resolve, reject) => {
+  //     this.sqlite.create({
+  //       name: 'eventsdb.db',
+  //       location: 'default'
+  //     }).then((db: SQLiteObject) => {
+  //       alert('a');
+  //       db.executeSql('INSERT INTO sharedEvent VALUES(?,?,?,?,?,?,?,?,?)', [sharedEvent.id, sharedEvent.owner, sharedEvent.title, sharedEvent.startTime, sharedEvent.endTime, sharedEvent.allDay, sharedEvent.reminder, sharedEvent.description, sharedEvent.colour]).then((res) => {
+  //         resolve(res);
+  //       }, (err) => {
+  //         reject(err);
+  //       });
+  //     });
+  //   });
+  // }
+  //
+  // updateSharedEvent(oldEventId, event): Promise<any> {
+  //   return new Promise((resolve, reject) => {
+  //     this.sqlite.create({
+  //       name: 'eventsdb.db',
+  //       location: 'default'
+  //     }).then((db: SQLiteObject) => {
+  //       // db.executeSql('UPDATE event SET title=?, startTime=?, endTime=?, allDay=?, reminder=?, description=? WHERE rowid=?', [event.title, event.startTime, event.endTime, event.allDay, event.reminder, event.description, event.id]).then((res) => {
+  //       db.executeSql('DELETE FROM sharedEvent WHERE rowid=?', [oldEventId]).then((res) => {
+  //         db.executeSql('INSERT INTO sharedEvent VALUES(?,?,?,?,?,?,?,?,?,?)', [event.id, event.title, event.owner, event.startTime, event.endTime, event.allDay, event.reminder, event.description, event.colour, event.attendee]).then((res) => {
+  //           resolve(res);
+  //         }, (err) => {
+  //           reject(err);
+  //         });
+  //       });
+  //     });
+  //   });
+  // }
+  //
+  // deleteSharedEvent(event): Promise<any> {
+  //   return new Promise((resolve, reject) => {
+  //     this.sqlite.create({
+  //       name: 'eventsdb.db',
+  //       location: 'default'
+  //     }).then((db: SQLiteObject) => {
+  //       db.executeSql('DELETE FROM sharedEvent WHERE rowid=?', [event.id]).then((res) => {
+  //         resolve(res);
+  //       }, (err) => {
+  //         reject(err);
+  //       });
+  //     });
+  //   });
+  // }
+  //
+  // addEvtAttendees(sharedEvent): Promise<any> {
+  //   return new Promise((resolve, reject) => {
+  //     this.sqlite.create({
+  //       name: 'eventsdb.db',
+  //       location: 'default'
+  //     }).then((db: SQLiteObject) => {
+  //       db.executeSql('CREATE TABLE IF NOT EXISTS event_attendee(eventId INTEGER PRIMARY KEY, attendee TEXT)', {});
+  //       db.executeSql('INSERT INTO event_attendee VALUES(?,?)', [sharedEvent.id, sharedEvent.attendee]).then((res) => {
+  //         resolve(res);
+  //       }, (err) => {
+  //         reject(err);
+  //       });
+  //     });
+  //   });
+  // }
+  //
+  // getAllEvtAttendees(): Promise<any> {
+  //   return new Promise((resolve, reject) => {
+  //     this.sqlite.create({
+  //       name: 'eventsdb.db',
+  //       location: 'default'
+  //     }).then((db: SQLiteObject) => {
+  //       db.executeSql('CREATE TABLE IF NOT EXISTS event_attendee(eventId INTEGER PRIMARY KEY, attendee TEXT)', {});
+  //       db.executeSql('SELECT * FROM event_attendee ORDER BY eventId', {}).then(res => {
+  //         let evtAtt = [];
+  //         if(res.rows.length > 0) {
+  //           for(var i = 0; i < res.rows.length; i++) {
+  //             evtAtt.push({
+  //               eventId: res.rows.item(i).eventId,
+  //               attendee: res.rows.item(i).attendee
+  //             });
+  //           }
+  //         }
+  //         resolve(evtAtt);
+  //       }, (err) => {
+  //         reject(er);
+  //       });
+  //     });
+  //   });
+  // }
+  //
+  // getSingleEvtAttendees(evtId): Promise<any> {
+  //   return new Promise((resolve, reject) => {
+  //     this.sqlite.create({
+  //       name: 'eventsdb.db',
+  //       location: 'default'
+  //     }).then((db: SQLiteObject) => {
+  //       db.executeSql('SELECT * FROM event_attendee WHERE eventId=?', [evtId]).then(res => {
+  //         var retEvtAtt = {
+  //           eventId: res.rows.item(0).eventId,
+  //           attendee: res.rows.item(0).attendee
+  //         };
+  //         resolve(retEvtAtt);
+  //       }, (err) => {
+  //         reject(err);
+  //       });
+  //     });
+  //   });
   // }
 
 }

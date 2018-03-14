@@ -40,13 +40,7 @@ export class PersonalEventDetailPage {
   loadEventDetail() {
     this.dbase.getEventDetail(this.evKey).then((event) => {
       this.currentEvent = event;
-
-      if(event.allDay == 'true') {
-        this.currentEvent.allDay = true;
-      }
-      else {
-        this.currentEvent.allDay = false;
-      }
+      this.currentEvent.allDay = event.allDay == 'true' ? true : false;
     });
   }
 
@@ -67,7 +61,7 @@ export class PersonalEventDetailPage {
       this.toast.create({
         message: 'Event has been deleted.',
         duration: 2500,
-        positon: 'top'
+        position: 'top'
       }).present();
       this.navCtrl.pop();
     });
