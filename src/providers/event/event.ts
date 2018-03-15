@@ -18,6 +18,7 @@ export class EventProvider {
   public sharedEventListRef: Reference;
 
   public currentUser: any = null;
+  eventOwner = {};
 
   constructor(public db: AngularFireDatabase) {
     firebase.auth().onAuthStateChanged((user) => {
@@ -27,6 +28,15 @@ export class EventProvider {
         this.sharedEventListRef = firebase.database().ref(`/sharedEventList`);
         this.userListRef = firebase.database().ref(`/userProfile`);
         this.eventAttListRef = firebase.database().ref(`/eventAttList`);
+        this.userListRef.child(user.uid).once('value', (snapshot) => {
+            this.eventOwner = {
+              id: snapshot.key,
+              name: snapshot.val().name,
+              email: snapshot.val().email,
+              phone: snapshot.val().phone,
+              profilePic: snapshot.val().profilePic
+            }
+        });
       }
     });
   }
@@ -74,6 +84,7 @@ export class EventProvider {
 
   createSharedEvent(sharedEvent): Promise<any> {
     return new Promise((resolve, reject) => {
+      var pictureUrl = null;
       var attendee = sharedEvent.attendee;
       var addUpdates = {};
       addUpdates['sharedEventList/' + this.currentUser.uid + '/' + sharedEvent.id] = {
@@ -87,6 +98,11 @@ export class EventProvider {
         colour: sharedEvent.colour
       };
       firebase.database().ref().update(addUpdates);
+
+      firebase.storage().ref(`sharedEventPic/${sharedEvent.id}/eventPic.png`).putString(sharedEvent.picture, 'base64', {contentType: 'image/png'}).then((savedPicture) => {
+        this.sharedEventListRef.child(`${this.currentUser.uid}/${sharedEvent.id}/picture`).set(savedPicture.downloadURL);
+        pictureUrl = savedPicture.downloadURL;
+      });
 
       for(let attendee of sharedEvent.attendee) {
         var orderField = attendee.email == '' ? 'phone' : 'email';
@@ -108,10 +124,39 @@ export class EventProvider {
               };
               firebase.database().ref().update(attUpdates);
 
+              this.sharedEventListRef.child(`${snap.key}/${sharedEvent.id}/picture`).set(pictureUrl);
+
               var attOwnerUpdates = {};
-              attOwnerUpdates['sharedEventList/' + this.currentUser.uid + '/' + sharedEvent.id + '/attendee/' + snap.key] = attendee.name;
-              attOwnerUpdates['sharedEventList/' + snap.key + '/' + sharedEvent.id + '/attendee/' + snap.key] = attendee.name;
-              firebase.database().ref().update(attOwnerUpdates)
+              attOwnerUpdates['sharedEventList/' + this.currentUser.uid + '/' + sharedEvent.id + '/attendee/' + snap.key] = {
+                name: snap.val().name,
+                email: snap.val().email,
+                phone: snap.val().phone,
+                profilePic: snap.val().profilePic
+              };
+              attOwnerUpdates['sharedEventList/' + snap.key + '/' + sharedEvent.id + '/attendee/' + snap.key] = {
+                name: snap.val().name,
+                email: snap.val().email,
+                phone: snap.val().phone,
+                profilePic: snap.val().profilePic
+              };
+              firebase.database().ref().update(attOwnerUpdates);
+
+              var ownerUpdates = {};
+              ownerUpdates['sharedEventList/' + this.currentUser.uid + '/' + sharedEvent.id + '/owner/'] = {
+                id: this.eventOwner.id,
+                name: this.eventOwner.name,
+                email: this.eventOwner.email,
+                phone: this.eventOwner.phone,
+                profilePic: this.eventOwner.profilePic
+              };
+              ownerUpdates['sharedEventList/' + snap.key + '/' + sharedEvent.id + '/owner/'] = {
+                id: this.eventOwner.id,
+                name: this.eventOwner.name,
+                email: this.eventOwner.email,
+                phone: this.eventOwner.phone,
+                profilePic: this.eventOwner.profilePic
+              };
+              firebase.database().ref().update(ownerUpdates);
 
               var evtAttUpdates = {};
               evtAttUpdates['eventAttList/' + sharedEvent.id + '/' + snap.key] = false;
@@ -121,6 +166,8 @@ export class EventProvider {
           }
         });
       }
+
+
       resolve(sharedEvent);
     });
   }
@@ -167,8 +214,8 @@ export class EventProvider {
 
   leaveSharedEvent(eventId, eventOwner): Promise<any> {
     return new Promise((resolve) => {
-      this.shareEventListRef.child(`${this.currentUser.uid}/${eventId}`).remove().then(() => {
-        this.shareEventListRef.child(`${eventOwner}/${eventId}/attendee/${this.currentUser.uid}`).remove().then(() => {
+      this.sharedEventListRef.child(`${this.currentUser.uid}/${eventId}`).remove().then(() => {
+        this.sharedEventListRef.child(`${eventOwner}/${eventId}/attendee/${this.currentUser.uid}`).remove().then(() => {
           this.eventAttListRef.child(`${eventId}/${this.currentUser.uid}`).remove().then(() => {
             resolve(eventId);
           });

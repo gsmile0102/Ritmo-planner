@@ -20,6 +20,7 @@
     "@angular/http": "5.0.3",
     "@angular/platform-browser": "5.0.3",
     "@angular/platform-browser-dynamic": "5.0.3",
+    "@ionic-native/camera": "^4.5.3",
     "@ionic-native/contacts": "^4.5.3",
     "@ionic-native/core": "4.4.0",
     "@ionic-native/local-notifications": "^4.5.3",
@@ -35,6 +36,7 @@
     "cordova-android": "7.0.0",
     "cordova-ios": "4.5.4",
     "cordova-plugin-app-event": "^1.2.1",
+    "cordova-plugin-camera": "^4.0.2",
     "cordova-plugin-contacts": "^3.0.1",
     "cordova-plugin-device": "1.1.4",
     "cordova-plugin-ionic-webview": "^1.1.16",
@@ -73,7 +75,8 @@
       "cordova-plugin-splashscreen": {},
       "cordova-plugin-ionic-webview": {},
       "cordova-plugin-network-information": {},
-      "cordova-plugin-contacts": {}
+      "cordova-plugin-contacts": {},
+      "cordova-plugin-camera": {}
     },
     "platforms": [
       "ios",

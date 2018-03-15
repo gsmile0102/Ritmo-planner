@@ -65,16 +65,23 @@
     <button ion-button clear block (click)="addAttendeeFromContact()">Add from contact</button>
   </ion-item-group>
 
-  <ion-item-group padding>
-    <ion-label>Event Picture</ion-label>
-    <button ion-button (click)="takePicture()">
-      <ion-icon name="camera"></ion-icon>
-    </button>
-  </ion-item-group>
+    <ion-item no-lines>
+      <ion-label>Event Picture</ion-label>
+      <button item-end ion-button (click)="takePicture()">
+        <ion-icon name="camera"></ion-icon>
+      </button>
+    </ion-item>
+    <ion-item no-lines><p *ngIf="sharedEvent.picture">Picture added!</p></ion-item>
 
-  <ion-footer>
+  <!-- <ion-footer>
     <button class="addButton" ion-footer ion-button strong full icon-left (click)="saveEvent()">
       <ion-icon name="checkmark"></ion-icon> Add Event
     </button>
-  </ion-footer>
+  </ion-footer> -->
+
 </ion-content>
+<ion-footer>
+  <button class="addButton" ion-footer ion-button strong full icon-left (click)="saveEvent()">
+    <ion-icon name="checkmark"></ion-icon> Add Event
+  </button>
+</ion-footer>

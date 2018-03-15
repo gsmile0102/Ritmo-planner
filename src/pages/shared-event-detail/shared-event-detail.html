@@ -5,7 +5,7 @@
   Ionic pages and navigation.
 -->
 <ion-header no-border>
-  <ion-navbar color="calm" transparent>
+  <ion-navbar>
     <ion-buttons start>
       <button ion-button icon-only (click)="cancel()">
         <ion-icon name="close"></ion-icon>
@@ -16,7 +16,7 @@
 </ion-header>
 
 
-<ion-content class="content">
+<ion-content class="content" fullscreen>
   <!-- <span *ngIf="!currentEvent?.allDay">
     <span class="event-start-date">{{currentEvent?.startTime|date: 'fullDate'}}</span><br>
     <span class="event-start-time">{{currentEvent?.startTime|date: 'shortTime'}}</span><br>
@@ -39,25 +39,66 @@
     <p>{{att}}</p>
   </span> -->
   <ion-card>
-    <ion-item class="div-title" no-lines [style.background]="currentEvent?.colour">
-      <ion-label item-start class="label-title">{{currentEvent?.title}}</ion-label>
+    <ion-item>
+      <ion-avatar item-start>
+        <img src="{{eventOwner.profilePic}}">
+      </ion-avatar>
+      <h2>{{eventOwner.name}}</h2>
     </ion-item>
-  </ion-card>
-  <ion-card [style.border-left]="'5px solid'" [style.border-right]="'5px solid'" [style.border-bottom]="'5px solid'" [style.border-color]="currentEvent?.colour">
 
-    <ion-item class="div-startTime" no-lines>
-      <ion-icon ios="md-calendar" md="md-calendar" item-start class="div-date-icon"></ion-icon>
-      <ion-label item-end>
-        <p class="label-startTime">{{currentEvent?.startTime|date: 'fullDate'}} {{currentEvent?.startTime|date: 'shortTime'}}</p>
-        <ion-icon ios="md-arrow-down" md="md-arrow-down"></ion-icon>
-        <p class="label-endTime">{{currentEvent?.endTime|date: 'fullDate'}} {{currentEvent?.endTime|date: 'shortTime'}}</p>
-      </ion-label>
+    <ion-item class="div-title" no-lines>
+      <h1 class="label-title">{{currentEvent?.title}}</h1>
     </ion-item>
-  </ion-card>
 
-  <ion-footer>
+    <ion-item class="div-date" no-lines>
+      <ion-row *ngIf="currentEvent?.allDay">
+        <ion-col><p class="all-day-label">All day event</p></ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col>
+          <span *ngIf="!currentEvent?.allDay">
+            <p class="label-startTime">{{currentEvent?.startTime|date: 'EEE, MMMM d, y'}}</p>
+            <p class="label-startTime">{{currentEvent?.startTime|date: 'shortTime'}}</p>
+          </span>
+          <span *ngIf="currentEvent?.allDay">
+            <p class="label-startTime">{{currentEvent?.startTime|date: 'EEE, MMMM d, y'}}</p>
+          </span>
+        </ion-col>
+        <ion-col>
+          <div class="div-arrow-icon">
+            <ion-icon ios="md-arrow-forward" md="md-arrow-forward" class="arrow-icon"></ion-icon>
+          </div>
+        </ion-col>
+        <ion-col>
+          <span *ngIf="!currentEvent?.allDay">
+            <p class="label-endTime">{{currentEvent?.endTime|date: 'EEE, MMMM d, y'}}</p>
+            <p class="label-endTime">{{currentEvent?.endTime|date: 'shortTime'}}</p>
+          </span>
+          <span *ngIf="currentEvent?.allDay">
+            <p class="label-startTime">{{currentEvent?.endTime|date: 'EEE, MMMM d, y'}}</p>
+          </span>
+        </ion-col>
+      </ion-row>
+    </ion-item>
+
+    <div class="image" *ngIf="currentEvent?.picture">
+      <img style="width: 100%;" src="{{currentEvent.picture}}">
+    </div>
+
+    <ion-card-content>
+      {{currentEvent?.description}}
+    </ion-card-content>
+
+    <ion-item>
+      <ion-label item-start>with:</ion-label>
+      <p *ngFor="let attendee of attendees" item-end>{{attendee.name}}</p>
+    </ion-item>
+
+  </ion-card>
+</ion-content>
+<ion-footer>
+    <button ion-button *ngIf="!isOwner" class="add-to-cal-btn" (click)="addToCalendar()" strong full>Add to calendar</button>
     <button ion-button *ngIf="!isOwner" class="leave-btn" (click)="leave()" strong full outline>LEAVE</button>
     <button ion-button *ngIf="isOwner" class="edit-btn" (click)="editEvent()" strong full outline>EDIT</button>
-    <button ion-button *ngIf="isOwner" class="delete-btn" (click)="deleteEvent()" strong full color="danger">DELETE</button>
-  </ion-footer>
-</ion-content>
+    <button ion-button *ngIf="isOwner" class="delete-btn" (click)="deleteEvent()" strong full>DELETE</button>
+</ion-footer>

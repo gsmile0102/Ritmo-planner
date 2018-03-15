@@ -3,7 +3,6 @@ import { IonicPage, NavController, NavParams, ViewController, ModalController, T
 import { EventProvider } from '../../providers/event/event';
 import { DatabaseProvider } from '../../providers/database/database';
 import * as firebase from 'firebase';
-import { AngularFireDatabase, AngularFireList } from 'angularfire2/database';
 /**
  * Generated class for the PersonalEventDetailPage page.
  *

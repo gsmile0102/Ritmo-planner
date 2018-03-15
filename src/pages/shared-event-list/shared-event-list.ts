@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams, ToastController, ModalController } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, ToastController, ModalController, Loading, LoadingController } from 'ionic-angular';
 import { Toast } from '@ionic-native/toast';
 import { Network } from '@ionic-native/network';
 import * as firebase from 'firebase';
@@ -19,11 +19,13 @@ import { DatabaseProvider } from '../../providers/database/database';
   templateUrl: 'shared-event-list.html',
 })
 export class SharedEventListPage {
+  public loading: Loading;
+
   currentUser: any = null;
   sharedEvents = [];
   evtAtt = [];
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, public eventProvider: EventProvider, private dbase: DatabaseProvider, private toast: ToastController, private network: Network) {
+  constructor(public navCtrl: NavController, public navParams: NavParams, public eventProvider: EventProvider, private dbase: DatabaseProvider, private toast: ToastController, private network: Network, private loadingCtrl: LoadingController) {
     this.currentUser = this.eventProvider.getCurrentUser();
   }
 

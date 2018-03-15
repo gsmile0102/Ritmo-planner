@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams, ViewController, ModalController, ToastController } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, ViewController, ModalController, ToastController, Loading, LoadingController } from 'ionic-angular';
+import { HomePage } from '../home/home'
+
 import { EventProvider } from '../../providers/event/event';
 import { DatabaseProvider } from '../../providers/database/database';
 import { AngularFireDatabase, AngularFireList } from 'angularfire2/database';
@@ -17,12 +19,16 @@ import { AngularFireDatabase, AngularFireList } from 'angularfire2/database';
   templateUrl: 'shared-event-detail.html',
 })
 export class SharedEventDetailPage {
+  loading: Loading;
+
   currentUser: any = null;
   currentEvent: any = {};
+  eventOwner = {};
+  attendees = [];
   isOwner: boolean = false;
   shEvRef: AngularFireList<any[]>;
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, public eventProvider: EventProvider, private viewCtrl: ViewController, private dbase: DatabaseProvider, private toast: ToastController, private modalCtrl: ModalController, private db: AngularFireDatabase) {
+  constructor(public navCtrl: NavController, public navParams: NavParams, public eventProvider: EventProvider, private viewCtrl: ViewController, private dbase: DatabaseProvider, private toast: ToastController, private modalCtrl: ModalController, private loadingCtrl: LoadingController) {
     this.currentUser = this.eventProvider.getCurrentUser();
   }
 
@@ -31,15 +37,48 @@ export class SharedEventDetailPage {
   }
 
   loadSharedEventDetail() {
-    this.eventProvider.getSharedEventDetail(this.navParams.get('eventId')).once('value', (snapshot) => {
-      this.currentEvent = snapshot.val();
-      this.currentEvent.id = snapshot.key;
-      var attendees = [];
-      for(let key in this.currentEvent.attendee) {
-        attendees.push(this.currentEvent.attendee[key]);
-      }
-      this.currentEvent.attendee = attendees;
-      this.isOwner = this.currentEvent.owner == this.currentUser.uid ? true : false;
+      this.eventProvider.getSharedEventDetail(this.navParams.get('eventId')).once('value', (snapshot) => {
+        this.currentEvent = snapshot.val();
+        this.currentEvent.id = snapshot.key;
+        for(let key in this.currentEvent.attendee) {
+          this.attendees.push(this.currentEvent.attendee[key]);
+        }
+        this.eventOwner = {
+          id: this.currentEvent.owner['id'],
+          name: this.currentEvent.owner['name'],
+          profilePic: this.currentEvent.owner['profilePic']
+        };
+        this.currentEvent.attendee = this.attendees;
+        this.isOwner = this.currentEvent.owner['id'] == this.currentUser.uid ? true : false;
+      });
+      this.loading = this.loadingCtrl.create();
+      this.loading.present();
+      setTimeout(() => {
+        this.loading.dismiss();
+      }, 2000);
+  }
+
+  addReminder() {
+
+  }
+
+  addToCalendar() {
+    let event = {
+      id: this.currentEvent.id,
+      title: this.currentEvent.title,
+      startTime: this.currentEvent.startTime,
+      endTime: this.currentEvent.endTime,
+      allDay: this.currentEvent.allDay,
+      reminder: this.currentEvent.reminder,
+      description: this.currentEvent.description,
+      colour: this.currentEvent.colour
+    };
+    this.dbase.addEvent(event).then((res) => {
+      this.toast.create({
+        message: 'Event has been added into your calendar.',
+        duration: 2500,
+        position: 'top'
+      }).present();
     });
   }
 
@@ -52,7 +91,7 @@ export class SharedEventDetailPage {
     //   }).present();
     //   this.navCtrl.pop();
     // });
-    this.eventProvider.leaveSharedEvent(this.currentEvent.id, this.currentEvent.owner).then((res) => {
+    this.eventProvider.leaveSharedEvent(this.currentEvent.id, this.eventOwner.id).then((res) => {
       this.toast.create({
         message: 'You have left this event.',
         duration: 2000,
@@ -67,10 +106,18 @@ export class SharedEventDetailPage {
   }
 
   deleteEvent(): void {
-    this.dbase.deleteSharedEvent(event).then((res) => {
+    // this.dbase.deleteSharedEvent(event).then((res) => {
+    //   this.toast.create({
+    //     message: 'Event has been deleted.',
+    //     duration: 2500,
+    //     position: 'top'
+    //   }).present();
+    //   this.navCtrl.pop();
+    // });
+    this.eventProvider.deleteSharedEvent(this.currentEvent.id).then((res) => {
       this.toast.create({
         message: 'Event has been deleted.',
-        duration: 2500,
+        duration: 2000,
         position: 'top'
       }).present();
       this.navCtrl.pop();

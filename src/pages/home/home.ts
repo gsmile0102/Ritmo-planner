@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { NavController, AlertController, ModalController, ToastController } from 'ionic-angular';
+import { NavController, NavParams, AlertController, ModalController, ToastController } from 'ionic-angular';
 import { Toast } from '@ionic-native/toast';
 import { Network } from '@ionic-native/network';
 
@@ -21,6 +21,7 @@ export class HomePage {
   viewTitle: string;
   isToday: boolean;
   selectedDay = new Date();
+  sharedEvent = null;
   // dbReady: boolean;
   connected: Subscription;
   disconnected: Subscription;
@@ -30,10 +31,7 @@ export class HomePage {
       currentDate: new Date()
   };
 
-  constructor(private navCtrl: NavController, private alertCtrl: AlertController, private modalCtrl: ModalController, private localNotifications: LocalNotifications, private toast: ToastController, private dbase: DatabaseProvider, private eventProvider: EventProvider, private network: Network) {
-    // this.dbase.getDatabaseState().subscribe(rdy => {
-    //   this.dbReady = rdy;
-    // });
+  constructor(private navCtrl: NavController, public navParams: NavParams, private alertCtrl: AlertController, private modalCtrl: ModalController, private localNotifications: LocalNotifications, private toast: ToastController, private dbase: DatabaseProvider, private eventProvider: EventProvider, private network: Network) {
   }
 
   ionViewDidLoad() {

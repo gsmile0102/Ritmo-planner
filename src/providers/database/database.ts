@@ -34,6 +34,9 @@ export class DatabaseProvider {
     });
   }
 
+  addCurrentUserProfile(): Promise<any[]> {
+  }
+
   getEventsData(): Promise<any[]> {
     return new Promise((resolve, reject) => {
         this.sqlite.create({

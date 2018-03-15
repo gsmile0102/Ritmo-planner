@@ -3,6 +3,7 @@ import { IonicPage, NavController, NavParams, ViewController, ModalController } 
 import { DatabaseProvider } from '../../providers/database/database';
 import { NotificationProvider } from '../../providers/notification/notification';
 import { EventProvider } from '../../providers/event/event';
+import { Camera } from '@ionic-native/camera';
 
 import * as moment from 'moment';
 import { LocalNotifications } from '@ionic-native/local-notifications';
@@ -31,14 +32,16 @@ export class SharedEventCreatePage {
     reminder: "",
     description: "",
     colour: "",
-    attendee: ""
+    attendee: [],
+    picture: null
   };
 
   selectedColour = '#9999ff';
   notifications = [];
   attendees = [];
+  eventPic: string = null;
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, private dbase: DatabaseProvider, private eventProvider: EventProvider, private viewCtrl: ViewController, private modalCtrl: ModalController, private ntfProvider: NotificationProvider) {
+  constructor(public navCtrl: NavController, public navParams: NavParams, private dbase: DatabaseProvider, private eventProvider: EventProvider, private viewCtrl: ViewController, private modalCtrl: ModalController, private ntfProvider: NotificationProvider, private camera: Camera) {
     let preselectedDate = this.navParams.get('selectedDay');
     this.sharedEvent.startTime = moment(preselectedDate).format('');
     this.sharedEvent.endTime = moment(preselectedDate).format('');
@@ -154,7 +157,20 @@ export class SharedEventCreatePage {
   }
 
   takePicture() {
-
+    this.camera.getPicture({
+      quality: 95,
+      destinationType: this.camera.DestinationType.DATA_URL,
+      sourceType: this.camera.PictureSourceType.PHOTOLIBRARY,
+      allowEdit: true,
+      encodingType: this.camera.EncodingType.PNG,
+      targetWidth: 500,
+      targetHeight: 500,
+      saveToPhotoAlbum: true
+    }).then((imageData) => {
+      this.sharedEvent.picture = imageData;
+    }, (err) => {
+      console.log(JSON.stringify(err));
+    });
   }
 
   attendeeArrayToString(): string {

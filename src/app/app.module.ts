@@ -8,6 +8,7 @@ import { LocalNotifications } from '@ionic-native/local-notifications';
 import { Network } from '@ionic-native/network';
 import { Contacts } from '@ionic-native/contacts';
 import { TextMaskModule } from 'angular2-text-mask';
+import { Camera } from '@ionic-native/camera';
 
 import { AngularFireDatabase, AngularFireDatabaseModule } from 'angularfire2/database';
 import { AngularFireModule } from 'angularfire2';
@@ -76,7 +77,8 @@ export const firebaseConfig = {
     EventProvider,
     Network,
     NetworkProvider,
-    Contacts
+    Contacts,
+    Camera
   ]
 })
 export class AppModule {}
