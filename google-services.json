@@ -1,0 +1,70 @@
+{
+  "project_info": {
+    "project_number": "686969780704",
+    "firebase_url": "https://ritmo-planner.firebaseio.com",
+    "project_id": "ritmo-planner",
+    "storage_bucket": "ritmo-planner.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:686969780704:android:19b238ec679e58ba",
+        "android_client_info": {
+          "package_name": "com.ritmoplanner"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "686969780704-ppdo5u886rsqetvr90c02ctljgt8bfj1.apps.googleusercontent.com",
+          "client_type": 3
+        },
+        {
+          "client_id": "686969780704-l4tprjvr11tmht81u4irsnpe4ctv3066.apps.googleusercontent.com",
+          "client_type": 3
+        },
+        {
+          "client_id": "686969780704-vtapm8ihs2b5tvufk3t85n1f2adm23oe.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.ritmoplanner",
+            "certificate_hash": "1fb289c1e65d14872a2f2f82e566e8d498b1260a"
+          }
+        },
+        {
+          "client_id": "686969780704-qf2ah103vqomg5ih032pto89gqqc6ftl.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA-orWd9EAgy1FYw7VjoNVbYdlBq2uuztQ"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "686969780704-ppdo5u886rsqetvr90c02ctljgt8bfj1.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "686969780704-983hfflnptmpb6lf9td3h0bfnk1kubs2.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.ritmoplanner"
+              }
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
