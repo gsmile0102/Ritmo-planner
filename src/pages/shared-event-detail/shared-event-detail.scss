@@ -2,7 +2,8 @@ page-shared-event-detail {
 
   ion-header {
     .toolbar-background {
-      background: #00b8e6;
+      // background: #00b8e6;
+      background: transparent;
       color: white;
     }
     .toolbar-title {
@@ -13,17 +14,13 @@ page-shared-event-detail {
     }
   }
 
-  .content {
-    background-color: #cccccc;
-  }
-
   ion-card {
     background-color: #fff;
     width: 100%;
     margin: 0;
     margin-bottom: 25px;
     position: relative;
-    top: -10px;
+    // top: -10px;
   }
 
   .image {
@@ -49,6 +46,7 @@ page-shared-event-detail {
 
   .all-day-label {
     font-size: 1.0em;
+    color: #666666;
   }
 
   .div-title {
@@ -57,9 +55,32 @@ page-shared-event-detail {
     }
   }
 
+  .event-desc-div {
+    padding-left: 20px;
+    .event-desc {
+      font-size: 1.2em;
+      font-style: italic;
+    }
+  }
+
+  .arrow-icon {
+    color: #666666;
+    font-size: 1.5em;
+  }
+
+  .with-label {
+    font-size: 1em;
+    color: #666666;
+  }
+
+  .event-icon {
+    color: #666666;
+  }
+
   .leave-btn {
     height: 50px;
-
+    color: #ffffff;
+    background: linear-gradient(to right, #ff6600 0%, #cc3399 100%);
   }
 
   .edit-btn {
@@ -71,4 +92,18 @@ page-shared-event-detail {
     height: 50px;
     background: linear-gradient(to right, #ff6600 0%, #cc3399 100%);
   }
+
+  .add-to-cal-btn {
+    height: 50px;
+  }
+
+  ion-footer {
+    background: #ffffff;
+  }
+
+  // .profile-avatar {
+  //   border-radius: 50%;
+  //   width: 30px;
+  //   height: 30px;
+  // }
 }

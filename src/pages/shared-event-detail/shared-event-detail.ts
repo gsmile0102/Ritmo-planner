@@ -22,44 +22,58 @@ export class SharedEventDetailPage {
   loading: Loading;
 
   currentUser: any = null;
+  eventId = '';
   currentEvent: any = {};
-  eventOwner = {};
+  eventOwner = {
+    id: '',
+    name: '',
+    profilePic: ''
+  };
   attendees = [];
   isOwner: boolean = false;
+  isAddedToCal: boolean = false;
   shEvRef: AngularFireList<any[]>;
 
   constructor(public navCtrl: NavController, public navParams: NavParams, public eventProvider: EventProvider, private viewCtrl: ViewController, private dbase: DatabaseProvider, private toast: ToastController, private modalCtrl: ModalController, private loadingCtrl: LoadingController) {
     this.currentUser = this.eventProvider.getCurrentUser();
+    this.eventId = this.navParams.get('eventId');
   }
 
   ionViewDidLoad() {
-    this.loadSharedEventDetail();
+    this.loadSharedEventDetail().then(() => {
+
+    });
   }
 
-  loadSharedEventDetail() {
-      this.eventProvider.getSharedEventDetail(this.navParams.get('eventId')).once('value', (snapshot) => {
-        this.currentEvent = snapshot.val();
-        this.currentEvent.id = snapshot.key;
-        for(let key in this.currentEvent.attendee) {
-          this.attendees.push(this.currentEvent.attendee[key]);
-        }
-        this.eventOwner = {
-          id: this.currentEvent.owner['id'],
-          name: this.currentEvent.owner['name'],
-          profilePic: this.currentEvent.owner['profilePic']
-        };
-        this.currentEvent.attendee = this.attendees;
-        this.isOwner = this.currentEvent.owner['id'] == this.currentUser.uid ? true : false;
+  loadSharedEventDetail(): Promise<any> {
+    return new Promise((resolve) => {
+      this.attendees = [];
+      this.dbase.checkEventExistence(this.eventId).then((exists) => {
+        this.isAddedToCal = true;
       });
-      this.loading = this.loadingCtrl.create();
-      this.loading.present();
-      setTimeout(() => {
-        this.loading.dismiss();
-      }, 2000);
-  }
+      this.eventProvider.getSharedEventDetail(this.navParams.get('eventId')).once('value', (snapshot) => {
+          this.currentEvent = snapshot.val();
+          this.currentEvent.id = snapshot.key;
 
-  addReminder() {
-
+          for(let key in this.currentEvent.attendee) {
+            this.attendees.push(this.currentEvent.attendee[key]);
+          }
+          this.eventOwner = {
+            id: this.currentEvent.owner['id'],
+            name: this.currentEvent.owner['name'],
+            profilePic: this.currentEvent.owner['profilePic']
+          };
+          this.currentEvent.attendee = this.attendees;
+          this.isOwner = this.currentEvent.owner['id'] == this.currentUser.uid ? true : false;
+      }).then(() => {
+        this.loading = this.loadingCtrl.create();
+        this.loading.present();
+        setTimeout(() => {
+          this.loading.dismiss();
+        }, 2000);
+        resolve();
+      });
+    });
   }
 
   addToCalendar() {
@@ -69,9 +83,9 @@ export class SharedEventDetailPage {
       startTime: this.currentEvent.startTime,
       endTime: this.currentEvent.endTime,
       allDay: this.currentEvent.allDay,
-      reminder: this.currentEvent.reminder,
+      reminder: '',
       description: this.currentEvent.description,
-      colour: this.currentEvent.colour
+      colour: '#cc0099'
     };
     this.dbase.addEvent(event).then((res) => {
       this.toast.create({
@@ -102,7 +116,16 @@ export class SharedEventDetailPage {
   }
 
   editEvent(): void {
-
+    let modal = this.modalCtrl.create('EditSharedEventPage', {event: this.currentEvent});
+    modal.present();
+    modal.onDidDismiss((newEvtId) => {
+      this.navCtrl.pop();
+      // this.loadSharedEventDetail().then(() => {
+      //   setTimeout(() => {
+      //     this.loading.dismiss();
+      //   }, 2000);
+      // });
+    });
   }
 
   deleteEvent(): void {

@@ -23,4 +23,8 @@ page-add-event {
   .event-color {
     border: none;
   }
+  .event-icon {
+    font-size: 1.5em;
+    color: color($colors, themeColor1, base);
+  }
 }

@@ -66,6 +66,42 @@ export class PersonalEventDetailPage {
     });
   }
 
+  setStyle(evtColour) {
+    let eventStyle = {};
+    if(evtColour == '#cc0099') {
+      eventStyle = {
+        'background' : '#cc0099'
+     };
+    }
+    if(evtColour == '#9999ff') {
+       eventStyle = {
+        'background' : 'linear-gradient(to top right, #9900ff 0%, #9999ff 100%)'
+      };
+    }
+    if(evtColour == '#b3003b') {
+       eventStyle = {
+        'background' : 'linear-gradient(to top right, #b3003b 0%, #ff6699 100%)'
+      };
+    }
+    if(evtColour == '#ffa64d') {
+       eventStyle = {
+        'background' : 'linear-gradient(to top right, #ff661a 0%, #ffa64d 100%)'
+      };
+    }
+    if(evtColour == '#00ff99') {
+       eventStyle = {
+        'background' : 'linear-gradient(to top right, #00cc99 0%, #00ff99 100%)'
+      };
+    }
+    if(evtColour == '#0099ff') {
+       eventStyle = {
+        'background' : 'linear-gradient(to top right, #005c99 0%, #0099ff 100%)'
+      };
+    }
+
+    return eventStyle;
+  }
+
   cancel(): void {
     this.viewCtrl.dismiss();
   }

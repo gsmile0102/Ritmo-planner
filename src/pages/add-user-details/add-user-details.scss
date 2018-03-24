@@ -1,0 +1,28 @@
+page-add-user-details {
+  .profile-pic {
+    text-align: center;
+
+    .profile-avatar {
+      border-radius: 50%;
+      width: 100px;
+      height: 100px;
+    }
+
+    .take-pic-btn {
+      margin-top: 10px;
+    }
+  }
+
+  form {
+    margin-top: 50px;
+  }
+
+
+  .login-btn {
+      margin-top: 50px;
+      height: 50px;
+      background: linear-gradient(to left, color($colors, themeColor2, base) 0%, color($colors, themeColor1, base) 100%);
+      border-radius: 5px;
+  }
+
+}

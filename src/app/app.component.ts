@@ -6,7 +6,9 @@ import { SplashScreen } from '@ionic-native/splash-screen';
 import { TabsPage } from '../pages/tabs/tabs';
 import { HomePage } from '../pages/home/home';
 import { UserAuthPage } from '../pages/user-auth/user-auth';
+
 import { AuthProvider } from '../providers/auth/auth';
+import { DatabaseProvider } from '../providers/database/database';
 
 import * as firebase from 'firebase';
 
@@ -17,8 +19,10 @@ export class MyApp {
   @ViewChild('mycontent') nav: NavController
   rootPage:any;
   user: any = null;
+  username: string = '';
+  profilePic: any = null;
 
-  constructor(platform: Platform, statusBar: StatusBar, splashScreen: SplashScreen, public authProvider: AuthProvider) {
+  constructor(platform: Platform, statusBar: StatusBar, splashScreen: SplashScreen, public authProvider: AuthProvider, private dbase: DatabaseProvider) {
     firebase.initializeApp({
       apiKey: "AIzaSyDLmhXONfVqA9WpIQUtViFVIBy4xlBM3y4",
       authDomain: "ritmo-planner.firebaseapp.com",
@@ -31,10 +35,15 @@ export class MyApp {
       this.user = user;
       if(!user) {
         this.rootPage = 'UserAuthPage';
-        unsubscribe();
+        // unsubscribe();
+
       } else {
         this.rootPage = TabsPage;
-        unsubscribe();
+        // unsubscribe();
+        firebase.database().ref(`userProfile/${user.uid}`).once('value', (snapshot) => {
+          this.username = snapshot.val().name;
+          this.profilePic = snapshot.val().profilePic;
+        });
       }
     });
 
@@ -48,19 +57,25 @@ export class MyApp {
 
   login() {
     this.nav.push(UserAuthPage);
-    // this.authProvider.loginWithGoogle();
   }
 
   logout() {
     this.authProvider.logoutUser().then(() => {
-      this.nav.setRoot('UserAuthPage');
+      this.authProvider.setAsLogout().then(() => {
+        this.dbase.deleteEventsDb();
+        this.nav.setRoot('UserAuthPage');
+      });
     }).catch((err) => {
       alert(err.message);
     });
   }
 
+  getUserProfilePicture() {
+
+  }
+
   goToHome() {
-    this.rootPage = HomePage;
+    this.rootPage = TabsPage;
   }
 
   // logout() {

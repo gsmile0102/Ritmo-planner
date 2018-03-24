@@ -54,12 +54,14 @@ export class SharedEventListPage {
           title: snap.val().title,
           startTime: new Date(snap.val().startTime),
           endTime: new Date(snap.val().endTime),
-          allDay: snap.val().allDay == 'true' ? true : false,
+          allDay: snap.val().allDay,
           reminder: snap.val().reminder,
           description: snap.val().description,
           colour: snap.val().colour,
-          attendee: snap.val().attendee
+          attendee: snap.val().attendee,
+          picture: snap.val().picture
         });
+        return false;
       });
     });
   }
@@ -92,25 +94,25 @@ export class SharedEventListPage {
   }
 
   editEvent(event) {
-    let modal = this.modalCtrl.create('EditSharedEventPage', {event: this.currentEvent});
-    modal.present();
-    modal.onDidDismiss((newEvtId) => {
-      this.evKey = newEvtId;
-      if(newEvtId != 0) {
-        this.loadEventDetail();
-      }
-    });
+    // let modal = this.modalCtrl.create('EditSharedEventPage', {event: this.currentEvent});
+    // modal.present();
+    // modal.onDidDismiss((newEvtId) => {
+    //   this.evKey = newEvtId;
+    //   if(newEvtId != 0) {
+    //     this.loadEventsData();
+    //   }
+    // });
   }
 
   deleteEvent(event) {
-    this.dbase.deleteSharedEvent(event).then((res) => {
-      this.toast.create({
-        message: 'Event has been deleted.',
-        duration: 2500,
-        position: 'top'
-      }).present();
-    });
-    this.loadEventsData();
+    // this.dbase.deleteSharedEvent(event).then((res) => {
+    //   this.toast.create({
+    //     message: 'Event has been deleted.',
+    //     duration: 2500,
+    //     position: 'top'
+    //   }).present();
+    // });
+    // this.loadEventsData();
   }
 
 }

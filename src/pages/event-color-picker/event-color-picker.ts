@@ -15,7 +15,7 @@ import { IonicPage, NavController, NavParams, ViewController } from 'ionic-angul
 })
 export class EventColorPickerPage {
 
-  eventColor: string;
+  eventColor = '#cc0099';
 
   constructor(public navCtrl: NavController, public navParams: NavParams, private viewCtrl: ViewController) {
   }

@@ -13,4 +13,34 @@ page-shared-event-create {
   .event-color {
     border: none;
   }
+
+  .event-icon {
+    font-size: 1.5em;
+    color: color($colors, themeColor1, base);
+  }
+
+  .event-picture-div {
+    text-align: center;
+    .pic-box {
+      text-align: center;
+      border: 3px solid #cccccc;
+      border-radius: 5px;
+      padding: 50px 0;
+    }
+    .pic-icon {
+      color: #cccccc;
+      font-size: 3.5em;
+    }
+    .event-picture {
+      width: 100%;
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+      border-radius: 10px;
+    }
+  }
+
+  .alert-pic-taken {
+    text-align: center;
+  }
 }

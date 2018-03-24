@@ -25,14 +25,20 @@
     color: grey;
   }
 
+  .profile-pic {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    border: 2px solid #cc0099;
+  }
 }
 
 .home-icon {
-  color: #9999ff;
+  color: #cc0099;
 }
 
 .profile-icon {
-  color: #9999ff;
+  color: #cc0099;
 }
 
 .menuList {
@@ -43,5 +49,17 @@
   border-bottom: 0px;
 
   ion-item {
+  }
+}
+
+div.logo {
+    position:absolute;
+    bottom: 0;
+    left:50%;
+    margin-left:-150px;
+
+  .logo-pic {
+    width: 40px;
+    height: 40px;
   }
 }

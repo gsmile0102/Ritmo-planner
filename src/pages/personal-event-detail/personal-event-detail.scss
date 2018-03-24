@@ -2,7 +2,7 @@ page-personal-event-detail {
   ion-header {
     .toolbar-background {
       // background: linear-gradient(to top right, #00ffcc 0%, #cc99ff 100%);
-      background: #9999ff;
+      background: transparent;
       color: white;
     }
     .toolbar-title {
@@ -30,6 +30,7 @@ page-personal-event-detail {
 
   .delete-btn {
     height: 50px;
+    background: linear-gradient(to right, #ff6600 0%, #cc3399 100%);
   }
 
   .arrow-icon {
@@ -62,12 +63,50 @@ page-personal-event-detail {
     color: #4d4d4d
   }
 
-  .event-desc {
-    font-size: 15px;
-    color: #737373;
+  .event-desc-div {
+    padding: 10px 20px;
+    .event-desc {
+      font-size: 1.2em;
+      color: #737373;
+      font-style: italic;
+    }
   }
+
 
   .event-all-day {
     font-size: 20px;
+  }
+
+  .event-title-colour-div {
+    width: 100%;
+    padding-top: 150px;
+    padding-bottom: 10px;
+    .event-title {
+      padding-left: 10px;
+      color: #ffffff;
+      font-weight: bold;
+      font-size: 3em;
+    }
+    .event-all-day {
+      padding-left: 5px;
+      color: #ffffff;
+      font-weight: bold;
+      font-size: 1.5em;
+    }
+    .event-title-default {
+      padding-left: 10px;
+      color: #ffffff;
+      font-weight: bold;
+      font-size: 3em;
+    }
+    .event-all-day-default {
+      padding-left: 5px;
+      color: #ffffff;
+      font-weight: bold;
+      font-size: 1.5em;
+    }
+    .event-uncategorized {
+      font-style: italic;
+    }
   }
 }

@@ -1,7 +1,8 @@
 page-shared-event-list {
   ion-header {
     .toolbar-background {
-      background: linear-gradient(to right, #9966ff 0%, #9999ff 100%);
+      // background: linear-gradient(to top right, #cc0099 0%, #ff6600 100%);
+      background: #ff6600;
       color: white;
     }
     .toolbar-title {
@@ -32,11 +33,23 @@ page-shared-event-list {
           }
   }
 
+  .fab-add-btn {
+    background: linear-gradient(to top right, #cc0099 0%, #ff6600 100%);
+  }
+
   .button-inner {
       overflow: visible;
   }
 
   .fab {
     contain: initial;
+  }
+
+  ion-content {
+    background-color: #f2f2f2;
+  }
+
+  .event-card-img {
+    margin-top: 10px;
   }
 }

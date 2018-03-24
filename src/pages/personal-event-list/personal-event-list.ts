@@ -28,6 +28,7 @@ export class PersonalEventListPage {
   // public events = [];
   connected: Subscription;
   disconnected: Subscription;
+  eventStyle = {};
 
   constructor(public navCtrl: NavController, public navParams: NavParams, public eventProvider: EventProvider, public db: AngularFireDatabase, private dbase: DatabaseProvider, private toast: ToastController, private network: Network, private modalCtrl: ModalController) {
     this.currentUser = this.eventProvider.getCurrentUser();
@@ -73,17 +74,20 @@ export class PersonalEventListPage {
     }, (err) => console.error(err));
 
     this.disconnected = this.network.onDisconnect().subscribe(data => {
-      this.toast.create({
-        message: 'You are not connected to network',
-        duration: 3000,
-        position: 'top'
-      }).present();
+
     }, (err) => console.error(err));
 
     if(this.network.type !== "none") {
       this.dbase.getEventsData().then((res) => {
         this.eventProvider.syncEventsData(res);
       });
+    }
+    else {
+      this.toast.create({
+        message: 'You are not connected to network',
+        duration: 3000,
+        position: 'top'
+      }).present();
     }
     this.loadEventsData();
   }
@@ -97,30 +101,16 @@ export class PersonalEventListPage {
     this.dbase.getEventsData().then((res) => {
       this.events = [];
         for(let ev of res) {
-          if(ev.allDay == 'true') {
             this.events.push({
               id: ev.id,
               title: ev.title,
               startTime: new Date(ev.startTime),
               endTime: new Date(ev.endTime),
-              allDay: true,
+              allDay: ev.allDay == 'true' ? true : false,
               reminder: ev.reminder,
               description: ev.description,
               colour: ev.colour
             });
-          }
-          else {
-            this.events.push({
-              id: ev.id,
-              title: ev.title,
-              startTime: new Date(ev.startTime),
-              endTime: new Date(ev.endTime),
-              allDay: false,
-              reminder: ev.reminder,
-              description: ev.description,
-              colour: ev.colour
-            });
-          }
         }
     }, (err) => { });
   }
@@ -162,6 +152,42 @@ export class PersonalEventListPage {
     return Object.keys(obj).map((key) => {
       return obj[key]
     });
+  }
+
+  setStyle(evtColour) {
+    let eventStyle = {};
+    if(evtColour == '#cc0099') {
+      eventStyle = {
+        'border' : '2px solid #cc0099'
+     };
+    }
+    if(evtColour == '#9999ff') {
+       eventStyle = {
+        'background' : 'linear-gradient(to top right, #9900ff 0%, #9999ff 100%)'
+      };
+    }
+    if(evtColour == '#b3003b') {
+       eventStyle = {
+        'background' : 'linear-gradient(to top right, #b3003b 0%, #ff6699 100%)'
+      };
+    }
+    if(evtColour == '#ffa64d') {
+       eventStyle = {
+        'background' : 'linear-gradient(to top right, #ff661a 0%, #ffa64d 100%)'
+      };
+    }
+    if(evtColour == '#00ff99') {
+       eventStyle = {
+        'background' : 'linear-gradient(to top right, #00cc99 0%, #00ff99 100%)'
+      };
+    }
+    if(evtColour == '#0099ff') {
+       eventStyle = {
+        'background' : 'linear-gradient(to top right, #005c99 0%, #0099ff 100%)'
+      };
+    }
+
+    return eventStyle;
   }
 
   compare(eventA, eventB) {

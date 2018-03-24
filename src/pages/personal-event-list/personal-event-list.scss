@@ -1,7 +1,8 @@
 page-personal-event-list {
   ion-header {
     .toolbar-background {
-      background: linear-gradient(to right, #9966ff 0%, #9999ff 100%);
+      // background: linear-gradient(to top right, #cc0099 0%, #ff6600 100%);
+      background: #cc0099;
       color: white;
     }
     .toolbar-title {
@@ -32,6 +33,10 @@ page-personal-event-list {
           }
       }
 
+      .fab-add-btn {
+        background: linear-gradient(to top right, #cc0099 0%, #ff6600 100%);
+      }
+
       .button-inner {
           overflow: visible;
       }
@@ -43,10 +48,71 @@ page-personal-event-list {
   .event-list-title {
     font-size: 20px;
     font-weight: bold;
+    color: #ffffff;
+    margin-bottom: 15px;
   }
 
   .event-list-content {
     background-color: #f2f2f2;
+  }
+
+  .event-arrow-icon {
+    color: #ffffff;
+  }
+
+  .icon-col {
+    text-align: center;
+  }
+
+  .event-date-col {
+    text-align: center;
+  }
+
+  .event-date-font {
+    font-size: 1.2em;
+    color: #ffffff;
+  }
+
+  .event-allDay-label {
+    font-size: 1.2em;
+    color: #ffffff;
+  }
+
+  .event-unctg-title {
+    font-size: 20px;
+    font-weight: bold;
+    color: #404040;
+    margin-bottom: 15px;
+  }
+
+  .event-unctg-allDay {
+    font-size: 1.2em;
+    color: #404040;
+  }
+
+  .event-unctg-date {
+    font-size: 1.2em;
+    color: #404040;
+  }
+
+  .event-unctg-arrow {
+    color: #404040;
+  }
+
+  .event-uncategorized {
+    color: #404040;
+    font-size: 1.0em;
+    font-style: italic;
+  }
+
+
+
+  ion-item {
+    background: transparent !important;
+  }
+
+  ion-item-sliding {
+    background: transparent !important;
   }
 
 }

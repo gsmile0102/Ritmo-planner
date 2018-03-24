@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AngularFireAuth } from 'angularfire2/auth';
+import { Storage } from '@ionic/storage';
+
 import * as firebase from 'firebase';
 
 /*
@@ -10,8 +12,9 @@ import * as firebase from 'firebase';
 */
 @Injectable()
 export class AuthProvider {
+  isLogin: boolean = false;
 
-  constructor() {
+  constructor(private storage: Storage) {
   }
 
   // loginWithGoogle() {
@@ -67,11 +70,16 @@ export class AuthProvider {
     return firebase.auth().signInWithEmailAndPassword(email, password);
   }
 
-  signupWithEmail(email: string, password: string, phone: string) {
+  signupWithEmail(email: string, password: string, name: string, profilePic: string) {
+    var profPic = null;
     return firebase.auth().createUserWithEmailAndPassword(email, password).then((newUser) => {
-      firebase.database().ref('/userProfile').child(newUser.uid).set({
-        email: email,
-        phone: phone
+      firebase.storage().ref(`userProfilePic/${newUser.uid}/profilePic.png`).putString(profilePic, 'base64', {contentType: 'image/png'}).then((savedPicture) => {
+        profPic = savedPicture.downloadURL;
+        firebase.database().ref('/userProfile').child(newUser.uid).set({
+          name: name,
+          email: email,
+          profilePic: profPic
+        });
       });
     });
   }
@@ -80,6 +88,25 @@ export class AuthProvider {
     return firebase.auth().signOut();
   }
 
+  setAsJustLogin(): Promise<any> {
+    return new Promise((resolve) => {
+      this.storage.set('login_status', true);
+      resolve();
+    });
+  }
 
+  setAsLogout(): Promise<any> {
+    return new Promise((resolve) => {
+      this.storage.set('login_status', false);
+      resolve();
+    });
+  }
 
+  getLoginStatus(): Promise<any> {
+    return new Promise((resolve) => {
+      this.storage.get('login_status').then((val) => {
+        resolve(val);
+      });
+    });
+  }
 }

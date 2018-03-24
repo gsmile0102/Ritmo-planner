@@ -38,8 +38,10 @@ export class LoginModalPage {
       console.log(this.loginForm.value);
     } else {
       this.authProvider.loginInWithEmail(this.loginForm.value.email, this.loginForm.value.password).then((authData) => {
-        this.loading.dismiss().then(() => {
-          this.navCtrl.setRoot(TabsPage);
+        this.authProvider.setAsJustLogin().then(() => {
+          this.loading.dismiss().then(() => {
+            this.navCtrl.setRoot(TabsPage);
+          });
         });
       }, (err) => {
         this.loading.dismiss().then(() => {

@@ -27,15 +27,57 @@ export class DatabaseProvider {
     // });
   }
 
-  deleteDb() {
+  deleteEventsDb() {
     this.sqlite.deleteDatabase({
       name: 'eventsdb.db',
       location: 'default'
     });
   }
 
-  addCurrentUserProfile(): Promise<any[]> {
-  }
+  // addCurrentLogInUser(userId): Promise<any[]> {
+  //   return new Promise((resolve, reject) => {
+  //     this.sqlite.create({
+  //       name: 'users.db',
+  //       location: 'default'
+  //     }).then((db: SQLiteObject) => {
+  //       db.executeSql('CREATE TABLE IF NOT EXISTS user(rowid INTEGER PRIMARY KEY, uid TEXT)', {});
+  //       db.executeSql('INSERT INTO user VALUES(NULL,?)', [userId]).then((res) => {
+  //         resolve(res);
+  //       }, (err) => {
+  //         reject(err);
+  //       });
+  //     });
+  //   });
+  // }
+  //
+  // getLastLogInUser(): Promise<any[]> {
+  //   return new Promise((resolve, reject) => {
+  //     this.sqlite.create({
+  //       name: 'users.db',
+  //       location: 'default'
+  //     }).then((db: SQLiteObject) => {
+  //       db.executeSql('CREATE TABLE IF NOT EXISTS user(rowid INTEGER PRIMARY KEY, uid TEXT)', {});
+  //       db.executeSql('SELECT * FROM user ORDER BY rowid DESC LIMIT 1', {}).then((res) => {
+  //         var prevUser = {};
+  //         if(res.rows.item(0) == null) {
+  //           prevUser = {
+  //             id: 0,
+  //             uid: ''
+  //           }
+  //         }
+  //         else {
+  //           prevUser = {
+  //             id: res.rows.item(0).rowid,
+  //             uid: res.rows.item(0).uid
+  //           };
+  //         }
+  //         resolve(prevUser);
+  //       }, (err) => {
+  //         reject(err);
+  //       });
+  //     });
+  //   });
+  // }
 
   getEventsData(): Promise<any[]> {
     return new Promise((resolve, reject) => {
@@ -44,7 +86,7 @@ export class DatabaseProvider {
           location: 'default'
         }).then((db: SQLiteObject) => {
           db.executeSql('CREATE TABLE IF NOT EXISTS event(rowid INTEGER PRIMARY KEY, title TEXT, startTime TEXT, endTime TEXT, allDay INTEGER, reminder INTEGER, description TEXT, colour TEXT)', {});
-          db.executeSql('SELECT * FROM event ORDER BY rowid', {}).then(res => {
+          db.executeSql('SELECT * FROM event ORDER BY rowid', {}).then((res) => {
             let events = [];
             if(res.rows.length > 0) {
               for(var i = 0; i < res.rows.length; i++) {
@@ -74,7 +116,7 @@ export class DatabaseProvider {
         name: 'eventsdb.db',
         location: 'default'
       }).then((db: SQLiteObject) => {
-        db.executeSql('SELECT * FROM event WHERE rowid=?', [eventId]).then(res => {
+        db.executeSql('SELECT * FROM event WHERE rowid=?', [eventId]).then((res) => {
           var retEvent = {
             id: res.rows.item(0).rowid,
             title: res.rows.item(0).title,
@@ -87,6 +129,24 @@ export class DatabaseProvider {
           };
           resolve(retEvent);
         }, (err) => { reject(err); });
+      });
+    });
+  }
+
+  checkEventExistence(eventId): Promise<any> {
+    return new Promise((resolve) => {
+      this.sqlite.create({
+        name: 'eventsdb.db',
+        location: 'default'
+      }).then((db: SQLiteObject) => {
+        db.executeSql('SELECT * FROM event WHERE rowid=?', [eventId]).then((res) => {
+          if(res.rows == null) {
+            resolve(0);
+          }
+          else {
+            resolve(1);
+          }
+        });
       });
     });
   }

@@ -9,6 +9,8 @@ import { Network } from '@ionic-native/network';
 import { Contacts } from '@ionic-native/contacts';
 import { TextMaskModule } from 'angular2-text-mask';
 import { Camera } from '@ionic-native/camera';
+import { IonicStorageModule } from '@ionic/storage';
+import { InputMaskModule } from 'ionic-input-mask';
 
 import { AngularFireDatabase, AngularFireDatabaseModule } from 'angularfire2/database';
 import { AngularFireModule } from 'angularfire2';
@@ -18,7 +20,7 @@ import { HomePage } from '../pages/home/home';
 import { TabsPage } from '../pages/tabs/tabs';
 import { PersonalEventListPage } from '../pages/personal-event-list/personal-event-list';
 import { SharedEventListPage } from '../pages/shared-event-list/shared-event-list';
-import { AddUserPhoneNumberPage } from '../pages/add-user-phone-number/add-user-phone-number';
+import { AddUserDetailsPage } from '../pages/add-user-details/add-user-details';
 import { NgCalendarModule } from 'ionic2-calendar';
 import { DatabaseProvider } from '../providers/database/database';
 
@@ -44,7 +46,7 @@ export const firebaseConfig = {
     HomePage,
     PersonalEventListPage,
     SharedEventListPage,
-    AddUserPhoneNumberPage
+    AddUserDetailsPage
   ],
   imports: [
     BrowserModule,
@@ -52,7 +54,9 @@ export const firebaseConfig = {
     IonicModule.forRoot(MyApp),
     AngularFireModule.initializeApp(firebaseConfig),
     AngularFireDatabaseModule,
-    TextMaskModule
+    TextMaskModule,
+    IonicStorageModule.forRoot(),
+    InputMaskModule
   ],
   bootstrap: [IonicApp],
   entryComponents: [
@@ -61,7 +65,7 @@ export const firebaseConfig = {
     HomePage,
     PersonalEventListPage,
     SharedEventListPage,
-    AddUserPhoneNumberPage
+    AddUserDetailsPage
   ],
   providers: [
     AngularFireDatabase,

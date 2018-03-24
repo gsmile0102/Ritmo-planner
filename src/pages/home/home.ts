@@ -2,9 +2,12 @@ import { Component } from '@angular/core';
 import { NavController, NavParams, AlertController, ModalController, ToastController } from 'ionic-angular';
 import { Toast } from '@ionic-native/toast';
 import { Network } from '@ionic-native/network';
+import { Storage } from '@ionic/storage';
 
 import { DatabaseProvider } from '../../providers/database/database';
 import { EventProvider } from '../../providers/event/event';
+import { AuthProvider } from '../../providers/auth/auth';
+
 import * as moment from 'moment';
 import { Subscription} from 'rxjs/Subscription';
 
@@ -17,6 +20,9 @@ import * as firebase from 'firebase';
   templateUrl: 'home.html'
 })
 export class HomePage {
+  currentUser: any = null;
+  isSameUser: boolean = false;
+
   eventSource = [];
   viewTitle: string;
   isToday: boolean;
@@ -31,21 +37,46 @@ export class HomePage {
       currentDate: new Date()
   };
 
-  constructor(private navCtrl: NavController, public navParams: NavParams, private alertCtrl: AlertController, private modalCtrl: ModalController, private localNotifications: LocalNotifications, private toast: ToastController, private dbase: DatabaseProvider, private eventProvider: EventProvider, private network: Network) {
+  constructor(private navCtrl: NavController, public navParams: NavParams, private alertCtrl: AlertController, private modalCtrl: ModalController, private localNotifications: LocalNotifications, private toast: ToastController, private dbase: DatabaseProvider, private eventProvider: EventProvider, private authProvider: AuthProvider, private network: Network, private storage: Storage) {
+    firebase.auth().onAuthStateChanged((user) => {
+      if(user) {
+        this.currentUser = user;
+      }
+    });
   }
 
   ionViewDidLoad() {
-  }
-
-  ionViewDidEnter() {
+    // this.dbase.getLastLogInUser().then((user) => {
+    //   if(this.currentUser.uid == user.uid) {
+    //     this.isSameUser = true;
+    //   }
+    //   else {
+    //     this.isSameUser = false;
+    //     this.dbase.addCurrentLogInUser(this.currentUser.uid);
+    //   }
+    // });
   }
 
   ionViewWillEnter() {
-    this.connected = this.network.onConnect().subscribe(data => {
-      this.dbase.getEventsData().then((res) => {
-        this.eventProvider.syncEventsData(res);
-      });
-    });
+    this.authProvider.getLoginStatus().then((val) => {
+      if(val) {
+        this.prepopulateEventsData().then(() => {
+          this.authProvider.setAsLogout();
+        });
+      }
+      else {
+        // this.connected = this.network.onConnect().subscribe(data => {
+        //   this.dbase.getEventsData().then((res) => {
+        //     this.eventProvider.syncEventsData(res);
+        //   });
+        // });
+        if(this.network.type !== "none") {
+          this.dbase.getEventsData().then((res) => {
+            this.eventProvider.syncEventsData(res);
+          });
+        }
+      }
+    })
 
     this.disconnected = this.network.onDisconnect().subscribe(data => {
       this.toast.create({
@@ -55,12 +86,6 @@ export class HomePage {
       }).present();
     });
 
-    if(this.network.type !== "none") {
-      this.dbase.getEventsData().then((res) => {
-        this.eventProvider.syncEventsData(res);
-      });
-    }
-
     this.loadEventsData();
   }
 
@@ -68,30 +93,16 @@ export class HomePage {
     this.dbase.getEventsData().then((res) => {
       let events = [];
         for(let ev of res) {
-          if(ev.allDay == 'true') {
-            events.push({
-              id: ev.id,
-              title: ev.title,
-              startTime: new Date(ev.startTime),
-              endTime: new Date(ev.endTime),
-              allDay: true,
-              reminder: ev.reminder,
-              description: ev.description,
-              colour: ev.colour
-            });
-          }
-          else {
-            events.push({
-              id: ev.id,
-              title: ev.title,
-              startTime: new Date(ev.startTime),
-              endTime: new Date(ev.endTime),
-              allDay: false,
-              reminder: ev.reminder,
-              description: ev.description,
-              colour: ev.colour
-            });
-          }
+          events.push({
+            id: ev.id,
+            title: ev.title,
+            startTime: new Date(ev.startTime),
+            endTime: new Date(ev.endTime),
+            allDay: ev.allDay == 'true' ? true : false,
+            reminder: ev.reminder,
+            description: ev.description,
+            colour: ev.colour
+          });
         }
         this.eventSource = [];
         setTimeout(() => {
@@ -99,30 +110,28 @@ export class HomePage {
         });
 
     }, (err) => {});
-
-    // let events = [];
-    //
-    // this.eventProvider.getPersonalEventList().snapshotChanges().subscribe((actions) => {
-    //   actions.forEach(action => {
-    //     events.push({
-    //       id: action.payload.key,
-    //       title: action.payload.val().title,
-    //       startTime: new Date(action.payload.val().startTime),
-    //       endTime: new Date(action.payoload.val().endTime),
-    //       allDay: action.payload.val().allDay,
-    //       reminder: action.payload.val().reminder,
-    //       description: action.payload.val().description
-    //     });
-    //   });
-    // });
-    //
-    // this.eventSource = [];
-    // setTimeout(() => {
-    //   this.eventSource = events;
-    // });
   }
 
-  ionViewWillLeave() {
+  prepopulateEventsData(): Promise<any> {
+    return new Promise((resolve) => {
+      this.eventProvider.getPersonalEventList().once('value', (evtListSnapshot) => {
+        evtListSnapshot.forEach((snap) => {
+          var event = {
+            id: snap.key,
+            title: snap.val().title,
+            startTime: moment(snap.val().startTime).format(''),
+            endTime: moment(snap.val().endTime).format(''),
+            allDay: snap.val().allDay,
+            reminder: snap.val().reminder,
+            description: snap.val().description,
+            colour: snap.val().colour
+          };
+          this.dbase.addEvent(event);
+          return false;
+        });
+      });
+      resolve();
+    });
   }
 
   addEvent() {
@@ -133,14 +142,6 @@ export class HomePage {
     //   this.loadEventsData();
     // });
     let modal = this.modalCtrl.create('AddEventPage', {selectedDay: this.selectedDay});
-    modal.present();
-    modal.onDidDismiss(data => {
-      this.loadEventsData();
-    });
-  }
-  //
-  editEvent(event) {
-    let modal = this.modalCtrl.create('EditEventModalPage', {event: event});
     modal.present();
     modal.onDidDismiss(data => {
       this.loadEventsData();
@@ -210,6 +211,52 @@ export class HomePage {
     // })
     // alert.present();
     this.goToEventDetail(event.id);
+  }
+
+  editEvent(event) {
+    let modal = this.modalCtrl.create('EditPersonalEventPage', {event: event});
+    modal.present();
+    modal.onDidDismiss(data => {
+      if(data != 0) {
+        this.loadEventsData();
+      }
+    });
+  }
+
+  setStyle(evtColour) {
+    let eventStyle = {};
+    if(evtColour == '#cc0099') {
+      eventStyle = {
+        'border-left' : '5px solid #cc0099'
+     };
+    }
+    if(evtColour == '#9999ff') {
+       eventStyle = {
+        'background' : 'linear-gradient(to top right, #9900ff 0%, #9999ff 100%)'
+      };
+    }
+    if(evtColour == '#b3003b') {
+       eventStyle = {
+        'background' : 'linear-gradient(to top right, #b3003b 0%, #ff6699 100%)'
+      };
+    }
+    if(evtColour == '#ffa64d') {
+       eventStyle = {
+        'background' : 'linear-gradient(to top right, #ff661a 0%, #ffa64d 100%)'
+      };
+    }
+    if(evtColour == '#00ff99') {
+       eventStyle = {
+        'background' : 'linear-gradient(to top right, #00cc99 0%, #00ff99 100%)'
+      };
+    }
+    if(evtColour == '#0099ff') {
+       eventStyle = {
+        'background' : 'linear-gradient(to top right, #005c99 0%, #0099ff 100%)'
+      };
+    }
+
+    return eventStyle;
   }
 
   onTimeSelected(ev) {

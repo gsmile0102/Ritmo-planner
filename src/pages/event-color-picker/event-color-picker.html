@@ -19,14 +19,17 @@
 <ion-content padding>
   <ion-grid>
     <ion-row>
-      <ion-col style="background:#ff3333; border: 2px solid white; border-radius:25px;" (tap)="setColor('#ff3333')"></ion-col>
-      <ion-col style="background:#ff9933; border: 2px solid white; border-radius:25px;" (tap)="setColor('#ff9933')">&nbsp;</ion-col>
-      <ion-col style="background:#ffff66; border: 2px solid white; border-radius:25px;" (tap)="setColor('#ffff66')">&nbsp;</ion-col>
-      <ion-col style="background:#33cc00; border: 2px solid white; border-radius:25px;" (tap)="setColor('#33cc00')">&nbsp;</ion-col>
-      <ion-col style="background:#00cc99; border: 2px solid white; border-radius:25px;" (tap)="setColor('#00cc99')">&nbsp;</ion-col>
+      <ion-col style="background:#b3003b; border: 2px solid white; border-radius:25px;" (tap)="setColor('#b3003b')">&nbsp;</ion-col>
+      <ion-col style="background:#ffa64d; border: 2px solid white; border-radius:25px;" (tap)="setColor('#ffa64d')">&nbsp;</ion-col>
+      <ion-col style="background:#00ff99; border: 2px solid white; border-radius:25px;" (tap)="setColor('#00ff99')">&nbsp;</ion-col>
       <ion-col style="background:#0099ff; border: 2px solid white; border-radius:25px;" (tap)="setColor('#0099ff')">&nbsp;</ion-col>
       <ion-col style="background:#9999ff; border: 2px solid white; border-radius:25px;" (tap)="setColor('#9999ff')">&nbsp;</ion-col>
-      <ion-col style="background:#ff0066; border: 2px solid white; border-radius:25px;" (tap)="setColor('#ff0066')">&nbsp;</ion-col>
+    </ion-row>
+  </ion-grid>
+  <ion-grid class="default-grid">
+    <ion-row>
+      <ion-col><h3 class="default">Default: </h3></ion-col>
+      <ion-col style="background:#ffffff; border: 2px solid #cc0099; border-radius:25px;" (tap)="setColor('#cc0099')">&nbsp;</ion-col>
     </ion-row>
   </ion-grid>
 </ion-content>

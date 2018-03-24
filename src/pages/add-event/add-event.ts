@@ -20,6 +20,8 @@ import { LocalNotifications } from '@ionic-native/local-notifications';
   templateUrl: 'add-event.html',
 })
 export class AddEventPage {
+  public myModel = ''
+  public mask = ['(', /[1-9]/, /\d/, /\d/, ')', ' ', /\d/, /\d/, /\d/, '-', /\d/, /\d/, /\d/, /\d/];
 
   newEvent = {
     id: 0,
@@ -32,9 +34,10 @@ export class AddEventPage {
     colour: ""
   };
 
-  selectedColour = '#9999ff';
+  selectedColour = '#cc0099';
 
   notifications = [];
+  ntfTimeList = [];
 
   constructor(private navCtrl: NavController, private navParams: NavParams, private viewCtrl: ViewController, private modalCtrl: ModalController, private dbase: DatabaseProvider, public eventProvider: EventProvider, private ntfProvider: NotificationProvider) {
     // let preselectedDate = moment(this.navParams.get('selectedDay')).format();
@@ -51,22 +54,30 @@ export class AddEventPage {
   addReminder() {
     let modal = this.modalCtrl.create('ReminderModalPage', {event: this.newEvent});
     modal.present();
-    modal.onDidDismiss(ntf => {
-      let notfObj = {
-        id: Math.floor(Math.random()*20)+1,
-        title: this.newEvent.title,
-        text: ntf.text,
-        at: ntf.at,
-        data: { reminder: this.newEvent.reminder }
-      };
-      this.notifications.push(notfObj);
+    modal.onDidDismiss(ntfTime => {
+      // let notfObj = {
+      //   id: Math.floor(Math.random()*20)+1,
+      //   title: this.newEvent.title,
+      //   text: ntf.text,
+      //   at: ntf.at,
+      //   data: { reminder: this.newEvent.reminder }
+      // };
+      // this.notifications.push(notfObj);
+      this.ntfTimeList.push(ntfTime);
     });
   }
 
+  // removeReminder(ntftext) {
+  //   for(var i = 0; i < this.notifications.length;  i++) {
+  //     if(this.notifications[i].text == ntftext) {
+  //       this.notifications.splice(i, 1);
+  //     }
+  //   }
+  // }
   removeReminder(ntftext) {
-    for(var i = 0; i < this.notifications.length;  i++) {
-      if(this.notifications[i].text == ntftext) {
-        this.notifications.splice(i, 1);
+    for(var i = 0; i < this.ntfTimeList.length;  i++) {
+      if(this.ntfTimeList[i].title == ntftext) {
+        this.ntfTimeList.splice(i, 1);
       }
     }
   }
@@ -116,6 +127,7 @@ export class AddEventPage {
       // this.newEvent.reminder = this.notifications;
       this.dbase.addEvent(this.newEvent).then(res => {
         // this.eventProvider.createPersonalEvent(this.newEvent).then((newEvent) => {
+        this.setNotifications();
           this.ntfProvider.scheduleReminder(this.notifications).then((res) => {
             this.notifications = [];
           });
@@ -123,6 +135,24 @@ export class AddEventPage {
         });
       // });
     });
+  }
+
+  setNotifications(): void {
+    for(let ntfTime of this.ntfTimeList) {
+      let notificationTime = new Date();
+      let daysDiff = new Date(this.newEvent.startTime).getDate() - (new Date()).getDate();
+      notificationTime.setHours(new Date(this.newEvent.startTime).getHours() - ntfTime.hrs);
+      notificationTime.setMinutes(new Date(this.newEvent.startTime).getMinutes() - ntfTime.min);
+      notificationTime.setSeconds(0);
+      let ntfObj = {
+        id: Math.floor(Math.random()*20)+1,
+        title: this.newEvent.title,
+        text: ntfTime.title,
+        at: notificationTime,
+        data: { reminder: this.newEvent.reminder }
+      };
+      this.notifications.push(ntfObj);
+    }
   }
 
 }

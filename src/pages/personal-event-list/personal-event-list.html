@@ -6,7 +6,7 @@
 -->
 <ion-header>
 
-  <ion-navbar>
+  <ion-navbar color="themeColor5">
     <button ion-button menuToggle>
         <ion-icon name="menu"></ion-icon>
     </button>
@@ -16,7 +16,7 @@
 </ion-header>
 
 
-<ion-content padding class="event-list-content">
+<ion-content class="event-list-content">
   <!-- <ion-list>
     <ion-item *ngFor="let event of events | async" (click)="goToEventDetail(event.id)">
       <h2><strong>{{event?.title}}</strong></h2>
@@ -24,19 +24,64 @@
     </ion-item>
   </ion-list> -->
   <ion-list>
-    <ion-card *ngFor="let event of events" [style.border-left]="'5px solid'" [style.border-color]="event.colour">
-      <ion-item-sliding>
-        <ion-item (click)="goToEventDetail(event.id)" >
-          <span item-start class="event-list-title">{{event?.title}}</span>
-          <span item-end *ngIf="!event.allDay">
-            <p>{{event?.startTime|date: 'fullDate'}} {{event?.startTime|date: 'shortTime'}}</p>
-            <p>{{event?.startTime|date: 'fullDate'}} {{event?.endTime|date: 'shortTime'}}</p>
-          </span>
-          <span item-end *ngIf="event.allDay">
-            <p>All day event</p>
-            <p>{{event?.startTime|date: 'fullDate'}}</p>
-            <p>{{event?.endTime|date: 'fullDate'}}</p>
-          </span>
+    <ion-card *ngFor="let event of events" [ngStyle]="setStyle(event.colour)">
+      <ion-item-sliding >
+        <ion-item (click)="goToEventDetail(event.id)" *ngIf="event?.colour != '#cc0099'">
+          <h2 class="event-list-title">{{event?.title}}</h2>
+          <p class="event-allDay-label" *ngIf="event.allDay">All day event</p>
+            <ion-row *ngIf="!event.allDay">
+              <ion-col class="event-date-col">
+                <p class="event-date-font">{{event?.startTime|date: 'EEE, M/d/yy'}}</p>
+                <p class="event-date-font">{{event?.startTime|date: 'shortTime'}}</p>
+              </ion-col>
+              <ion-col class="icon-col">
+                <ion-icon class="event-arrow-icon" ios="md-arrow-forward" md="md-arrow-forward"></ion-icon>
+              </ion-col>
+              <ion-col class="event-date-col">
+                <p class="event-date-font">{{event?.endTime|date: 'EEE, M/d/yy'}}</p>
+                <p class="event-date-font">{{event?.endTime|date: 'shortTime'}}</p>
+              </ion-col>
+            </ion-row>
+            <ion-row *ngIf="event.allDay">
+              <ion-col class="event-date-col">
+                <p class="event-date-font">{{event?.startTime|date: 'EEE, M/d/yy'}}</p>
+              </ion-col>
+              <ion-col class="icon-col">
+                <ion-icon class="event-arrow-icon" ios="md-arrow-forward" md="md-arrow-forward"></ion-icon>
+              </ion-col>
+              <ion-col class="event-date-col">
+                <p class="event-date-font">{{event?.endTime|date: 'EEE, M/d/yy'}}</p>
+              </ion-col>
+            </ion-row>
+        </ion-item>
+        <ion-item (click)="goToEventDetail(event.id)" *ngIf="event?.colour == '#cc0099'">
+          <h2 class="event-unctg-title">{{event?.title}}</h2>
+          <p class="event-uncategorized">** Uncategorized **</p>
+          <p class="event-unctg-allDay" *ngIf="event.allDay">All day event</p>
+            <ion-row *ngIf="!event.allDay">
+              <ion-col class="event-date-col">
+                <p class="event-unctg-date">{{event?.startTime|date: 'EEE, M/d/yy'}}</p>
+                <p class="event-unctg-date">{{event?.startTime|date: 'shortTime'}}</p>
+              </ion-col>
+              <ion-col class="icon-col">
+                <ion-icon class="event-unctg-arrow" ios="md-arrow-forward" md="md-arrow-forward"></ion-icon>
+              </ion-col>
+              <ion-col class="event-date-col">
+                <p class="event-unctg-date">{{event?.endTime|date: 'EEE, M/d/yy'}}</p>
+                <p class="event-unctg-date">{{event?.endTime|date: 'shortTime'}}</p>
+              </ion-col>
+            </ion-row>
+            <ion-row *ngIf="event.allDay">
+              <ion-col class="event-date-col">
+                <p class="event-unctg-date">{{event?.startTime|date: 'EEE, M/d/yy'}}</p>
+              </ion-col>
+              <ion-col class="icon-col">
+                <ion-icon class="event-unctg-arrow" ios="md-arrow-forward" md="md-arrow-forward"></ion-icon>
+              </ion-col>
+              <ion-col class="event-date-col">
+                <p class="event-unctg-date">{{event?.endTime|date: 'EEE, M/d/yy'}}</p>
+              </ion-col>
+            </ion-row>
         </ion-item>
         <ion-item-options side="right">
           <button ion-button color="primary" (click)="editEvent(event)">
@@ -51,8 +96,8 @@
   </ion-list>
 
   <ion-fab bottom right >
-    <button ion-fab>
-      <ion-icon name="ios-create-outline"></ion-icon>
+    <button ion-fab class="fab-add-btn">
+      <ion-icon ios="ios-add-outline" md="ios-add-outline"></ion-icon>
     </button>
     <ion-fab-list side="top">
       <button ion-fab (click)="goToCreatePersonalEvent()">

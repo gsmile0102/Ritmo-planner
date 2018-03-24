@@ -4,7 +4,7 @@ import { FormBuilder, Validators, FormGroup } from '@angular/forms';
 import { EmailValidators } from '../../validators/email';
 import { AuthProvider } from '../../providers/auth/auth';
 import { HomePage } from '../home/home';
-import { AddUserPhoneNumberPage } from '../add-user-phone-number/add-user-phone-number';
+import { AddUserDetailsPage } from '../add-user-details/add-user-details';
 /**
  * Generated class for the SignUpModalPage page.
  *
@@ -56,7 +56,7 @@ export class SignUpModalPage {
       // });
       // this.loading = this.loadingCtrl.create();
       // this.loading.present();
-      this.navCtrl.push(AddUserPhoneNumberPage, {
+      this.navCtrl.push(AddUserDetailsPage, {
         email: this.signupForm.value.email,
         password: this.signupForm.value.password
       });

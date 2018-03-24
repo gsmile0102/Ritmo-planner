@@ -4,40 +4,52 @@
   See http://ionicframework.com/docs/components/#navigation for more info on
   Ionic pages and navigation.
 -->
-<ion-header no-border>
-  <ion-navbar color="calm" transparent>
-    <ion-buttons start>
-      <button ion-button icon-only (click)="cancel()">
-        <ion-icon name="close"></ion-icon>
-      </button>
-    </ion-buttons>
-    <ion-title class="header-title">Event Detail</ion-title>
-  </ion-navbar>
-</ion-header>
 
+<ion-content class="content" fullscreen>
+  <ion-header no-border>
+    <ion-navbar>
+      <ion-buttons start>
+        <button ion-button icon-only (click)="cancel()">
+          <ion-icon name="close"></ion-icon>
+        </button>
+      </ion-buttons>
+      <!-- <ion-title class="header-title">Event Detail</ion-title> -->
+    </ion-navbar>
+  </ion-header>
+  <div class="event-title-colour-div" [ngStyle]="setStyle(currentEvent?.colour)">
+    <span class="event-title" *ngIf="currentEvent?.colour != '#cc0099'">{{currentEvent?.title}}</span>
+    <span class="event-title-default" *ngIf="currentEvent?.colour == '#cc0099'">{{currentEvent?.title}}</span>
+    <span class="event-all-day" *ngIf="currentEvent?.allDay && currentEvent?.colour != '#cc0099'">All day</span>
+    <span class="event-all-day-default" *ngIf="currentEvent?.allDay && currentEvent?.colour == '#cc0099'">All day</span>
+    <span class="event-uncategorized" *ngIf="currentEvent?.colour == '#cc0099'">"Uncategorized"</span>
+    <span></span>
+  </div>
+  <ion-item no-lines *ngIf="!currentEvent?.allDay">
+    <ion-icon class="event-icon" ios="ios-time-outline" md="ios-time-outline" [style.color]="currentEvent?.colour" item-start></ion-icon>
+    <ion-label>{{currentEvent?.startTime|date: 'fullDate'}}</ion-label>
+    <ion-label item-end>{{currentEvent?.startTime|date: 'shortTime'}}</ion-label>
+  </ion-item>
+  <ion-item no-lines *ngIf="!currentEvent?.allDay">
+    <ion-icon class="event-icon" ios="ios-time" md="ios-time" [style.color]="currentEvent?.colour" item-start></ion-icon>
+    <ion-label>{{currentEvent?.endTime|date: 'fullDate'}}</ion-label>
+    <ion-label item-end>{{currentEvent?.endTime|date: 'shortTime'}}</ion-label>
+  </ion-item>
+  <ion-item no-lines *ngIf="currentEvent?.allDay">
+    <ion-icon class="event-icon" ios="ios-time-outline" md="ios-time-outline" [style.color]="currentEvent?.colour" item-start></ion-icon>
+    <ion-label>{{currentEvent?.startTime|date: 'fullDate'}}</ion-label>
+  </ion-item>
+  <ion-item no-lines *ng  If="currentEvent?.allDay">
+    <ion-icon class="event-icon" ios="ios-time" md="ios-time" [style.color]="currentEvent?.colour" item-start></ion-icon>
+    <ion-label>{{currentEvent?.endTime|date: 'fullDate'}}</ion-label>
+  </ion-item>
 
-<ion-content padding class="content">
-    <span *ngIf="!currentEvent?.allDay">
-      <span class="event-start-date">{{currentEvent?.startTime|date: 'fullDate'}}</span><br>
-      <span class="event-start-time">{{currentEvent?.startTime|date: 'shortTime'}}</span><br>
-      <br><ion-icon name="arrow-down"></ion-icon><br><br>
-      <span class="event-end-date">{{currentEvent?.endTime|date: 'fullDate'}}</span><br>
-      <span class="event-end-time">{{currentEvent?.endTime|date: 'shortTime'}}</span><br>
-    </span>
-    <span *ngIf="currentEvent?.allDay">
-      <span class="event-start-date">{{currentEvent?.startTime|date: 'fullDate'}}</span><br>
-      <br><ion-icon name="arrow-down"></ion-icon><br><br>
-      <span class="event-end-date">{{currentEvent?.endTime|date: 'fullDate'}}</span><br><br>
-      <span class="event-all-day">All Day Event</span>
-    </span>
-    <br><br>
-    <span class="event-title">{{currentEvent?.title}}</span>
-    <br><br>
-    <ion-icon ios="md-clipboard" md="md-clipboard"></ion-icon><br>
-    <span class="event-desc"><p>{{currentEvent?.description}}</p></span>
+  <div class="event-desc-div">
+    <p class="event-desc">{{currentEvent?.description}}</p>
+  </div>
 
-  <ion-footer>
-    <button ion-button class="edit-btn" (click)="editEvent()" strong full outline>EDIT</button>
-    <button ion-button class="delete-btn" (click)="deleteEvent()" strong full color="danger">DELETE</button>
-  </ion-footer>
 </ion-content>
+
+<ion-footer>
+  <button ion-button class="edit-btn" (click)="editEvent()" strong full outline>EDIT</button>
+  <button ion-button class="delete-btn" (click)="deleteEvent()" strong full>DELETE</button>
+</ion-footer>

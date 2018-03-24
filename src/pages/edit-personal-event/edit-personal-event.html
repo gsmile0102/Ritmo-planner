@@ -21,37 +21,48 @@
     <ion-label stacked>Event name</ion-label>
     <ion-input class="input" type="text" placeholder="What's your event's name?" [(ngModel)]="event.title"></ion-input>
   </ion-item>
-  <ion-item>
+  <ion-item no-lines>
+    <ion-icon class="event-icon" ios="ios-color-fill" md="ios-color-fill" item-start></ion-icon>
     <ion-label>Event Colour</ion-label>
     <ion-icon item-end (click)="setColor()" ios="md-color-palette" md="md-color-palette" [style.color]="event.colour"></ion-icon>
   </ion-item>
-  <ion-item>
+  <ion-item no-lines>
+    <ion-icon class="event-icon" ios="ios-calendar" md="ios-calendar" item-start></ion-icon>
     <ion-label>All Day?</ion-label>
     <ion-checkbox item-end [(ngModel)]="event.allDay"></ion-checkbox><br>
   </ion-item>
-  <ion-item>
+  <ion-item no-lines>
+    <ion-icon class="event-icon" ios="ios-time-outline" md="ios-time-outline" item-start></ion-icon>
     <ion-label>Start</ion-label>
     <ion-datetime item-end *ngIf="!event.allDay" displayFormat="MM/DD/YYYY HH:mm" pickerFormat="MMM D:HH:mm" [(ngModel)]="event.startTime"></ion-datetime>
     <ion-datetime item-end *ngIf="event.allDay" displayFormat="MM/DD/YYYY" pickerFormat="MMM D" [(ngModel)]="event.startTime"></ion-datetime>
   </ion-item>
-  <ion-item>
+  <ion-item no-lines>
+    <ion-icon class="event-icon" ios="ios-time" md="ios-time" item-start></ion-icon>
     <ion-label>End</ion-label>
     <ion-datetime item-end *ngIf="!event.allDay" displayFormat="MM/DD/YYYY HH:mm" pickerFormat="MMM D:HH:mm" [(ngModel)]="event.endTime" [min]="event.startTime"></ion-datetime>
     <ion-datetime item-end *ngIf="event.allDay" displayFormat="MM/DD/YYYY" pickerFormat="MMM D" [(ngModel)]="event.endTime" [min]="event.startTime"></ion-datetime>
   </ion-item>
 
+  <ion-item no-lines>
+    <ion-icon item-start class="event-icon" ios="md-alarm" md="md-alarm" item-start></ion-icon>
+    <ion-label>Reminder</ion-label>
+    <button ion-button clear item-end (click)="addReminder()">Add</button>
+  </ion-item>
+
   <ion-item-group padding>
-    <ion-label stacked>Reminder</ion-label>
     <ion-item *ngFor="let ntfc of notifications">
       <ion-label>{{ntfc.text}}</ion-label>
-      <button ion-button item-end clear><ion-icon name="close" (click)="removeReminder(ntfc.text)"></ion-icon></button>
+      <button ion-button clear item-end (click)="addReminder()">Add</button>
     </ion-item>
-    <button ion-button clear item-end (click)="addReminder()">Add</button>
   </ion-item-group>
 
+  <ion-item no-lines>
+    <ion-icon item-start class="event-icon" ios="ios-clipboard" md="ios-clipboard" item-start></ion-icon>
+    <ion-label item-end>Description:</ion-label>
+  </ion-item>
   <ion-item>
-    <ion-label stacked>Description</ion-label>
-    <ion-input type="text" placeholder="Says somemore about your event..." [(ngModel)]="event.description"></ion-input>
+    <ion-textarea item-end type="text" placeholder="Says something about your event..." [(ngModel)]="event.description"></ion-textarea>
   </ion-item>
 
 </ion-content>

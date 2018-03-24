@@ -39,6 +39,7 @@ export class ReminderModalPage {
   addNotification() {
     let notificationTime = new Date();
     let notText: string;
+    let ntfTime = {};
     for(let time of this.presetTimes) {
       if(time.checked) {
         // if(time.code == 0) {
@@ -67,15 +68,21 @@ export class ReminderModalPage {
           notificationTime.setHours(new Date(this.event.startTime).getHours() - time.hrs);
           notificationTime.setMinutes(new Date(this.event.startTime).getMinutes() - time.min);
           notificationTime.setSeconds(0);
+          ntfTime = {
+            title: time.title,
+            hrs: time.hrs,
+            min: time.min
+          };
         }
-        notText = time.title;
+        // notText = time.title;
       }
     }
-    let notification = {
-      text: notText,
-      at: notificationTime
-    }
-    this.viewCtrl.dismiss(notification);
+    // let notification = {
+    //   text: notText,
+    //   at: notificationTime
+    // }
+
+    this.viewCtrl.dismiss(ntfTime);
   }
 
   customise() {

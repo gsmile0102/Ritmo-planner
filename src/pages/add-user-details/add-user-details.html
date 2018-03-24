@@ -1,0 +1,32 @@
+<!--
+  Generated template for the AddUserDetailsPage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header no-border>
+
+  <ion-navbar transparent>
+    <ion-title></ion-title>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content padding>
+  <div class="profile-pic">
+    <img class="profile-avatar" *ngIf="profilePic" [src]="'data:image/jpeg;base64,' + profilePic">
+    <img class="profile-avatar" *ngIf="!profilePic" src="assets/imgs/user-512.png">
+    <br>
+    <button class="take-pic-btn" ion-button round outline (click)="takeProfilePicture()">Take Pic</button>
+  </div>
+
+  <form [formGroup]="userProfileForm" (submit)="signup()" novalidate>
+    <ion-item>
+      <ion-label stacked>Name</ion-label>
+      <ion-input formControlName="name" type="text" placeholder="Give a name to your account" [class.invalid]="!userProfileForm.controls.name.valid && blur"></ion-input>
+    </ion-item>
+
+    <button class="login-btn" ion-button block strong type="submit" [disabled]="!userProfileForm.valid">Sign Up</button>
+  </form>
+</ion-content>
