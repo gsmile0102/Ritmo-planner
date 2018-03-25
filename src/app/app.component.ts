@@ -2,6 +2,7 @@ import { Component, ViewChild } from '@angular/core';
 import { Platform, NavController } from 'ionic-angular';
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
+import { FCM } from '@ionic-native/fcm';
 
 import { TabsPage } from '../pages/tabs/tabs';
 import { HomePage } from '../pages/home/home';
@@ -22,7 +23,7 @@ export class MyApp {
   username: string = '';
   profilePic: any = null;
 
-  constructor(platform: Platform, statusBar: StatusBar, splashScreen: SplashScreen, public authProvider: AuthProvider, private dbase: DatabaseProvider) {
+  constructor(platform: Platform, statusBar: StatusBar, splashScreen: SplashScreen, public authProvider: AuthProvider, private dbase: DatabaseProvider, private fcm: FCM) {
     firebase.initializeApp({
       apiKey: "AIzaSyDLmhXONfVqA9WpIQUtViFVIBy4xlBM3y4",
       authDomain: "ritmo-planner.firebaseapp.com",

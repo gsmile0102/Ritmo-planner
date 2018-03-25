@@ -16,6 +16,8 @@ export class EventProvider {
   public userListRef: Reference;
   public eventAttListRef: Reference;
   public sharedEventListRef: Reference;
+  public messagesListRef: Reference;
+  public pushTokensListRef: Reference;
 
   public currentUser: any = null;
   eventOwner = {
@@ -34,6 +36,8 @@ export class EventProvider {
         this.sharedEventListRef = firebase.database().ref(`/sharedEventList`);
         this.userListRef = firebase.database().ref(`/userProfile`);
         this.eventAttListRef = firebase.database().ref(`/eventAttList`);
+        this.messagesListRef = firebase.database().ref(`/messages`);
+        this.pushTokensListRef = firebase.database().ref(`/pushTokens`);
         this.userListRef.child(user.uid).once('value', (snapshot) => {
             this.eventOwner = {
               id: snapshot.key,
@@ -112,8 +116,8 @@ export class EventProvider {
                 id: snap.key,
                 name: snap.val().name,
                 email: snap.val().email,
-                phone: snap.val().phone,
-                profilePic: snap.val().profilePic
+                profilePic: snap.val().profilePic,
+                pushToken: snap.val().pushToken
               });
 
               var attUpdates = {};
@@ -144,7 +148,7 @@ export class EventProvider {
               ownerAttUpdates['sharedEventList/' + this.currentUser.uid + '/' + sharedEvent.id + '/attendee/' + snap.key] = {
                 name: snap.val().name,
                 email: snap.val().email,
-                phone: snap.val().phone,
+                // phone: snap.val().phone,
                 profilePic: snap.val().profilePic
               };
               firebase.database().ref().update(ownerAttUpdates);
@@ -154,14 +158,14 @@ export class EventProvider {
                 id: this.eventOwner.id,
                 name: this.eventOwner.name,
                 email: this.eventOwner.email,
-                phone: this.eventOwner.phone,
+                // phone: this.eventOwner.phone,
                 profilePic: this.eventOwner.profilePic
               };
               ownerUpdates['sharedEventList/' + snap.key + '/' + sharedEvent.id + '/owner/'] = {
                 id: this.eventOwner.id,
                 name: this.eventOwner.name,
                 email: this.eventOwner.email,
-                phone: this.eventOwner.phone,
+                // phone: this.eventOwner.phone,
                 profilePic: this.eventOwner.profilePic
               };
               firebase.database().ref().update(ownerUpdates);
@@ -182,12 +186,22 @@ export class EventProvider {
                 attUpdates['sharedEventList/' + att.id + '/' + sharedEvent.id + '/attendee/' + attendee.id] = {
                   name: attendee.name,
                   email: attendee.email,
-                  phone: attendee.phone,
+                  // phone: attendee.phone,
                   profilePic: attendee.profilePic
                 };
               }
               firebase.database().ref().update(attUpdates);
+
+              this.pushTokensListRef.child(sharedEvent.id).push({
+                devToken: attendee.pushToken
+              });
             }
+            this.messagesListRef.push({
+              senderName: this.eventOwner.name,
+              eventId: sharedEvent.id,
+              evtMessage: sharedEvent.title,
+              type: 'new'
+            });
           }
         });
       }
@@ -222,8 +236,9 @@ export class EventProvider {
                 id: snap.key,
                 name: snap.val().name,
                 email: snap.val().email,
-                phone: snap.val().phone,
-                profilePic: snap.val().profilePic
+                // phone: snap.val().phone,
+                profilePic: snap.val().profilePic,
+                pushToken: snap.val().pushToken
               });
 
               var attUpdates = {};
@@ -260,7 +275,7 @@ export class EventProvider {
               ownerAttUpdates['sharedEventList/' + this.currentUser.uid + '/' + sharedEvent.id + '/attendee/' + snap.key] = {
                 name: snap.val().name,
                 email: snap.val().email,
-                phone: snap.val().phone,
+                // phone: snap.val().phone,
                 profilePic: snap.val().profilePic
               };
               firebase.database().ref().update(ownerAttUpdates);
@@ -270,14 +285,14 @@ export class EventProvider {
                 id: this.eventOwner.id,
                 name: this.eventOwner.name,
                 email: this.eventOwner.email,
-                phone: this.eventOwner.phone,
+                // phone: this.eventOwner.phone,
                 profilePic: this.eventOwner.profilePic
               };
               ownerUpdates['sharedEventList/' + snap.key + '/' + sharedEvent.id + '/owner/'] = {
                 id: this.eventOwner.id,
                 name: this.eventOwner.name,
                 email: this.eventOwner.email,
-                phone: this.eventOwner.phone,
+                // phone: this.eventOwner.phone,
                 profilePic: this.eventOwner.profilePic
               };
               firebase.database().ref().update(ownerUpdates);
@@ -291,20 +306,32 @@ export class EventProvider {
             });
           }
         }).then(() => {
-          if(attendee == sharedEvent.attendee[sharedEvent.attendee.length - 1]) {
-            for(let attendee of existsAttList) {
-              var attUpdates = {};
-              for(let att of existsAttList) {
-                attUpdates['sharedEventList/' + att.id + '/' + sharedEvent.id + '/attendee/' + attendee.id] = {
-                  name: attendee.name,
-                  email: attendee.email,
-                  phone: attendee.phone,
-                  profilePic: attendee.profilePic
-                };
+          this.pushTokensListRef.child(sharedEvent.id).remove().then(() => {
+            if(attendee == sharedEvent.attendee[sharedEvent.attendee.length - 1]) {
+              for(let attendee of existsAttList) {
+                var attUpdates = {};
+                for(let att of existsAttList) {
+                  attUpdates['sharedEventList/' + att.id + '/' + sharedEvent.id + '/attendee/' + attendee.id] = {
+                    name: attendee.name,
+                    email: attendee.email,
+                    // phone: attendee.phone,
+                    profilePic: attendee.profilePic
+                  };
+                }
+                firebase.database().ref().update(attUpdates);
+
+                this.pushTokensListRef.child(sharedEvent.id).push({
+                  devToken: attendee.pushToken
+                });
               }
-              firebase.database().ref().update(attUpdates);
+              this.messagesListRef.push({
+                senderName: this.eventOwner.name,
+                eventId: sharedEvent.id,
+                evtMessage: sharedEvent.title,
+                type: 'update'
+              });
             }
-          }
+          });
         });
       }
       resolve(sharedEvent);

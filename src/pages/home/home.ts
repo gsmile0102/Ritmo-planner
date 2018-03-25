@@ -3,6 +3,7 @@ import { NavController, NavParams, AlertController, ModalController, ToastContro
 import { Toast } from '@ionic-native/toast';
 import { Network } from '@ionic-native/network';
 import { Storage } from '@ionic/storage';
+import { FCM } from '@ionic-native/fcm';
 
 import { DatabaseProvider } from '../../providers/database/database';
 import { EventProvider } from '../../providers/event/event';
@@ -11,7 +12,6 @@ import { AuthProvider } from '../../providers/auth/auth';
 import * as moment from 'moment';
 import { Subscription} from 'rxjs/Subscription';
 
-// import { AddEventPage } from '../add-event/add-event';
 import { LocalNotifications } from '@ionic-native/local-notifications';
 import * as firebase from 'firebase';
 
@@ -37,7 +37,7 @@ export class HomePage {
       currentDate: new Date()
   };
 
-  constructor(private navCtrl: NavController, public navParams: NavParams, private alertCtrl: AlertController, private modalCtrl: ModalController, private localNotifications: LocalNotifications, private toast: ToastController, private dbase: DatabaseProvider, private eventProvider: EventProvider, private authProvider: AuthProvider, private network: Network, private storage: Storage) {
+  constructor(private navCtrl: NavController, public navParams: NavParams, private alertCtrl: AlertController, private modalCtrl: ModalController, private localNotifications: LocalNotifications, private toast: ToastController, private dbase: DatabaseProvider, private eventProvider: EventProvider, private authProvider: AuthProvider, private network: Network, private storage: Storage, private fcm: FCM) {
     firebase.auth().onAuthStateChanged((user) => {
       if(user) {
         this.currentUser = user;
@@ -46,15 +46,7 @@ export class HomePage {
   }
 
   ionViewDidLoad() {
-    // this.dbase.getLastLogInUser().then((user) => {
-    //   if(this.currentUser.uid == user.uid) {
-    //     this.isSameUser = true;
-    //   }
-    //   else {
-    //     this.isSameUser = false;
-    //     this.dbase.addCurrentLogInUser(this.currentUser.uid);
-    //   }
-    // });
+
   }
 
   ionViewWillEnter() {
@@ -65,14 +57,38 @@ export class HomePage {
         });
       }
       else {
-        // this.connected = this.network.onConnect().subscribe(data => {
-        //   this.dbase.getEventsData().then((res) => {
-        //     this.eventProvider.syncEventsData(res);
-        //   });
-        // });
         if(this.network.type !== "none") {
-          this.dbase.getEventsData().then((res) => {
-            this.eventProvider.syncEventsData(res);
+          this.dbase.getEventsData().then((evtData) => {
+            this.eventProvider.syncEventsData(evtData);
+          });
+          this.tokenSetup().then((token) => {
+            this.storeToken(token);
+          });
+
+          this.fcm.onNotification().subscribe((data) => {
+            if(data.wasTapped) {
+              // let toast = this.toast.create({
+              //   message: data.senderName + ' invited you to join ' + data.evtMessage + ' event. Go and check on it!',
+              //   duration: 3000,
+              //   position: 'top'
+              // });
+              // toast.present();
+            }
+            else {
+              let toast = this.toast.create({
+                message: data.message,
+                duration: 3000,
+                position: 'top'
+              });
+              toast.present();
+              console.log(JSON.stringify(data));
+            }
+          });
+          this.fcm.onTokenRefresh().subscribe((token) => {
+            var tokenUpdate = {};
+            tokenUpdate['userProfile/' + this.currentUser.uid + '/pushToken'] = token;
+
+            firebase.database().ref().update(tokenUpdate);
           });
         }
       }
@@ -87,6 +103,23 @@ export class HomePage {
     });
 
     this.loadEventsData();
+  }
+
+  tokenSetup() {
+    var promise = new Promise((resolve, reject) => {
+      this.fcm.getToken().then((token) => {
+        resolve(token);
+      }, (err) => {
+        reject(err);
+      });
+    });
+    return promise;
+  }
+
+  storeToken(token) {
+    var tokenUpdate = {};
+    tokenUpdate['userProfile/' + this.currentUser.uid + '/pushToken'] = token;
+    firebase.database().ref().update(tokenUpdate);
   }
 
   loadEventsData() {

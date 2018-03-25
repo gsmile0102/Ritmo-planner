@@ -10,6 +10,7 @@ import { Contacts } from '@ionic-native/contacts';
 import { TextMaskModule } from 'angular2-text-mask';
 import { Camera } from '@ionic-native/camera';
 import { IonicStorageModule } from '@ionic/storage';
+import { FCM } from '@ionic-native/fcm';
 import { InputMaskModule } from 'ionic-input-mask';
 
 import { AngularFireDatabase, AngularFireDatabaseModule } from 'angularfire2/database';
@@ -82,7 +83,8 @@ export const firebaseConfig = {
     Network,
     NetworkProvider,
     Contacts,
-    Camera
+    Camera,
+    FCM
   ]
 })
 export class AppModule {}
