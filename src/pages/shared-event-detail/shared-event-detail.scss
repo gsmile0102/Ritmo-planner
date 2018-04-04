@@ -4,13 +4,13 @@ page-shared-event-detail {
     .toolbar-background {
       // background: #00b8e6;
       background: transparent;
-      color: white;
+      color: #333333;
     }
     .toolbar-title {
-      color: white;
+      color: #333333;
     }
     .bar-button {
-      color: white;
+      color: #333333;
     }
   }
 
@@ -99,6 +99,14 @@ page-shared-event-detail {
 
   ion-footer {
     background: #ffffff;
+  }
+
+  .ownername {
+    margin-top: 50px;
+  }
+
+  .attendee-group {
+    padding-bottom: 100px;
   }
 
   // .profile-avatar {

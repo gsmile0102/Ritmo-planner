@@ -140,7 +140,7 @@ export class DatabaseProvider {
         location: 'default'
       }).then((db: SQLiteObject) => {
         db.executeSql('SELECT * FROM event WHERE rowid=?', [eventId]).then((res) => {
-          if(res.rows == null) {
+          if(res.rows.item(0) == null) {
             resolve(0);
           }
           else {

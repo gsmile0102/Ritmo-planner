@@ -63,7 +63,9 @@ export class AddEventPage {
       //   data: { reminder: this.newEvent.reminder }
       // };
       // this.notifications.push(notfObj);
-      this.ntfTimeList.push(ntfTime);
+      if(ntfTime != 0) {
+        this.ntfTimeList.push(ntfTime);
+      }
     });
   }
 
@@ -131,7 +133,7 @@ export class AddEventPage {
           this.ntfProvider.scheduleReminder(this.notifications).then((res) => {
             this.notifications = [];
           });
-          this.navCtrl.pop();
+          this.viewCtrl.dismiss();
         });
       // });
     });

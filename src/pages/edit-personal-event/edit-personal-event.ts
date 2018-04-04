@@ -32,6 +32,8 @@ export class EditPersonalEventPage {
   };
 
   notifications = [];
+  ntfTimeList = [];
+
   isNewEvent: boolean;
 
   constructor(private navCtrl: NavController, private navParams: NavParams, private viewCtrl: ViewController, private modalCtrl: ModalController, private dbase: DatabaseProvider, public eventProvider: EventProvider, private ntfProvider: NotificationProvider) {
@@ -70,27 +72,29 @@ export class EditPersonalEventPage {
     let modal = this.modalCtrl.create('ReminderModalPage', {event: this.event});
     modal.present();
     modal.onDidDismiss(ntf => {
-      let notfObj = {
-        id: Math.floor(Math.random()*200)+1,
-        title: this.event.title,
-        text: ntf.text,
-        at: ntf.at,
-        data: { reminder: this.event.reminder }
-      };
-      this.notifications.push(notfObj);
+      if(ntf != 0) {
+        // let notfObj = {
+        //   id: Math.floor(Math.random()*200)+1,
+        //   title: this.event.title,
+        //   text: ntf.text,
+        //   at: ntf.at,
+        //   data: { reminder: this.event.reminder }
+        // };
+        this.ntfTimeList.push(ntf);
+      }
     });
   }
 
   removeReminder(ntftext) {
-    for(var i = 0; i < this.notifications.length; i++) {
-      if(this.notifications[i].text == ntftext) {
-        this.notifications.splice(i, 1);
+    for(var i = 0; i < this.ntfTimeList.length; i++) {
+      if(this.ntfTimeList[i].text == ntftext) {
+        this.ntfTimeList.splice(i, 1);
       }
     }
   }
 
   cancel() {
-    this.viewCtrl.dismiss(0);
+    this.viewCtrl.dismiss();
   }
 
   setColor() {
@@ -130,11 +134,26 @@ export class EditPersonalEventPage {
           lntf.clear(ntf.id);
         });
       }
-      this.ntfProvider.scheduleReminder(this.notifications).then((res) => {
-        this.notifications = [];
-        resolve(this.notifications);
-      }, (err) => reject(err));
+      resolve();
     });
+  }
+
+  setNotifications(): void {
+    for(let ntfTime of this.ntfTimeList) {
+      let notificationTime = new Date();
+      let daysDiff = new Date(this.event.startTime).getDate() - (new Date()).getDate();
+      notificationTime.setHours(new Date(this.event.startTime).getHours() - ntfTime.hrs);
+      notificationTime.setMinutes(new Date(this.event.startTime).getMinutes() - ntfTime.min);
+      notificationTime.setSeconds(0);
+      let ntfObj = {
+        id: Math.floor(Math.random()*20)+1,
+        title: this.event.title,
+        text: ntfTime.title,
+        at: notificationTime,
+        data: { reminder: this.event.reminder }
+      };
+      this.notifications.push(ntfObj);
+    }
   }
 
   saveEvent(): void {
@@ -143,9 +162,13 @@ export class EditPersonalEventPage {
       let oldEventId = this.event.id;
       this.event.id = (new Date()).getTime();
       this.dbase.updateEvent(oldEventId, this.event).then(res => {
-          this.resetNotification().then((res) => {
-            this.viewCtrl.dismiss(this.event.id);
+          this.resetNotification().then(() => {
+            this.setNotifications();
+            this.ntfProvider.scheduleReminder(this.notifications).then((res) => {
+              this.notifications = [];
+              this.viewCtrl.dismiss(this.event.id);
             // this.navCtrl.push('PersonalEventDetailPage', {eventId: this.event.id});
+            });
           });
         });
     });

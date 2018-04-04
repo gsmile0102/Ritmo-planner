@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams, ViewController, ModalController, ToastController } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, AlertController, ViewController, ModalController, ToastController } from 'ionic-angular';
 import { EventProvider } from '../../providers/event/event';
 import { DatabaseProvider } from '../../providers/database/database';
 import * as firebase from 'firebase';
@@ -20,7 +20,7 @@ export class PersonalEventDetailPage {
   public currentEvent: any = {};
   public evKey = 0;
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, public eventProvider: EventProvider, private viewCtrl: ViewController, private dbase: DatabaseProvider, private toast: ToastController, private modalCtrl: ModalController) {
+  constructor(public navCtrl: NavController, public navParams: NavParams, public eventProvider: EventProvider, private viewCtrl: ViewController, private dbase: DatabaseProvider, private alertCtrl: AlertController, private toast: ToastController, private modalCtrl: ModalController) {
     this.currentUser = this.eventProvider.getCurrentUser();
   }
 
@@ -56,14 +56,30 @@ export class PersonalEventDetailPage {
   }
 
   deleteEvent(): void {
-    this.dbase.deleteEvent(this.currentEvent).then((res) => {
-      this.toast.create({
-        message: 'Event has been deleted.',
-        duration: 2500,
-        position: 'top'
-      }).present();
-      this.navCtrl.pop();
+    let alert = this.alertCtrl.create({
+      title: 'Delete this event?',
+      buttons: [
+        {
+          text: 'Yes',
+          handler: () => {
+            this.dbase.deleteEvent(this.currentEvent).then((res) => {
+              this.toast.create({
+                message: 'Event has been deleted.',
+                duration: 2500,
+                position: 'top'
+              }).present();
+              this.navCtrl.pop();
+            });
+          }
+        },
+        {
+          text: 'Cancel',
+          role: 'cancel',
+          handler: () => {}
+        }
+      ]
     });
+    alert.present();
   }
 
   setStyle(evtColour) {

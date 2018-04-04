@@ -12,6 +12,7 @@ import { Camera } from '@ionic-native/camera';
 import { IonicStorageModule } from '@ionic/storage';
 import { FCM } from '@ionic-native/fcm';
 import { InputMaskModule } from 'ionic-input-mask';
+import { EmailComposer } from '@ionic-native/email-composer';
 
 import { AngularFireDatabase, AngularFireDatabaseModule } from 'angularfire2/database';
 import { AngularFireModule } from 'angularfire2';
@@ -21,6 +22,7 @@ import { HomePage } from '../pages/home/home';
 import { TabsPage } from '../pages/tabs/tabs';
 import { PersonalEventListPage } from '../pages/personal-event-list/personal-event-list';
 import { SharedEventListPage } from '../pages/shared-event-list/shared-event-list';
+import { UserProfilePage } from '../pages/user-profile/user-profile';
 import { AddUserDetailsPage } from '../pages/add-user-details/add-user-details';
 import { NgCalendarModule } from 'ionic2-calendar';
 import { DatabaseProvider } from '../providers/database/database';
@@ -47,7 +49,8 @@ export const firebaseConfig = {
     HomePage,
     PersonalEventListPage,
     SharedEventListPage,
-    AddUserDetailsPage
+    AddUserDetailsPage,
+    UserProfilePage
   ],
   imports: [
     BrowserModule,
@@ -66,7 +69,8 @@ export const firebaseConfig = {
     HomePage,
     PersonalEventListPage,
     SharedEventListPage,
-    AddUserDetailsPage
+    AddUserDetailsPage,
+    UserProfilePage
   ],
   providers: [
     AngularFireDatabase,
@@ -84,7 +88,8 @@ export const firebaseConfig = {
     NetworkProvider,
     Contacts,
     Camera,
-    FCM
+    FCM,
+    EmailComposer
   ]
 })
 export class AppModule {}

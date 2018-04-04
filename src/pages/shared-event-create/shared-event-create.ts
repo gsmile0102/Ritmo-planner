@@ -4,6 +4,7 @@ import { DatabaseProvider } from '../../providers/database/database';
 import { NotificationProvider } from '../../providers/notification/notification';
 import { EventProvider } from '../../providers/event/event';
 import { Camera } from '@ionic-native/camera';
+import { EmailComposer } from '@ionic-native/email-composer';
 
 import * as moment from 'moment';
 import * as firebase from 'firebase';
@@ -38,11 +39,10 @@ export class SharedEventCreatePage {
   };
 
   selectedColour = '#9999ff';
-  notifications = [];
   attendees = [];
   eventPic: string = null;
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, private dbase: DatabaseProvider, private eventProvider: EventProvider, private viewCtrl: ViewController, private toast: ToastController, private modalCtrl: ModalController, private alertCtrl: AlertController, private ntfProvider: NotificationProvider, private camera: Camera) {
+  constructor(public navCtrl: NavController, public navParams: NavParams, private dbase: DatabaseProvider, private eventProvider: EventProvider, private viewCtrl: ViewController, private toast: ToastController, private modalCtrl: ModalController, private alertCtrl: AlertController, private ntfProvider: NotificationProvider, private camera: Camera, private emailComposer: EmailComposer) {
     firebase.auth().onAuthStateChanged((user) => {
       this.sharedEvent.owner = user.email;
     });
@@ -125,7 +125,7 @@ export class SharedEventCreatePage {
           // });
           let alert = this.alertCtrl.create({
             title: 'Email not found',
-            message: 'No email address found in this contact.',
+            message: 'No email address found in this contact. Please add email detail to the contact.',
             buttons: [
               {
                 text: 'OK',
@@ -166,28 +166,28 @@ export class SharedEventCreatePage {
     });
   }
 
-  attendeeArrayToString(): string {
-    var arrString = '';
-    if(this.attendees.length > 0) {
-      if(this.attendees[0].email != '') {
-        arrString += this.attendees[0].email + ',';
-      }
-      else {
-        arrString += this.attendees[0].number + '#' + this.attendees[0].name + ',';
-      }
-
-      for(var i = 1; i < this.attendees.length; i++) {
-        if(this.attendees[i].email != '') {
-          arrString += ',' + this.attendees[i].email;
-        }
-        else {
-          arrString += ',' + this.attendees[i].number + '#' + this.attendees[0].name;
-        }
-      }
-    }
-
-    return arrString;
-  }
+  // attendeeArrayToString(): string {
+  //   var arrString = '';
+  //   if(this.attendees.length > 0) {
+  //     if(this.attendees[0].email != '') {
+  //       arrString += this.attendees[0].email + ',';
+  //     }
+  //     else {
+  //       arrString += this.attendees[0].number + '#' + this.attendees[0].name + ',';
+  //     }
+  //
+  //     for(var i = 1; i < this.attendees.length; i++) {
+  //       if(this.attendees[i].email != '') {
+  //         arrString += ',' + this.attendees[i].email;
+  //       }
+  //       else {
+  //         arrString += ',' + this.attendees[i].number + '#' + this.attendees[0].name;
+  //       }
+  //     }
+  //   }
+  //
+  //   return arrString;
+  // }
 
   addToCalendar() {
     let event = {
@@ -209,7 +209,23 @@ export class SharedEventCreatePage {
     });
   }
 
-  presentComfirm(): void {
+  sendByEmail(attList: string[]): Promise<any> {
+      let email = {
+        to: attList,
+        // attachments: [
+        //   this.sharedEvent.picture
+        // ],
+        subject: 'Ritmo: Event Invitation',
+        body: this.sharedEvent.owner + ' invited you to join ' + this.sharedEvent.title + '.<br><br>'
+                + 'From: ' + moment(this.sharedEvent.startTime).format('LLLL') + '<br>'
+                + 'To: ' + moment(this.sharedEvent.endTime).format('LLLL'),
+        isHtml: true
+      };
+
+      return this.emailComposer.open(email);
+  }
+
+  promptAddToCal(): void {
     let alert = this.alertCtrl.create({
       title: 'Add to calendar?',
       message: 'Do you want to add this event to calendar?',
@@ -218,18 +234,40 @@ export class SharedEventCreatePage {
           text: 'No',
           role: 'cancel',
           handler: () => {
-            this.saveEvent().then(() => {
-              this.navCtrl.pop();
-            });
+            this.saveEvent();
           }
         },
         {
           text: 'Yes',
           handler: () => {
-            this.saveEvent().then(() => {
+            this.saveEvent().then((res) => {
               this.addToCalendar();
-              this.navCtrl.pop();
             });
+          }
+        }
+      ]
+    });
+    alert.present();
+  }
+
+  promptSendEmail(notExistsAtts: string[]): void {
+    let alert = this.alertCtrl.create({
+      title: 'User not exists.',
+      subTitle: 'Do you want send the event through email?',
+      buttons: [
+        {
+          text: 'Yes',
+          handler: () => {
+            this.sendByEmail(notExistsAtts).then(() => {
+              this.viewCtrl.dismiss();
+            });
+          }
+        },
+        {
+          text: 'No',
+          role: 'cancel',
+          handler: () => {
+            this.viewCtrl.dismiss();
           }
         }
       ]
@@ -243,11 +281,14 @@ export class SharedEventCreatePage {
         this.sharedEvent.id = (new Date()).getTime();
         this.sharedEvent.attendee = this.attendees;
         // this.newEvent.reminder = this.notifications;
-        this.eventProvider.createSharedEvent(this.sharedEvent).then(res => {
-          this.ntfProvider.scheduleReminder(this.notifications).then((res) => {
-            this.notifications = [];
-          });
-          resolve();
+        this.eventProvider.createSharedEvent(this.sharedEvent).then((notExistsAtts) => {
+          if(notExistsAtts.length > 0) {
+            this.promptSendEmail(notExistsAtts);
+          }
+          else {
+            this.viewCtrl.dismiss();
+          }
+          resolve(res);
         });
       });
     });

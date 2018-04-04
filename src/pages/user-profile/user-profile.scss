@@ -1,3 +1,40 @@
 page-user-profile {
+  ion-header {
+    .toolbar-background {
+      // background: #00b8e6;
+      background: transparent;
+      color: white;
+    }
+    .toolbar-title {
+      color: white;
+    }
+    .bar-button {
+      color: white;
+    }
+  }
 
+  .user-content {
+    text-align: center;
+    background: #ff4d4d;
+    padding-bottom: 30px;
+    .user-pic {
+      margin-top: 100px;
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      border: 2px solid #ffffff;
+    }
+    .user-name {
+      color: #ffffff;
+      font-size: 1.6em;
+    }
+    .user-email {
+      color: #ffffff;
+      font-size: 1em;
+    }
+  }
+
+  .profile-options {
+    padding: 10px;
+  }
 }

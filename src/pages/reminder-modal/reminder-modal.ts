@@ -90,7 +90,7 @@ export class ReminderModalPage {
   }
 
   cancel() {
-    this.viewCtrl.dismiss();
+    this.viewCtrl.dismiss(0);
   }
 
 }

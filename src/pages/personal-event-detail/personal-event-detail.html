@@ -38,7 +38,7 @@
     <ion-icon class="event-icon" ios="ios-time-outline" md="ios-time-outline" [style.color]="currentEvent?.colour" item-start></ion-icon>
     <ion-label>{{currentEvent?.startTime|date: 'fullDate'}}</ion-label>
   </ion-item>
-  <ion-item no-lines *ng  If="currentEvent?.allDay">
+  <ion-item no-lines *ngIf="currentEvent?.allDay">
     <ion-icon class="event-icon" ios="ios-time" md="ios-time" [style.color]="currentEvent?.colour" item-start></ion-icon>
     <ion-label>{{currentEvent?.endTime|date: 'fullDate'}}</ion-label>
   </ion-item>

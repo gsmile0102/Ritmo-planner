@@ -18,6 +18,7 @@ exports.PushTrigger = functions.database.ref('/messages/{messageId}').onWrite((e
   admin.database().ref(`/pushTokens/${wroteData.eventId}`).once('value').then((allTokens) => {
     var attTokens = allTokens.val();
     var tokens = [];
+    var payload = {};
 
     processTokens(attTokens).then((processedTokens) => {
       for(var token of processedTokens) {
@@ -26,19 +27,69 @@ exports.PushTrigger = functions.database.ref('/messages/{messageId}').onWrite((e
 
       var newMsg = wroteData.senderName + " invited you to join " + wroteData.evtMessage + " event. Go and check on it!";
       var updateMsg = wroteData.senderName + " has updated the " + wroteData.evtMessage + " event. Go and check on it!";
+      var leaveMsg = wroteData.senderName + " has left the " + wroteData.evtMessage + " event.";
+      var deleteMsg = wroteData.senderName + " has canceled the " + wroteData.evtMessage + " event.";
 
-      var payload = {
-        "notification": {
-            "title": "RitMo",
-            "body": wroteData.type === 'new' ? newMsg : updateMsg,
-            "sound": "default",
-        },
-        "data": {
-            "senderName": wroteData.senderName,
-            "message": wroteData.type === 'new' ? newMsg : updateMsg, 
-            "type": wroteData.type
-        }
-      };
+      if(wroteData.type === 'new') {
+        payload = {
+          "notification": {
+              "title": "RitMo",
+              "body": newMsg,
+              "sound": "default",
+          },
+          "data": {
+              "senderId": wroteData.senderId,
+              "senderName": wroteData.senderName,
+              "message": newMsg,
+              "type": wroteData.type
+          }
+        };
+      }
+      if(wroteData.type === 'update') {
+        payload = {
+          "notification": {
+              "title": "RitMo",
+              "body": updateMsg,
+              "sound": "default",
+          },
+          "data": {
+              "senderId": wroteData.senderId,
+              "senderName": wroteData.senderName,
+              "message": updateMsg,
+              "type": wroteData.type
+          }
+        };
+      }
+      if(wroteData.type === 'leave') {
+        payload = {
+          "notification": {
+              "title": "RitMo",
+              "body": leaveMsg,
+              "sound": "default",
+          },
+          "data": {
+              "senderId": wroteData.senderId,
+              "senderName": wroteData.senderName,
+              "message": leaveMsg,
+              "type": wroteData.type
+          }
+        };
+      }
+      if(wroteData.type === 'delete') {
+        payload = {
+          "notification": {
+              "title": "RitMo",
+              "body": deleteMsg,
+              "sound": "default",
+          },
+          "data": {
+              "senderId": wroteData.senderId,
+              "senderName": wroteData.senderName,
+              "message": deleteMsg,
+              "type": wroteData.type
+          }
+        };
+      }
 
       return admin.messaging().sendToDevice(tokens, payload).then((response) => {
         console.log('Pushed notifications');

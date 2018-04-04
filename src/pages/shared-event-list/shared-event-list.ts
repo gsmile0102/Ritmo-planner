@@ -20,12 +20,13 @@ import { DatabaseProvider } from '../../providers/database/database';
 })
 export class SharedEventListPage {
   public loading: Loading;
+  selectedDay = new Date();
 
   currentUser: any = null;
   sharedEvents = [];
   evtAtt = [];
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, public eventProvider: EventProvider, private dbase: DatabaseProvider, private toast: ToastController, private network: Network, private loadingCtrl: LoadingController) {
+  constructor(public navCtrl: NavController, public navParams: NavParams, public eventProvider: EventProvider, private dbase: DatabaseProvider, private toast: ToastController, private modalCtrl: ModalController, private network: Network, private loadingCtrl: LoadingController) {
     this.currentUser = this.eventProvider.getCurrentUser();
   }
 
@@ -33,15 +34,25 @@ export class SharedEventListPage {
   }
 
   ionViewWillEnter() {
-    this.loadEventsData();
+      this.loadEventsData();
   }
 
   goToCreatePersonalEvent(): void {
-    this.navCtrl.push('AddEventPage', { selectedDay: new Date() });
+    // this.navCtrl.push('AddEventPage', { selectedDay: new Date() });
+    let modal = this.modalCtrl.create('AddEventPage', {selectedDay: new Date() });
+    modal.present();
+    modal.onDidDismiss(data => {
+
+    });
   }
 
   goToCreateSharedEvent(): void {
-    this.navCtrl.push('SharedEventCreatePage');
+    // this.navCtrl.push('SharedEventCreatePage');
+    let modal = this.modalCtrl.create('SharedEventCreatePage', {selectedDay: this.selectedDay});
+    modal.present();
+    modal.onDidDismiss(() => {
+      this.loadEventsData();
+    });
   }
 
   loadEventsData() {
@@ -64,6 +75,7 @@ export class SharedEventListPage {
         return false;
       });
     });
+    this.sharedEvents.sort(this.compare);
   }
 
   processAttendees(attendeesString: string): any[] {
@@ -93,26 +105,22 @@ export class SharedEventListPage {
     this.navCtrl.push('SharedEventDetailPage', { eventId: evtId });
   }
 
-  editEvent(event) {
-    // let modal = this.modalCtrl.create('EditSharedEventPage', {event: this.currentEvent});
-    // modal.present();
-    // modal.onDidDismiss((newEvtId) => {
-    //   this.evKey = newEvtId;
-    //   if(newEvtId != 0) {
-    //     this.loadEventsData();
-    //   }
-    // });
+  checkEventOverdue(event) {
+    let eventStyle = {};
+    if(event.startTime.getTime() < (new Date()).getTime()) {
+      eventStyle = {
+        'opacity': '0.5'
+      };
+    }
+    return eventStyle;
   }
 
-  deleteEvent(event) {
-    // this.dbase.deleteSharedEvent(event).then((res) => {
-    //   this.toast.create({
-    //     message: 'Event has been deleted.',
-    //     duration: 2500,
-    //     position: 'top'
-    //   }).present();
-    // });
-    // this.loadEventsData();
+  compare(eventA, eventB) {
+    if(eventA.startTime.getTime() < eventB.startTime.getTime())
+      return -1;
+    if(eventA.startTime.getTime() > eventB.startTime.getTime())
+      return 1;
+    return 0;
   }
 
 }

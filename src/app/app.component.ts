@@ -1,5 +1,5 @@
 import { Component, ViewChild } from '@angular/core';
-import { Platform, NavController } from 'ionic-angular';
+import { Platform, NavController, ModalController } from 'ionic-angular';
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { FCM } from '@ionic-native/fcm';
@@ -7,6 +7,7 @@ import { FCM } from '@ionic-native/fcm';
 import { TabsPage } from '../pages/tabs/tabs';
 import { HomePage } from '../pages/home/home';
 import { UserAuthPage } from '../pages/user-auth/user-auth';
+import { UserProfilePage } from '../pages/user-profile/user-profile';
 
 import { AuthProvider } from '../providers/auth/auth';
 import { DatabaseProvider } from '../providers/database/database';
@@ -23,7 +24,7 @@ export class MyApp {
   username: string = '';
   profilePic: any = null;
 
-  constructor(platform: Platform, statusBar: StatusBar, splashScreen: SplashScreen, public authProvider: AuthProvider, private dbase: DatabaseProvider, private fcm: FCM) {
+  constructor(platform: Platform, statusBar: StatusBar, splashScreen: SplashScreen, public authProvider: AuthProvider, private dbase: DatabaseProvider, private fcm: FCM, private modalCtrl: ModalController) {
     firebase.initializeApp({
       apiKey: "AIzaSyDLmhXONfVqA9WpIQUtViFVIBy4xlBM3y4",
       authDomain: "ritmo-planner.firebaseapp.com",
@@ -60,30 +61,24 @@ export class MyApp {
     this.nav.push(UserAuthPage);
   }
 
-  logout() {
-    this.authProvider.logoutUser().then(() => {
-      this.authProvider.setAsLogout().then(() => {
-        this.dbase.deleteEventsDb();
-        this.nav.setRoot('UserAuthPage');
-      });
-    }).catch((err) => {
-      alert(err.message);
-    });
-  }
+  // logout() {
+  //   this.authProvider.logoutUser().then(() => {
+  //     this.authProvider.setAsLogout().then(() => {
+  //       this.dbase.deleteEventsDb();
+  //       this.nav.setRoot('UserAuthPage');
+  //     });
+  //   }).catch((err) => {
+  //     alert(err.message);
+  //   });
+  // }
 
-  getUserProfilePicture() {
-
+  goToUserProfile() {
+    this.nav.push(UserProfilePage, {user: this.user});
+    // modal.onDidDismiss(
   }
 
   goToHome() {
     this.rootPage = TabsPage;
   }
 
-  // logout() {
-  //   this.afAuth.auth.signOut().then(data => {
-  //     console.log(data);
-  //   }).catch(err => {
-  //     alert(err.message);
-  //   })
-  // }
 }

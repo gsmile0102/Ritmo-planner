@@ -1,9 +1,10 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams, ViewController, ModalController, ToastController, Loading, LoadingController } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, AlertController, ViewController, ModalController, ToastController, Loading, LoadingController } from 'ionic-angular';
 
 import { DatabaseProvider } from '../../providers/database/database';
 import { EventProvider } from '../../providers/event/event';
 import { NotificationProvider } from '../../providers/notification/notification';
+import { EmailComposer } from '@ionic-native/email-composer';
 
 import * as moment from 'moment';
 import { LocalNotifications } from '@ionic-native/local-notifications';
@@ -38,7 +39,7 @@ export class EditSharedEventPage {
   attendees = [];
   isNewPic: boolean = false;
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, private viewCtrl: ViewController,  private toast: ToastController, private loadingCtrl: LoadingController, private modalCtrl: ModalController, private dbase: DatabaseProvider, public eventProvider: EventProvider, private ntfProvider: NotificationProvider, private camera: Camera) {
+  constructor(public navCtrl: NavController, public navParams: NavParams, private viewCtrl: ViewController,  private toast: ToastController, private loadingCtrl: LoadingController, private modalCtrl: ModalController, private dbase: DatabaseProvider, public eventProvider: EventProvider, private ntfProvider: NotificationProvider, private camera: Camera, private emailComposer: EmailComposer, private alertCtrl: AlertController) {
     this.currentUser = this.eventProvider.getCurrentUser();
   }
 
@@ -137,13 +138,107 @@ export class EditSharedEventPage {
     });
   }
 
-  saveEvent(): void {
-    this.processEventDateTime().then((res) => {
-      let oldEventId = this.event.id;
-      this.eventProvider.updateSharedEvent(this.event, this.isNewPic).then((res) => {
-        this.viewCtrl.dismiss(this.event.id);
+  addToCalendar() {
+    let event = {
+      id: this.event.id,
+      title: this.event.title,
+      startTime: this.event.startTime,
+      endTime: this.event.endTime,
+      allDay: this.event.allDay,
+      reminder: '',
+      description: this.event.description,
+      colour: '#cc0099'
+    };
+    this.dbase.addEvent(event).then((res) => {
+      this.toast.create({
+        message: 'Event has been added into your calendar.',
+        duration: 2500,
+        position: 'top'
+      }).present();
+    });
+  }
+
+  sendByEmail(attList: string[]): Promise<any> {
+      let email = {
+        to: attList,
+        // attachments: [
+        //   this.sharedEvent.picture
+        // ],
+        subject: 'Ritmo: Event Invitation',
+        body: this.event.owner + ' invited you to join ' + this.event.title + '.<br><br>'
+                + 'From: ' + moment(this.event.startTime).format('LLLL') + '<br>'
+                + 'To: ' + moment(this.event.endTime).format('LLLL'),
+        isHtml: true
+      };
+
+      return this.emailComposer.open(email);
+  }
+
+  promptAddToCal(): void {
+    let alert = this.alertCtrl.create({
+      title: 'Add to calendar?',
+      message: 'Do you want to add this event to calendar?',
+      buttons: [
+        {
+          text: 'No',
+          role: 'cancel',
+          handler: () => {
+            this.saveEvent();
+          }
+        },
+        {
+          text: 'Yes',
+          handler: () => {
+            this.saveEvent().then((res) => {
+              this.addToCalendar();
+            });
+          }
+        }
+      ]
+    });
+    alert.present();
+  }
+
+  promptSendEmail(notExistsAtts: string[]): void {
+    let alert = this.alertCtrl.create({
+      title: 'User not exists.',
+      subTitle: 'Do you want send the event through email?',
+      buttons: [
+        {
+          text: 'Yes',
+          handler: () => {
+            this.sendByEmail(notExistsAtts).then(() => {
+              this.viewCtrl.dismiss();
+            });
+          }
+        },
+        {
+          text: 'No',
+          role: 'cancel',
+          handler: () => {
+            this.viewCtrl.dismiss();
+          }
+        }
+      ]
+    });
+    alert.present();
+  }
+
+  saveEvent(): Promise<any> {
+    return new Promise((resolve) => {
+      this.processEventDateTime().then((res) => {
+        this.eventProvider.updateSharedEvent(this.event, this.isNewPic).then((notExistsAtts) => {
+          if(notExistsAtts.length > 0) {
+            this.promptSendEmail(notExistsAtts);
+          }
+          else {
+            this.viewCtrl.dismiss();
+          }
+          resolve(res);
+        });
       });
     });
+
   }
 
 }

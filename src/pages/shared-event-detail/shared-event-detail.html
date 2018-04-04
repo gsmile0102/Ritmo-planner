@@ -22,7 +22,14 @@
     <img style="width: 100%;" [src]="currentEvent.picture">
   </div>
 
-    <ion-item no-lines>
+    <ion-item no-lines *ngIf="currentEvent.picture">
+      <ion-avatar item-start>
+        <img src="{{eventOwner.profilePic}}">
+      </ion-avatar>
+      <h2>{{eventOwner.name}}</h2>
+    </ion-item>
+
+    <ion-item no-lines *ngIf="!currentEvent.picture" class="ownername">
       <ion-avatar item-start>
         <img src="{{eventOwner.profilePic}}">
       </ion-avatar>
@@ -112,19 +119,21 @@
         </ion-col>
       </ion-row>
     </ion-item> -->
-    <ion-item-group padding>
+    <ion-item-group padding *ngIf="attendees.length != 0" class="attendee-group">
       <ion-item no-lines class="with-label">With:</ion-item>
       <ion-item *ngFor="let attendee of attendees">
         <ion-avatar item-start>
-          <img class="profile-avatar" [src]="attendee.profilePic">
+          <img class="profile-avatar" *ngIf="attendee.profilePic != ''" [src]="attendee.profilePic">
+          <img class="profile-avatar" *ngIf="attendee.profilePic == ''" src="assets/imgs/user-512.png">
         </ion-avatar>
-        <ion-label item-end>{{attendee.name}}</ion-label>
+        <ion-label *ngIf="attendee.name != ''" item-end>{{attendee.name}}</ion-label>
+        <ion-label *ngIf="attendee.name == ''" item-end>{{attendee.email}}</ion-label>
       </ion-item>
     </ion-item-group>
 </ion-content>
 <ion-footer>
-    <button ion-button *ngIf="!isOwner && !isAddedToCal" class="add-to-cal-btn" (click)="addToCalendar()" strong full>Add to calendar</button>
-    <button ion-button *ngIf="!isOwner" class="leave-btn" (click)="leave()" strong full outline>LEAVE</button>
+    <button ion-button *ngIf="!isAddedToCal" class="add-to-cal-btn" (click)="addToCalendar()" strong full>Add to calendar</button>
+    <button ion-button *ngIf="!isOwner" class="leave-btn" (click)="promptLeaveAlert()" strong full outline>LEAVE</button>
     <button ion-button *ngIf="isOwner" class="edit-btn" (click)="editEvent()" strong full outline>EDIT</button>
-    <button ion-button *ngIf="isOwner" class="delete-btn" (click)="deleteEvent()" strong full>DELETE</button>
+    <button ion-button *ngIf="isOwner" class="delete-btn" (click)="promptDeleteAlert()" strong full>DELETE</button>
 </ion-footer>

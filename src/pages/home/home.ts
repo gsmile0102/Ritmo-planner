@@ -75,13 +75,16 @@ export class HomePage {
               // toast.present();
             }
             else {
-              let toast = this.toast.create({
-                message: data.message,
-                duration: 3000,
-                position: 'top'
-              });
-              toast.present();
-              console.log(JSON.stringify(data));
+              if(data.senderId != this.currentUser.uid) {
+                let toast = this.toast.create({
+                  message: data.message,
+                  duration: 4000,
+                  cssClass: 'notificationToast',
+                  position: 'top'
+                });
+                toast.present();
+                console.log(JSON.stringify(data));
+              }
             }
           });
           this.fcm.onTokenRefresh().subscribe((token) => {
@@ -182,14 +185,30 @@ export class HomePage {
   }
 
   deleteEvent(event) {
-    this.dbase.deleteEvent(event).then((res) => {
-      this.toast.create({
-        message: 'Event has been deleted.',
-        duration: 2500,
-        position: 'top'
-      }).present();
-      this.loadEventsData();
+    let alert = this.alertCtrl.create({
+      title: 'Delete this event?',
+      buttons: [
+        {
+          text: 'Yes',
+          handler: () => {
+            this.dbase.deleteEvent(event).then((res) => {
+              this.toast.create({
+                message: 'Event has been deleted.',
+                duration: 2500,
+                position: 'top'
+              }).present();
+              this.loadEventsData();
+            });
+          }
+        },
+        {
+          text: 'Cancel',
+          role: 'cancel',
+          handler: () => {}
+        }
+      ]
     });
+    alert.present();
   }
 
   goToEventDetail(evtId: string): void {
@@ -197,11 +216,21 @@ export class HomePage {
   }
 
   goToCreatePersonalEvent(): void {
-    this.navCtrl.push('AddEventPage', { selectedDay: new Date() });
+    // this.navCtrl.push('AddEventPage', { selectedDay: new Date() });
+    let modal = this.modalCtrl.create('AddEventPage', {selectedDay: new Date()});
+    modal.present();
+    modal.onDidDismiss(data => {
+
+    });
   }
 
   goToCreateSharedEvent(): void {
-    this.navCtrl.push('SharedEventCreatePage');
+    // this.navCtrl.push('SharedEventCreatePage');
+    let modal = this.modalCtrl.create('SharedEventCreatePage', {selectedDay: this.selectedDay});
+    modal.present();
+    modal.onDidDismiss(data => {
+
+    });
   }
 
   changeMode(mode) {
@@ -305,16 +334,32 @@ export class HomePage {
 
   markDisabled = (date:Date) => {
     var current = new Date();
-    current.setHours(0, 0, 0);
+    // current.setHours(0, 0, 0);
     return date < current;
   };
 
-  prevMonth() {
-    this.calendar.currentDate = new Date(this.calendar.currentDate.setMonth(this.calendar.currentDate.getMonth() - 1));
+  prev() {
+    if(this.calendar.mode == 'month') {
+      this.calendar.currentDate = new Date(this.calendar.currentDate.setMonth(this.calendar.currentDate.getMonth() - 1));
+    }
+    if(this.calendar.mode == 'week') {
+      this.calendar.currentDate = new Date(this.calendar.currentDate.setDate(this.calendar.currentDate.getDate() - 7));
+    }
+    if(this.calendar.mode == 'day') {
+      this.calendar.currentDate = new Date(this.calendar.currentDate.setDate(this.calendar.currentDate.getDate() - 1));
+    }
   }
 
-  nextMonth() {
-    this.calendar.currentDate = new Date(this.calendar.currentDate.setMonth(this.calendar.currentDate.getMonth() + 1));
+  next() {
+    if(this.calendar.mode == 'month') {
+      this.calendar.currentDate = new Date(this.calendar.currentDate.setMonth(this.calendar.currentDate.getMonth() + 1));
+    }
+    if(this.calendar.mode == 'week') {
+      this.calendar.currentDate = new Date(this.calendar.currentDate.setDate(this.calendar.currentDate.getDate() + 7));
+    }
+    if(this.calendar.mode == 'day') {
+      this.calendar.currentDate = new Date(this.calendar.currentDate.setDate(this.calendar.currentDate.getDate() + 1));
+    }
   }
 
 }

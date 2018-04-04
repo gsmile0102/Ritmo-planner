@@ -23,6 +23,7 @@
     "@ionic-native/camera": "^4.5.3",
     "@ionic-native/contacts": "^4.5.3",
     "@ionic-native/core": "4.4.0",
+    "@ionic-native/email-composer": "^4.6.0",
     "@ionic-native/fcm": "^4.6.0",
     "@ionic-native/local-notifications": "^4.5.3",
     "@ionic-native/network": "^4.5.3",
@@ -39,6 +40,7 @@
     "cordova-plugin-camera": "^4.0.2",
     "cordova-plugin-contacts": "^3.0.1",
     "cordova-plugin-device": "1.1.4",
+    "cordova-plugin-email-composer": "^0.8.15",
     "cordova-plugin-fcm": "^2.1.2",
     "cordova-plugin-ionic-webview": "^1.1.16",
     "cordova-plugin-network-information": "^2.0.1",
@@ -79,7 +81,8 @@
       "cordova-plugin-network-information": {},
       "cordova-plugin-contacts": {},
       "cordova-plugin-camera": {},
-      "cordova-plugin-fcm": {}
+      "cordova-plugin-fcm": {},
+      "cordova-plugin-email-composer": {}
     },
     "platforms": []
   }

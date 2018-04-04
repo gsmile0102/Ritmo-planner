@@ -24,8 +24,8 @@ export class EventProvider {
     id: '',
     name: '',
     email: '',
-    phone: '',
-    profilePic: ''
+    profilePic: '',
+    pushToken: ''
   };
 
   constructor(public db: AngularFireDatabase) {
@@ -43,8 +43,8 @@ export class EventProvider {
               id: snapshot.key,
               name: snapshot.val().name,
               email: snapshot.val().email,
-              phone: snapshot.val().phone,
-              profilePic: snapshot.val().profilePic
+              profilePic: snapshot.val().profilePic,
+              pushToken: snapshot.val().pushToken
             }
         });
       }
@@ -93,6 +93,7 @@ export class EventProvider {
     return new Promise((resolve, reject) => {
       var attendee = sharedEvent.attendee;
       var existsAttList = [];
+      var notExistsAttList = [];
 
       var addUpdates = {};
       addUpdates['sharedEventList/' + this.currentUser.uid + '/' + sharedEvent.id] = {
@@ -105,11 +106,20 @@ export class EventProvider {
       };
       firebase.database().ref().update(addUpdates);
 
-      for(let attendee of sharedEvent.attendee) {
-        var orderField = attendee.email == '' ? 'phone' : 'email';
-        var eqField = attendee.email == '' ? attendee.number : attendee.email;
+      var ownerUpdates = {};
+      ownerUpdates['sharedEventList/' + this.currentUser.uid + '/' + sharedEvent.id + '/owner/'] = {
+        id: this.eventOwner.id,
+        name: this.eventOwner.name,
+        email: this.eventOwner.email,
+        // phone: this.eventOwner.phone,
+        profilePic: this.eventOwner.profilePic
+      };
+      firebase.database().ref().update(ownerUpdates);
 
-        this.userListRef.orderByChild(orderField).equalTo(eqField).once('value', (snapshot) => {
+      for(let attendee of sharedEvent.attendee) {
+        // var eqField = attendee.email ? '' : attendee.email;
+
+        this.userListRef.orderByChild('email').equalTo(attendee.email).once('value', (snapshot) => {
           if(snapshot.exists()) {
             snapshot.forEach((snap) => {
               existsAttList.push({
@@ -139,12 +149,6 @@ export class EventProvider {
               }
 
               var ownerAttUpdates = {};
-              // attUpdates['sharedEventList/' + snap.key + '/' + sharedEvent.id + '/attendee/' + snap.key] = {
-              //   name: snap.val().name,
-              //   email: snap.val().email,
-              //   phone: snap.val().phone,
-              //   profilePic: snap.val().profilePic
-              // };
               ownerAttUpdates['sharedEventList/' + this.currentUser.uid + '/' + sharedEvent.id + '/attendee/' + snap.key] = {
                 name: snap.val().name,
                 email: snap.val().email,
@@ -154,13 +158,13 @@ export class EventProvider {
               firebase.database().ref().update(ownerAttUpdates);
 
               var ownerUpdates = {};
-              ownerUpdates['sharedEventList/' + this.currentUser.uid + '/' + sharedEvent.id + '/owner/'] = {
-                id: this.eventOwner.id,
-                name: this.eventOwner.name,
-                email: this.eventOwner.email,
-                // phone: this.eventOwner.phone,
-                profilePic: this.eventOwner.profilePic
-              };
+              // ownerUpdates['sharedEventList/' + this.currentUser.uid + '/' + sharedEvent.id + '/owner/'] = {
+              //   id: this.eventOwner.id,
+              //   name: this.eventOwner.name,
+              //   email: this.eventOwner.email,
+              //   // phone: this.eventOwner.phone,
+              //   profilePic: this.eventOwner.profilePic
+              // };
               ownerUpdates['sharedEventList/' + snap.key + '/' + sharedEvent.id + '/owner/'] = {
                 id: this.eventOwner.id,
                 name: this.eventOwner.name,
@@ -178,6 +182,14 @@ export class EventProvider {
               return false;
             });
           }
+          else {
+            notExistsAttList.push(attendee.email);
+            firebase.database().ref('sharedEventList/' + this.currentUser.uid + '/' + sharedEvent.id + '/attendee/').push({
+              name: '',
+              email: attendee.email,
+              profilePic: ''
+            });
+          }
         }).then(() => {
           if(attendee == sharedEvent.attendee[sharedEvent.attendee.length - 1]) {
             for(let attendee of existsAttList) {
@@ -186,9 +198,16 @@ export class EventProvider {
                 attUpdates['sharedEventList/' + att.id + '/' + sharedEvent.id + '/attendee/' + attendee.id] = {
                   name: attendee.name,
                   email: attendee.email,
-                  // phone: attendee.phone,
                   profilePic: attendee.profilePic
                 };
+
+                for(let attEmail of notExistsAttList) {
+                  firebase.database().ref('sharedEventList/' + att.id + '/' + sharedEvent.id + '/attendee/').push({
+                    name: '',
+                    email: attEmail,
+                    profilePic: ''
+                  });
+                }
               }
               firebase.database().ref().update(attUpdates);
 
@@ -196,23 +215,30 @@ export class EventProvider {
                 devToken: attendee.pushToken
               });
             }
+            this.pushTokensListRef.child(sharedEvent.id).push({
+              devToken: this.eventOwner.pushToken
+            });
             this.messagesListRef.push({
+              senderId: this.eventOwner.id,
               senderName: this.eventOwner.name,
               eventId: sharedEvent.id,
               evtMessage: sharedEvent.title,
               type: 'new'
             });
           }
+          resolve(notExistsAttList);
         });
       }
-      resolve(sharedEvent);
+      // resolve(sharedEvent);
     });
   }
 
+  //update share event
   updateSharedEvent(sharedEvent, isNewPic): Promise<any> {
     return new Promise((resolve, reject) => {
       var attendee = sharedEvent.attendee;
       var existsAttList = [];
+      var notExistsAttList = [];
 
       var addUpdates = {};
       addUpdates['sharedEventList/' + this.currentUser.uid + '/' + sharedEvent.id] = {
@@ -225,11 +251,21 @@ export class EventProvider {
       };
       firebase.database().ref().update(addUpdates);
 
-      for(let attendee of sharedEvent.attendee) {
-        var orderField = attendee.email == '' ? 'phone' : 'email';
-        var eqField = attendee.email == '' ? attendee.number : attendee.email;
+      var ownerUpdates = {};
+      ownerUpdates['sharedEventList/' + this.currentUser.uid + '/' + sharedEvent.id + '/owner/'] = {
+        id: this.eventOwner.id,
+        name: this.eventOwner.name,
+        email: this.eventOwner.email,
+        // phone: this.eventOwner.phone,
+        profilePic: this.eventOwner.profilePic
+      };
+      firebase.database().ref().update(ownerUpdates);
 
-        this.userListRef.orderByChild(orderField).equalTo(eqField).once('value', (snapshot) => {
+      for(let attendee of sharedEvent.attendee) {
+        // var orderField = attendee.email == '' ? 'phone' : 'email';
+        // var eqField = attendee.email == '' ? attendee.number : attendee.email;
+
+        this.userListRef.orderByChild('email').equalTo(attendee.email).once('value', (snapshot) => {
           if(snapshot.exists()) {
             snapshot.forEach((snap) => {
               existsAttList.push({
@@ -281,13 +317,13 @@ export class EventProvider {
               firebase.database().ref().update(ownerAttUpdates);
 
               var ownerUpdates = {};
-              ownerUpdates['sharedEventList/' + this.currentUser.uid + '/' + sharedEvent.id + '/owner/'] = {
-                id: this.eventOwner.id,
-                name: this.eventOwner.name,
-                email: this.eventOwner.email,
-                // phone: this.eventOwner.phone,
-                profilePic: this.eventOwner.profilePic
-              };
+              // ownerUpdates['sharedEventList/' + this.currentUser.uid + '/' + sharedEvent.id + '/owner/'] = {
+              //   id: this.eventOwner.id,
+              //   name: this.eventOwner.name,
+              //   email: this.eventOwner.email,
+              //   // phone: this.eventOwner.phone,
+              //   profilePic: this.eventOwner.profilePic
+              // };
               ownerUpdates['sharedEventList/' + snap.key + '/' + sharedEvent.id + '/owner/'] = {
                 id: this.eventOwner.id,
                 name: this.eventOwner.name,
@@ -305,6 +341,14 @@ export class EventProvider {
               return false;
             });
           }
+          else {
+            notExistsAttList.push(attendee.email);
+            firebase.database().ref('sharedEventList/' + this.currentUser.uid + '/' + sharedEvent.id + '/attendee/').push({
+              name: '',
+              email: attendee.email,
+              profilePic: ''
+            });
+          }
         }).then(() => {
           this.pushTokensListRef.child(sharedEvent.id).remove().then(() => {
             if(attendee == sharedEvent.attendee[sharedEvent.attendee.length - 1]) {
@@ -317,6 +361,14 @@ export class EventProvider {
                     // phone: attendee.phone,
                     profilePic: attendee.profilePic
                   };
+
+                  for(let attEmail of notExistsAttList) {
+                    firebase.database().ref('sharedEventList/' + att.id + '/' + sharedEvent.id + '/attendee/').push({
+                      name: '',
+                      email: attEmail,
+                      profilePic: ''
+                    });
+                  }
                 }
                 firebase.database().ref().update(attUpdates);
 
@@ -324,17 +376,21 @@ export class EventProvider {
                   devToken: attendee.pushToken
                 });
               }
+              this.pushTokensListRef.child(sharedEvent.id).push({
+                devToken: this.eventOwner.pushToken
+              });
               this.messagesListRef.push({
+                senderId: this.eventOwner.id,
                 senderName: this.eventOwner.name,
                 eventId: sharedEvent.id,
                 evtMessage: sharedEvent.title,
                 type: 'update'
               });
             }
+            resolve(notExistsAttList);
           });
         });
       }
-      resolve(sharedEvent);
     });
   }
 
@@ -386,28 +442,53 @@ export class EventProvider {
     return this.sharedEventListRef.child(this.currentUser.uid + '/' + eventId);
   }
 
-  leaveSharedEvent(eventId, eventOwner): Promise<any> {
+  leaveSharedEvent(event, eventOwner): Promise<any> {
     return new Promise((resolve) => {
-      this.sharedEventListRef.child(`${this.currentUser.uid}/${eventId}`).remove().then(() => {
-        this.sharedEventListRef.child(`${eventOwner}/${eventId}/attendee/${this.currentUser.uid}`).remove().then(() => {
-          this.eventAttListRef.child(`${eventId}/${this.currentUser.uid}`).remove().then(() => {
-            resolve(eventId);
+      this.sharedEventListRef.child(`${this.currentUser.uid}/${event.id}`).remove().then(() => {
+        this.sharedEventListRef.child(`${eventOwner}/${event.id}/attendee/${this.currentUser.uid}`).remove().then(() => {
+          this.eventAttListRef.child(`${event.id}/${this.currentUser.uid}`).remove().then(() => {
+            this.pushTokensListRef.child(event.id).once('value').then((snapshot) => {
+              snapshot.forEach((snap) => {
+                if(snap.val().devToken == this.eventOwner.pushToken) {
+                  this.pushTokensListRef.child(`${event.id}/${snap.key}`).remove().then(() => {
+                    this.messagesListRef.push({
+                      senderId: this.eventOwner.id,
+                      senderName: this.eventOwner.name,
+                      eventId: event.id,
+                      evtMessage: event.title,
+                      type: 'leave'
+                    });
+                  });
+                }
+              });
+            });
+            resolve(event);
           });
         });
       });
     });
   }
 
-  deleteSharedEvent(eventId): Promise<any> {
+  deleteSharedEvent(event): Promise<any> {
     return new Promise((resolve) => {
-      firebase.database().ref(`eventAttList/${eventId}`).once('value').then((evtAttSnap) => {
+      firebase.database().ref(`eventAttList/${event.id}`).once('value').then((evtAttSnap) => {
         evtAttSnap.forEach((snap) => {
-          firebase.database().ref(`sharedEventList/${snap.key}/${eventId}`).remove().then(() => {
-            firebase.database().ref(`eventAttList/${eventId}/${snap.key}`).remove();
+          firebase.database().ref(`sharedEventList/${snap.key}/${event.id}`).remove().then(() => {
+            firebase.database().ref(`eventAttList/${event.id}/${snap.key}`).remove().then(() => {
+              this.pushTokensListRef.child(event.id).remove().then(() => {
+                this.messagesListRef.push({
+                  senderId: this.eventOwner.id,
+                  senderName: this.eventOwner.name,
+                  eventId: event.id,
+                  evtMessage: event.title,
+                  type: 'delete'
+                });
+              });
+            });
           });
         });
       });
-      resolve(eventId);
+      resolve(event);
     });
   }
 

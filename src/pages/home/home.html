@@ -9,9 +9,9 @@
       <button ion-button (click)="changeMode('month')">M</button>
       <button ion-button (click)="changeMode('week')">W</button>
       <button ion-button (click)="changeMode('day')">D</button>
-      <button ion-button icon-only (click)="addEvent()">
+      <!-- <button ion-button icon-only (click)="addEvent()">
         <ion-icon name="add"></ion-icon>
-      </button>
+      </button> -->
     </ion-buttons>
   </ion-navbar>
 </ion-header>
@@ -20,7 +20,7 @@
   <ion-grid class="calendar-header">
     <ion-row>
       <ion-col col-2>
-        <button ion-button item-left clear (click)="prevMonth()">
+        <button ion-button item-left clear (click)="prev()">
           <ion-icon name="arrow-back"></ion-icon>
         </button>
       </ion-col>
@@ -28,7 +28,7 @@
         <button class="calendar-month-title" ion-button block clear>{{ viewTitle }}</button>
       </ion-col>
       <ion-col col-2>
-        <button ion-button item-right clear (click)="nextMonth()">
+        <button ion-button item-right clear (click)="next()">
           <ion-icon name="arrow-forward"></ion-icon>
         </button>
       </ion-col>

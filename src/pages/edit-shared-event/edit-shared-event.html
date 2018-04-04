@@ -58,10 +58,10 @@
 
   <ion-item no-lines>
     <ion-icon item-start class="event-icon" ios="ios-clipboard" md="ios-clipboard" item-start></ion-icon>
-    <ion-label item-end>Description:</ion-label>
+    <ion-label item-end>Notes:</ion-label>
   </ion-item>
   <ion-item>
-    <ion-textarea item-end type="text" placeholder="Says something about your event..." [(ngModel)]="event.description"></ion-textarea>
+    <ion-textarea item-end type="text" placeholder="Add some notes to your event..." [(ngModel)]="event.description"></ion-textarea>
   </ion-item>
 
   <ion-item no-lines>
@@ -80,7 +80,7 @@
 
 </ion-content>
 <ion-footer>
-  <button class="addButton" ion-footer ion-button strong full icon-left (click)="saveEvent()">
+  <button class="addButton" ion-footer ion-button strong full icon-left (click)="promptAddToCal()">
     <ion-icon name="checkmark"></ion-icon> Edit Event
   </button>
 </ion-footer>

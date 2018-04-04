@@ -18,24 +18,37 @@ page-home {
   }
 
   .monthview-selected {
-    border-radius: 20px !important;
-    background-color: #00ffcc !important;
-    color: white !important;
-    font-size: 1.5em;
+    // border-radius: 20px !important;
+    border: 1px solid !important;
+    border-color: #00cccc !important;
+    // background-color: #00ffcc !important;
+    color: #00cccc !important;
+    // font-size: 1em;
   }
 
   td.monthview-current {
-    border-radius: 30px !important;
-    // background-color: #9999ff !important;
+    // border-radius: 50% !important;
+    // background-color: #cc0099 !important;
     color: #cc0099 !important;
     font-weight: bold;
+    text-decoration: underline;
+    text-decoration-color: #cc0099;
   }
 
   td.monthview-current.monthview-selected {
-    border-radius: 20px !important;
-    background-color: #ffffff !important;
     color: #cc0099 !important;
-    font-size: 1.5em;
+    font-weight: bold;
+    text-decoration: underline;
+    text-decoration-color: #cc0099;
+  }
+
+  td.monthview-current.monthview-primary-with-event {
+    border-radius: 50% !important;
+    color: #ffffff !important;
+    background-color: #cc0099 !important;
+    font-weight: bold;
+    text-decoration: underline;
+    text-decoration-color: #ffffff;
   }
 
   .calendar-day {
@@ -43,17 +56,17 @@ page-home {
   }
 
   td.monthview-primary-with-event.monthview-selected {
-    border-radius: 20px !important;
+    border-radius: 50% !important;
     background-color: #cc0099 !important;
-    color: white !important;
-    font-size: 1.5em;
+    color: #ffffff !important;
   }
 
   td.monthview-primary-with-event {
-    border-radius: 40% !important;
+    border-radius: 50% !important;
     background-color: #cc0099 !important;
+    // font-size: 1.2em;
     color: #ffffff !important;
-    font-style: bold;
+    font-weight: bold;
   }
 
   th {
@@ -178,4 +191,9 @@ page-home {
   ion-item-sliding {
     background: transparent !important;
   }
+}
+
+.notificationToast {
+  background-color: #ffffff;
+  color: #4d004d;
 }
