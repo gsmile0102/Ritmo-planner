@@ -85,9 +85,6 @@ export class ReminderModalPage {
     this.viewCtrl.dismiss(ntfTime);
   }
 
-  customise() {
-
-  }
 
   cancel() {
     this.viewCtrl.dismiss(0);

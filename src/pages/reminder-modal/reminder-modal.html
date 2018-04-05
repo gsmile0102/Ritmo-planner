@@ -22,9 +22,5 @@
       <ion-label>{{time.title}}</ion-label>
       <ion-checkbox [(ngModel)]="time.checked" color="primary" (click)="addNotification()" [disabled]="isCustomise"></ion-checkbox>
     </ion-item>
-    <ion-item>
-      <ion-label>Customise</ion-label>
-      <ion-checkbox [(ngModel)]="isCustomise" (click)="customise()"></ion-checkbox>
-    </ion-item>
   </ion-list>
 </ion-content>
