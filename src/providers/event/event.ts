@@ -475,7 +475,7 @@ export class EventProvider {
         evtAttSnap.forEach((snap) => {
           firebase.database().ref(`sharedEventList/${snap.key}/${event.id}`).remove().then(() => {
             firebase.database().ref(`eventAttList/${event.id}/${snap.key}`).remove().then(() => {
-              this.pushTokensListRef.child(event.id).remove().then(() => {
+              // this.pushTokensListRef.child(event.id).remove().then(() => {
                 this.messagesListRef.push({
                   senderId: this.eventOwner.id,
                   senderName: this.eventOwner.name,
@@ -483,7 +483,7 @@ export class EventProvider {
                   evtMessage: event.title,
                   type: 'delete'
                 });
-              });
+              // });
             });
           });
         });
