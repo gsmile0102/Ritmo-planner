@@ -451,15 +451,16 @@ export class EventProvider {
               snapshot.forEach((snap) => {
                 if(snap.val().devToken == this.eventOwner.pushToken) {
                   this.pushTokensListRef.child(`${event.id}/${snap.key}`).remove().then(() => {
-                    this.messagesListRef.push({
-                      senderId: this.eventOwner.id,
-                      senderName: this.eventOwner.name,
-                      eventId: event.id,
-                      evtMessage: event.title,
-                      type: 'leave'
-                    });
+
                   });
                 }
+              });
+              this.messagesListRef.push({
+                senderId: this.eventOwner.id,
+                senderName: this.eventOwner.name,
+                eventId: event.id,
+                evtMessage: event.title,
+                type: 'leave'
               });
             });
             resolve(event);
@@ -472,21 +473,27 @@ export class EventProvider {
   deleteSharedEvent(event): Promise<any> {
     return new Promise((resolve) => {
       firebase.database().ref(`eventAttList/${event.id}`).once('value').then((evtAttSnap) => {
-        evtAttSnap.forEach((snap) => {
-          firebase.database().ref(`sharedEventList/${snap.key}/${event.id}`).remove().then(() => {
-            firebase.database().ref(`eventAttList/${event.id}/${snap.key}`).remove().then(() => {
-              // this.pushTokensListRef.child(event.id).remove().then(() => {
-                this.messagesListRef.push({
-                  senderId: this.eventOwner.id,
-                  senderName: this.eventOwner.name,
-                  eventId: event.id,
-                  evtMessage: event.title,
-                  type: 'delete'
-                });
-              // });
+        if(evtAttSnap.exists()) {
+          evtAttSnap.forEach((snap) => {
+            firebase.database().ref(`sharedEventList/${snap.key}/${event.id}`).remove().then(() => {
+              firebase.database().ref(`eventAttList/${event.id}/${snap.key}`).remove().then(() => {
+                // this.pushTokensListRef.child(event.id).remove().then(() => {
+
+                // });
+              });
             });
           });
-        });
+          this.messagesListRef.push({
+            senderId: this.eventOwner.id,
+            senderName: this.eventOwner.name,
+            eventId: event.id,
+            evtMessage: event.title,
+            type: 'delete'
+          });
+        }
+        else {
+          firebase.database().ref(`sharedEventList/${this.currentUser.uid}/${event.id}`).remove();
+        }
       });
       resolve(event);
     });
