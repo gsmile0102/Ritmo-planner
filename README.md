@@ -1,2 +1,2 @@
 # Ritmo-planner
-Plan an event with your friends
+Personal Planner Mobile Application Using Ionic Framework
