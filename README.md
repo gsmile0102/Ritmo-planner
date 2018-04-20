@@ -3,7 +3,7 @@ Personal Planner Mobile Application Using Ionic Framework
 
 ## App Preview
 
-<img src="https://github.com/gsmile0102/Ritmo-planner/blob/master/screenshots/Screenshot_20180402-203023.png" width="288"/>
+<img src="https://github.com/gsmile0102/Ritmo-planner/blob/master/screenshots/Screenshot_20180402-203023.png" width="200" height="500"/>
 
 <img src="https://github.com/gsmile0102/Ritmo-planner/blob/master/screenshots/Screenshot_20180402-203329.png" width="288"/>
 
